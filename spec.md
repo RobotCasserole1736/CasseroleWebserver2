@@ -106,17 +106,25 @@ Based on dashboard configuration from java code, should we generate the proper H
 
 The following "widgets" are allowed for displaying information:
 
-#### Gauge
+#### Circular Gauge
 
 Configurable min acceptable, max acceptable.
 
 Display shoudl show title, typed out value, and color-coding to indicate if the value is in the 'acceptable" range.
+
+#### Line Gauge
+
+Configureable min acceptable, max acceptable
+
+Display should show title, typed out value, color coding.
 
 #### Boolean Indicator
 
 light, turns on and off.
 
 Color coded, allow for red/green/yellow 
+
+Possible - support on/off images to do line-art? Support alpha-channel.
 
 #### Text Widget
 
@@ -131,6 +139,10 @@ Server should be able to reuturn the selected autonomous mode to the user.
 #### Cameras
 
 Should be able to full-screen. Should be able to select from CameraServer reference to mjpg url.
+
+#### Stylistic Inspiration
+
+![this guy](https://preview.redd.it/mu52tfn61xl61.jpg?width=4032&format=pjpg&auto=webp&s=d86192692948678f1246d434967b2cafd4b13cdf)
 
 ### Signals
 
