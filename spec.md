@@ -164,6 +164,7 @@ Should be able to full-screen. Config for client-side rotation? Client-side curs
 
 ![another dude](https://user-images.githubusercontent.com/4583662/110501245-97dec500-80bf-11eb-8d27-d537a1436cc9.png)
 
+Use google Michhroma font? Need local download for .tff file - https://fonts.google.com/specimen/Michroma?preview.text_type=custom 
 
 ### Signals
 
