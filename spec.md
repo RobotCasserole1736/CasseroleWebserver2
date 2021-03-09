@@ -111,8 +111,9 @@ Allow for free-form placement of widgets? Percentage-based X/Y/size ?
 
 Allow for custom background image?
 
-Based on dashboard configuration from java code, should we generate the proper HTML? Or make it purely dynamic and always read all config data off of NT? I lean toward the former to match architecture with Glass, and limit NT to data that's expected to change in real time (or needs dynamic sometimes-accessed, sometimes-not).
+Dashboard HTML will be dynamically generated based on java code configuration... maybe JS too.
 
+Most widgets will be instantiated in java code with a reference (either by name or by object) to the Signal they're associated with.
 
 The following "widgets" are allowed for displaying information:
 
@@ -128,7 +129,7 @@ Configureable min acceptable, max acceptable
 
 Display should show title, typed out value, color coding.
 
-#### Boolean Indicator
+#### Icon
 
 light, turns on and off.
 
@@ -136,19 +137,26 @@ Color coded, allow for red/green/yellow
 
 Possible - support on/off images to do line-art? Support alpha-channel.
 
-#### Text Widget
+#### Text 
 
 has a title, and displays arbitrary text. 
 
 #### Autonomous Chooser
 
-NT entry listing all possible autonomous modes (name + index). Additional entries for "desired" and "selected". Clients manipulate "desired" and confirm the server's got it via "selected".
+Special case - Takes in the following:
 
-Server should be able to reuturn the selected autonomous mode to the user.
+Calibration Reference - "Desired" auto routine - integer
+Signal Reference - "Actual" auto routine - integer
+
+Some mapping of strings to integers to have nice human names for the autonomous routines
+
+Uses that mapping to display everything nicely to thhe user
 
 #### Cameras
 
-Should be able to full-screen. Should be able to select from CameraServer reference to mjpg url.
+Special case: takes in either a raw string for the URL to the camera stream, or some CameraServer reference info to derive the reference string from NT.
+
+Should be able to full-screen. Config for client-side rotation? Client-side cursor overlay (needs additional signal input config)?
 
 #### Stylistic Inspiration
 
@@ -171,6 +179,14 @@ This page is a filterable table of all possible calibrations with name, units, m
 
 ## Java Class Structure
 
-* `Websesrver2` - top level wrapper around jetty to serve all HTML/css/js
-* `Signal` - recieves timesamped samples
+* `WebServer2` - top level wrapper around jetty to serve all HTML/css/js
+* `Signal` - recieves timesamped samples, forwards to NT4 and to a queue for local logging.
+  * `AnnotationSignal` - wrappers signal with additional data needed for supporting annotations
+* `Calibration` - Goes between users code and NT4 for calibration type objects
+  * `AnnotationCalibration` - wrappers calibration with additional data needed for supporting annotations
+* `SignalBank` - singleton to hold all signals in code, and perform actions on all signals (sample all, .... maybe that's it)
+* `CalibrationBank` - singleton to hold all calibrations in code
+* `Dashboard` - top-level config for driver dashboard. Singleton. Must have a way to accept widgets
+  * `LineGaugeWidget`, `CircularGaugeWidget`, `IconWidget`, `TextWidget`, etc. per individual widget
+  * Each should auto-register with the Dashboard singleton on instantiation
 
