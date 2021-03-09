@@ -4,6 +4,8 @@
 
 This specification document is designed to help organize thoughts as much as possible prior to starting software.
 
+Question: Is "Webserver" a valid name for this thing? It's more of a full development suite. TODO: make some good class names for how this gets exposed to the user.
+
 # Motivation
 
 Casserole has had a large amount of success using a rio-based webserver environment to allow the software team to specify points where data needs to be read or written, and propagate that data to any client device which supports web browsing.
