@@ -81,9 +81,11 @@ Start/stop buttons to change whether the stripchart is gathering data or not. Wh
 
 ### Logs
 
-Serve a table of all saved .csv files on the roboRIO
+Serve a table of all saved .csv files on the roboRIO.
 
 Sortable by date/time or match/event/etc.
+
+TODO: maybe use QuestDB? [Java docs here](https://questdb.io/docs/reference/api/java-embedded/)
 
 show file size
 
@@ -167,5 +169,8 @@ Its value is debatable - outline viewer might also suit this well?
 
 This page is a filterable table of all possible calibrations with name, units, min, max, and default listed out. Users should be allowed to enter a new value by typing it in, and hitting an "apply" button. A "Reset" button should revert to the default value. Changed values should be highlighted with a different color row.
 
+## Java Class Structure
 
+* `Websesrver2` - top level wrapper around jetty to serve all HTML/css/js
+* `Signal` - recieves timesamped samples
 
