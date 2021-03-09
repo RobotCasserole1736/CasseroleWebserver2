@@ -1,0 +1,22 @@
+{
+  "name": "casserole_web_client",
+  "version": "1.0.0",
+  "description": "Client-facing web content for Casserole's RIO-served information website",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package:js": "browserify ./src/js/index.js > ./dist/index.js",
+    "package:html": "copy .\\src\\index.html .\\dist",
+    "package": "npm run package:js && npm run package:html",
+    "prepackage": "rimraf dist/*"
+  },
+  "author": "FRC Team 1736 Robot Casserole",
+  "license": "MIT",
+  "dependencies": {
+    "browserify": "^17.0.0",
+    "net-browserify": "^0.2.4",
+    "uglify-js": "^3.12.8",
+    "webpack": "^5.24.2",
+    "wpilib-nt-client": "^1.7.2"
+  }
+}
