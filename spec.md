@@ -93,7 +93,9 @@ Download-all-as-zip or delete-all (with modal confirmation) options
 
 Log data structure under topic `logfiles` in NT - mostly string data probably?
 
+Show current status (logging, inactive, current filename, length...)
 
+Maybe: a way to view these online? Write the stripchart viewer to be able to show both?
 
 ### Dashboard
 
