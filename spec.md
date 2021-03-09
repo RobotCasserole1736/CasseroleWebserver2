@@ -146,6 +146,9 @@ Should be able to full-screen. Should be able to select from CameraServer refere
 
 ![this guy](https://preview.redd.it/mu52tfn61xl61.jpg?width=4032&format=pjpg&auto=webp&s=d86192692948678f1246d434967b2cafd4b13cdf)
 
+![another dude](https://user-images.githubusercontent.com/4583662/110501245-97dec500-80bf-11eb-8d27-d537a1436cc9.png)
+
+
 ### Signals
 
 This is mostly a quick-debug view. It should display a flat, alphabetized list of all signals, filterable, with name, units, and value displayed. It should get updated at a modest rate so as to not bog down network traffic - 100ms maybe to start.
