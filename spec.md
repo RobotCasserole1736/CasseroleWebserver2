@@ -63,7 +63,31 @@ Clients will be presented a similar set of pages to what is displayed today.
 
 Should have links to all other pages, and basic info about the build and deploy to help uniquely (as much as possible at least) identify what software is running.
 
-### Plots
+### Stripchart
+
+1 or more highcharts plots with X axis linked. +/- buttons to increase or decreases the number of plots.
+
+Sidebar flyout menu with all possible signals? Or dedicated "add" menu per stripchart?
+
+Dedicated left-hand chunk (ATI Style) with signal color, name, and value under cursor.
+
+Cursors synced between all charts.
+
+### Logs
+
+Serve a table of all saved .csv files on the roboRIO
+
+Sortable by date/time or match/event/etc.
+
+Report size
+
+Download or Delete options per individual log
+
+Download-all-as-zip or delete-all (with modal confirmation) options
+
+Log data structure under topic `logfiles` in NT - mostly string data probably?
+
+
 
 ### Dashboard
 
@@ -71,7 +95,14 @@ This page is an alternate way to view specific values, presented in a formant ea
 
 In user code, widgets get defined at init time, and users have the ability to change their displayed values.
 
-This shoudl create a special `dashboard` topic in NT with enough info to describe the physical apperance and values of each widget.
+This should create a special `dashboard` topic in NT with enough info to describe the values of each widget.
+
+Allow for free-form placement of widgets? Percentage-based X/Y/size ?
+
+Allow for custom background image?
+
+Based on dashboard configuration from java code, should we generate the proper HTML? Or make it purely dynamic and always read all config data off of NT? I lean toward the former to match architecture with Glass, and limit NT to data that's expected to change in real time (or needs dynamic sometimes-accessed, sometimes-not).
+
 
 The following "widgets" are allowed for displaying information:
 
