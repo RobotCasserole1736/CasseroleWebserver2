@@ -75,6 +75,9 @@ Dedicated left-hand chunk (ATI Style) with signal color, name, and value under c
 
 Cursors synced between all charts.
 
+![ATI Style](https://user-images.githubusercontent.com/4583662/110501707-1176b300-80c0-11eb-85b9-5c0a1bf17902.png)
+
+
 ### Logs
 
 Serve a table of all saved .csv files on the roboRIO
