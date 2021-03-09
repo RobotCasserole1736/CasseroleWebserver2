@@ -75,8 +75,9 @@ Dedicated left-hand chunk (ATI Style) with signal color, name, and value under c
 
 Cursors synced between all charts.
 
-![ATI Style](https://user-images.githubusercontent.com/4583662/110501707-1176b300-80c0-11eb-85b9-5c0a1bf17902.png)
+Start/stop buttons to change whether the stripchart is gathering data or not. While running, stripchart should use the logging style in NT4 to get all samples from just the relevant topics in NT.
 
+![ATI Style](https://user-images.githubusercontent.com/4583662/110501823-31a67200-80c0-11eb-8f13-abdb580ccb51.png)
 
 ### Logs
 
@@ -84,7 +85,7 @@ Serve a table of all saved .csv files on the roboRIO
 
 Sortable by date/time or match/event/etc.
 
-Report size
+show file size
 
 Download or Delete options per individual log
 
