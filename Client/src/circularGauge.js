@@ -97,11 +97,11 @@ export class CircularGauge {
         this.gaugeCenterX = this.canvas.width/2;
         this.gaugeCenterY = this.canvas.height/1.9;
 
-        this.titleTextSize = (this.canvas.height*0.12);
+        this.titleTextSize = Math.round(this.canvas.height*0.09);
         this.titleTextAnchorX = this.canvas.width * 0.05;
         this.titleTextAnchorY = this.canvas.height * 0.075;
 
-        this.valueTextSize = (this.canvas.height*0.12);
+        this.valueTextSize = Math.round(this.canvas.height*0.12);
         this.valueTextAnchorX = this.gaugeCenterX;
         this.valueTextAnchorY = this.canvas.height * 0.85;
 
