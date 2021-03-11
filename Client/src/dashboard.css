@@ -2,6 +2,10 @@
 
 div.mainDrawArea {
     border: 1px solid #FFFFFF;
+    position:relative;
+    width:95vw;
+    height:56.25vw;
+
 }
 
 div.widgetBase {
