@@ -81,14 +81,14 @@ export class LineGauge {
 
         this.titleTextSize = Math.round(this.canvas.height*0.22);
         this.titleTextAnchorX = this.canvas.width * 0.03;
-        this.titleTextAnchorY = this.canvas.height * 0.15;
+        this.titleTextAnchorY = this.canvas.height * 0.2;
 
         this.lineStartX = this.canvas.width * 0.03;
         this.lineStartY = this.canvas.height * 0.55;
         this.lineWidth = this.canvas.width * 0.94;
         this.lineHeight = this.canvas.height * 0.15;
 
-        this.markerRadius = this.canvas.width * this.canvas.height * 0.0005
+        this.markerRadius =  this.canvas.height * 0.2
     }
 
     valToXPos(val){

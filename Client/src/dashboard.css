@@ -9,8 +9,10 @@ div.mainDrawArea {
 }
 
 div.widgetBase {
-    border: 1px solid #444444;
+    border: 1px solid #222222;
     position: absolute;
+    box-shadow: 0px 0px 1vw 0.5vw #111111;
+
 }
 
 img.camera {
@@ -19,4 +21,13 @@ img.camera {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+div.iconGraphic {
+    width:96%;
+    height:96%;
+    position:relative;
+    top:2%;
+    left:2%;
+
 }
