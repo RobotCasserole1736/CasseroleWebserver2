@@ -24,6 +24,7 @@ export class Icon {
         this.blinkCounter = 0;
 
         this.docElem = document.getElementById(draw_div_id);
+        this.docElem.setAttribute("data-tooltip", this.title);
     }
 
     // Call this when NT is disconnected, or data is otherwise not available
@@ -67,7 +68,7 @@ export class Icon {
 
         if(iconDrawColor != null){
             //Draw an icon with the specified color
-            this.docElem.innerHTML = "<div style=\"background-color:" + iconDrawColor + ";mask:url("+ this.icon +");width:100%;height:100%;position:relative\"></div>"
+            this.docElem.innerHTML = "<div style=\"background-color:" + iconDrawColor + ";mask:url("+ this.icon +")  no-repeat; mask-size: cover; width:100%;height:100%;position:relative\"></div>"
         } else {
             //Make the area blank
             this.docElem.innerHTML = "";

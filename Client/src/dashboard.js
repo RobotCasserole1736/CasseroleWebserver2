@@ -1,5 +1,6 @@
 import { CircularGauge } from './circularGauge.js'
 import { Icon } from './icon.js'
+import { Camera } from './camera.js'
 
 //////////////////////////////////////////////////
 // Logic to run on page load
@@ -11,7 +12,8 @@ var widget2 = new CircularGauge('widget2', 'Shooter RPM', -100,0,-90,-10);
 var widget3 = new Icon('widget3', 'warning', "#FF0000", null, 'icons/warning.svg');
 var widget4 = new Icon('widget4', 'battery', "#FFFF00", "#555555", 'icons/battery.svg');
 var widget5 = new Icon('widget5', 'vision',  "#00FF00", null, 'icons/vision.svg');
-var widget6 = new Icon('widget6', 'power',   "#55AAFF", "#555555", 'icons/power.svg');
+var widget6 = new Icon('widget6', 'power',   "#55AAFF", "#555555", 'icons/camera_fault.svg');
+var widget7 = new Camera('widget7', "Vision Cam", 'http://photonvision.local:1192/stream.mjpg');
 
 
 // Start up rendering (never returns)

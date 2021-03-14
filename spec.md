@@ -107,9 +107,9 @@ In user code, widgets get defined at init time, and users have the ability to ch
 
 This should create a special `dashboard` topic in NT with enough info to describe the values of each widget.
 
-Allow for free-form placement of widgets? Percentage-based X/Y/size ?
+Allow for free-form placement of widgets. Percentage-based size (1.0 = suggested, multiplier to scale up and down)
 
-Allow for custom background image?
+Allow for custom background image.
 
 Dashboard HTML will be dynamically generated based on java code configuration... maybe JS too.
 

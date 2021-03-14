@@ -9,6 +9,14 @@ div.mainDrawArea {
 }
 
 div.widgetBase {
-    border: 1px solid #00FF00;
+    border: 1px solid #444444;
     position: absolute;
+}
+
+img.camera {
+    width: 100%;
+    height: auto;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }

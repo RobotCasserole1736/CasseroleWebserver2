@@ -17,10 +17,12 @@ export class CircularGauge {
 
         // Set up drawing canvas within provided div
         this.canvas = document.createElement('canvas');
-        this.div = document.getElementById(this.draw_div_id );
+        this.docElem = document.getElementById(this.draw_div_id );
         this.canvas.id     = this.draw_div_id + "_canvas";
-        this.div.appendChild(this.canvas);
+        this.docElem.appendChild(this.canvas);
         this.ctx = this.canvas.getContext("2d");
+
+        this.docElem.setAttribute("data-tooltip", this.title);
 
     }
 
@@ -89,8 +91,8 @@ export class CircularGauge {
     //////////////////////////////////////
 
     recalcDrawConstants(){
-        this.canvas.width  = this.div.offsetWidth;
-        this.canvas.height = this.div.offsetHeight;
+        this.canvas.width  = this.docElem.offsetWidth;
+        this.canvas.height = this.docElem.offsetHeight;
 
         //Drawing configurations
 
