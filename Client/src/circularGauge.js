@@ -10,7 +10,7 @@ export class CircularGauge {
         this.max_range = max_range;
         this.min_acceptable = min_acceptable;
         this.max_acceptable = max_acceptable;
-        
+
         // State Variable Defaults
         this.hasData = false;
         this.curVal = 0;
@@ -56,15 +56,12 @@ export class CircularGauge {
 
         // Draw Value Text
         this.ctx.font = (this.valueTextSize) + "px localMichroma";
-        this.ctx.textBaseline = 'middle';
         this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        var displayValueStr = "----"
+        var displayValueStr = "****"
         if(this.hasData){
-            displayValueStr = Math.round(this.curVal).toString();
+            displayValueStr = this.getValAsFixedLenStr()
         }
-        this.ctx.fillText(displayValueStr, this.valueTextAnchorX, this.valueTextAnchorY);
+        this.renderTextFixedSpacing(displayValueStr, this.valueTextAnchorX, this.valueTextAnchorY);
 
         if(this.hasData){
             //Draw filled portion of gauge
@@ -104,8 +101,9 @@ export class CircularGauge {
         this.titleTextAnchorY = this.canvas.height * 0.075;
 
         this.valueTextSize = Math.round(this.canvas.height*0.12);
-        this.valueTextAnchorX = this.gaugeCenterX;
+        this.valueTextAnchorX = this.gaugeCenterX * 0.5;
         this.valueTextAnchorY = this.canvas.height * 0.85;
+        this.valueTextSpacing = this.valueTextSize*1.0
 
         this.ARC_START_ANGLE = 3/4 * Math.PI;
         this.ARC_END_ANGLE   = 9/4 * Math.PI;
@@ -136,4 +134,45 @@ export class CircularGauge {
             this.ctx.stroke();
         }
     }
+
+    getValAsFixedLenStr(){
+        //We don't wish to display any more than four changing digits
+        var dispVal = this.curVal
+        if(Math.abs(dispVal) >= 9999){
+            return "9999";
+        } else if (Math.abs(dispVal) <= 0.001){
+            return "0.0";
+        } else if(Math.abs(dispVal) <= 0.01){
+            return dispVal.toPrecision(1);
+        } else if(Math.abs(dispVal) <= 0.1){
+            return dispVal.toPrecision(2);
+        } else if(Math.abs(dispVal) <= 1.0){
+            return dispVal.toPrecision(3);
+        }else {
+            return dispVal.toPrecision(4);
+        }
+        
+    }
+
+    renderTextFixedSpacing(string, startX, startY){
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        var xPos = startX;
+
+        if(string[0] == '-'){
+            xPos -= this.valueTextSpacing;
+        }
+
+        for(var idx=0; idx < string.length; idx++){
+            var spacing = this.valueTextSpacing;
+            if(string[idx] == '.'){
+                spacing *= 0.5;
+            }
+            xPos += spacing/2;
+            this.ctx.fillText(string[idx], xPos, startY);
+            xPos += spacing/2;
+        }
+    } 
+
   }
