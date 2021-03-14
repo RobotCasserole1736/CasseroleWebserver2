@@ -164,6 +164,10 @@ export class CircularGauge {
             xPos -= this.valueTextSpacing;
         }
 
+        if(string.includes('.')){
+            xPos -= this.valueTextSpacing*0.25;
+        }
+
         for(var idx=0; idx < string.length; idx++){
             var spacing = this.valueTextSpacing;
             if(string[idx] == '.'){

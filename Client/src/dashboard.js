@@ -15,7 +15,7 @@ var widget4 = new Icon('widget4', 'battery', "#FFFF00", "#555555", 'icons/batter
 var widget5 = new Icon('widget5', 'vision',  "#00FF00", null, 'icons/vision.svg');
 var widget6 = new Icon('widget6', 'power',   "#55AAFF", "#555555", 'icons/camera_fault.svg');
 var widget7 = new Camera('widget7', "Vision Cam", 'http://photonvision.local:1192/stream.mjpg');
-var widget8 = new LineGauge('widget8', 'Shooter RPM', -100,0,-90,-10);
+var widget8 = new LineGauge('widget8', 'Shooter RPM', 0,100,20,60);
 
 
 // Start up rendering (never returns)
