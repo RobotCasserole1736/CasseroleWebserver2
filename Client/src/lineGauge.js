@@ -21,9 +21,6 @@ export class LineGauge {
         this.canvas.id = this.draw_div_id + "_canvas";
         this.docElem.appendChild(this.canvas);
         this.ctx = this.canvas.getContext("2d");
-
-        this.docElem.setAttribute("data-tooltip", this.title);
-
     }
 
     // Call this when NT is disconnected, or data is otherwise not available
