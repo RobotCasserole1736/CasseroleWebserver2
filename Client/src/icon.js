@@ -73,7 +73,7 @@ export class Icon {
 
         if(iconDrawColor != null){
             //Draw an icon with the specified color
-            this.docElem.innerHTML = "<div style=\"filter: drop-shadow(0 0 0.13vw " + shadowDrawColor + "); width:100%; height:100%\"> <div class=\"iconGraphic\" style=\"background-color:" + iconDrawColor + ";mask:url("+ this.icon +") no-repeat; mask-size: cover;\"></div> </div>"
+            this.docElem.innerHTML = "<div style=\"filter: drop-shadow(0 0 0.2vw " + shadowDrawColor + "); width:100%; height:100%\"> <div class=\"iconGraphic\" style=\"background-color:" + iconDrawColor + ";mask:url("+ this.icon +") no-repeat; mask-size: cover;\"></div> </div>"
         } else {
             //Make the area blank
             this.docElem.innerHTML = "";

@@ -63,9 +63,9 @@ export class CircularGauge {
         if(this.hasData){
             //Draw filled portion of gauge
             if(this.curVal > this.max_acceptable || this.curVal < this.min_acceptable){
-                this.ctx.fillStyle = "#FF0000";
+                this.ctx.fillStyle = "#FF2222";
             } else {
-                this.ctx.fillStyle = "#00FF00";
+                this.ctx.fillStyle = "#22DD22";
             }
 
             //Calculate the end angle to fill the gauge to

@@ -57,9 +57,9 @@ export class LineGauge {
         if(this.hasData){
             //Draw marker on gauge
             if(this.curVal > this.max_acceptable || this.curVal < this.min_acceptable){
-                this.ctx.fillStyle = "#FF0000";
+                this.ctx.fillStyle = "#FF2222";
             } else {
-                this.ctx.fillStyle = "#00FF00";
+                this.ctx.fillStyle = "#22DD22";
             }
             this.drawMarker()
         }
