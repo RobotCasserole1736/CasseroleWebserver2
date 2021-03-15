@@ -13,9 +13,10 @@ var widget2 = new CircularGauge('widget2', 'Shooter RPM', 0,5000,2000,3000);
 var widget3 = new Icon('widget3', 'warning', "#FF2222", "#222222", 'icons/warning.svg');
 var widget4 = new Icon('widget4', 'battery', "#FFFF00", "#222222", 'icons/battery.svg');
 var widget5 = new Icon('widget5', 'vision',  "#22DD22", "#222222", 'icons/vision.svg');
-var widget6 = new Icon('widget6', 'power',   "#2222FF", "#222222", 'icons/camera_fault.svg');
+var widget6 = new Icon('widget6', 'power',   "#2244FF", "#222222", 'icons/camera_fault.svg');
 var widget7 = new Camera('widget7', "Vision Cam", 'http://photonvision.local:1192/stream.mjpg');
-var widget8 = new LineGauge('widget8', 'Shooter RPM', 0,100,20,60);
+var widget8 = new LineGauge('widget8', 'Another Test', 0,100,20,60);
+var widget9 = new LineGauge('widget9', 'Puppy', -1000,0,-9999,9999);
 
 
 // Start up rendering (never returns)
@@ -59,6 +60,7 @@ function mainRenderLoop(){
     }
 
     widget8.setVal(testSinSlow)
+    widget9.setVal(-10*testSinFast)
     
     widget1.render();
     widget2.render();
@@ -67,6 +69,7 @@ function mainRenderLoop(){
     widget5.render();
     widget6.render();
     widget8.render();
+    widget9.render();
 
     requestAnimationFrame(mainRenderLoop);
 }

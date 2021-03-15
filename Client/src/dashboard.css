@@ -3,7 +3,6 @@
 div.mainDrawArea {
     border: 1px solid #FFFFFF;
     position:relative;
-    width:98vw;
     height:56.25vw;
 
 }
@@ -11,7 +10,9 @@ div.mainDrawArea {
 div.widgetBase {
     border: 1px solid #222222;
     position: absolute;
-    box-shadow: 0px 0px 1vw 0.5vw #111111;
+    box-shadow: 0px 0px 1vw 1vw #111111;
+    -webkit-box-shadow: 0px 0px 1vw 1vw #111111;
+    -moz-box-shadow: 0px 0px 1vw 1vw #111111;
 
 }
 

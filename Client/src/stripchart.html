@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="stripchart.css">
+    <link rel="stylesheet" href="tooltip.css">
+    <title>Stripchart</title>
+</head>
+
+<body>
+    <div>
+        <!-- buttons area-->
+        <table class="buttonTable">
+            <tr>
+                <td class="buttonGroup">
+                    <button id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
+                    <button id="stop_btn" type="button" onclick="handleStopBtnClick()">Stop</button>
+                </td>
+                <td class="buttonGroup">
+                    <button id="add_chart_btn" type="button" onclick="handleAddChartBtnClick()">Add Chart</button>
+                    <button id="rm_chart_btn" type="button" onclick="handleRmChartBtnClick()">Remove Chart</button>
+                </td>
+                <td class="buttonGroup">
+                    <button id="zoom_full_btn" type="button" onclick="handleZoomFullBtnClick()">Zoom Full</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="mainDrawArea">
+        <table class="expand">
+            <tr>
+                <td class="charts">
+                    <div>
+                        <!-- main Stripchart Area -->
+                    </div>
+                </td>
+                <td class="signalSelect">
+                    <!-- Signal List / Selection Area-->
+                    <table class="expand">
+                        <tr>
+                            <td class="filterTextInputHolder"> 
+                                <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter" onkeyup="filterChangeHandler(this.value)"> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                <div class="signalList">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+    <script type="module" src="./stripchart.js"></script>
+
+</body>
+
+<footer>
+
+</footer>
+
+</html>
