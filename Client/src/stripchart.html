@@ -12,32 +12,31 @@
 <body>
     <div>
         <!-- buttons area-->
-        <table class="buttonTable">
+        <table class="buttonTable outlined">
             <tr>
-                <td class="buttonGroup">
+                <td class="buttonGroup outlined">
                     <button id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
                     <button id="stop_btn" type="button" onclick="handleStopBtnClick()">Stop</button>
                 </td>
-                <td class="buttonGroup">
+                <td class="buttonGroup outlined">
                     <button id="add_chart_btn" type="button" onclick="handleAddChartBtnClick()">Add Chart</button>
                     <button id="rm_chart_btn" type="button" onclick="handleRmChartBtnClick()">Remove Chart</button>
                 </td>
-                <td class="buttonGroup">
+                <td class="buttonGroup outlined">
                     <button id="zoom_full_btn" type="button" onclick="handleZoomFullBtnClick()">Zoom Full</button>
                 </td>
             </tr>
         </table>
     </div>
     <div class="mainDrawArea">
-        <table class="expand">
+        <table class="expand outlined">
             <tr>
-                <td class="charts">
-                    <div>
-                        <!-- main Stripchart Area -->
-                        <div id="container" style="width:100%; height:400px;"></div>
-                    </div>
+                <td class="plots outlined">
+                    <table class="expand" id="plotsTable">
+
+                    </table>
                 </td>
-                <td class="signalSelect">
+                <td class="signalSelect outlined">
                     <!-- Signal List / Selection Area-->
                     <table class="expand">
                         <tr>
