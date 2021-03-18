@@ -23,9 +23,6 @@ div.mainDrawArea {
 td.signalSelect {
     width:300px;
 }
-td.plots{
-
-}
 
 
 td.filterTextInputHolder {
@@ -33,6 +30,11 @@ td.filterTextInputHolder {
 }
 input.filterTextInput{
     width:90%;
+}
+
+table.plotSignalTable{
+    width:100%;
+    height:100%;
 }
 
 

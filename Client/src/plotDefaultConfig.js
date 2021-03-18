@@ -9,6 +9,8 @@ export var dflt_options =  {
     },
 
     chart: {
+        type: 'line',
+        height: 1, //Magical bogus value to let our resizing algorithm work properly. Do not touch.
         zoomType: 'x',
         renderTo: 'container',
         animation: false,
@@ -40,8 +42,8 @@ export var dflt_options =  {
         backgroundColor: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [
-                [0, 'rgb(0, 0, 0)'], //Yes, both black. Just in case I decide to change back....
-                [1, 'rgb(0, 0, 0)']
+                [0, '#111111'], //Yes, both black. Just in case I decide to change back....
+                [1, '#181818']
             ]
         },
     },
