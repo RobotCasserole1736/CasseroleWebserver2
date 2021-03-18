@@ -67,7 +67,7 @@ function handleZoomFullBtnClick(){
 function resizeAll(){
 
     if(numPlots > 0){
-        var pageWidth = document.getElementById('plotsTable').clientWidth;
+        var pageWidth = document.getElementById('plotsTable').clientWidth * 0.98;
         var plotHeight = document.getElementById("plotsTable").clientHeight / numPlots;
         plotHeight = Math.min(plotHeight, 600);
         plotHeight = Math.max(plotHeight, 250);

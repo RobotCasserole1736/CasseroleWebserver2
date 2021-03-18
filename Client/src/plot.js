@@ -48,10 +48,12 @@ export class Plot {
     }
 
     resize(plotHeight, plotWidth){
-        this.mainTable.style.height = plotHeight.toString() + "px";
+
+        this.signalListTable.style.height = plotHeight.toString() + "px";
+        this.signalListTable.style.width = "200px"
 
         //Highcharts does not automatically flow to fill its container - this will do that manually.
-        this.chart.setSize(plotWidth*0.75, plotHeight);
+        this.chart.setSize(plotWidth - 200, plotHeight);
         this.chart.reflow();
         this.chart.redraw();
     }
