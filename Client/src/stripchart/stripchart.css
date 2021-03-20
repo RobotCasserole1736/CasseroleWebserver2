@@ -31,9 +31,30 @@ plotsContainer{
 }
 
 signalListContainer{
+    display: flex;
+    flex-direction: column;
     flex-grow: 0;  
     width:250px;
 }
+
+selectableSignalContainer{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;  
+    width:100%;
+}
+
+.selectableSignal{
+    flex-direction: row;
+    flex-grow: 0;  
+    width:auto;
+    height:auto;
+    text-align: left;
+    font-family: monospace;
+    margin:4px 1px;
+    padding: 2px;
+}
+
 
 plot {
     display: flex;
@@ -59,5 +80,7 @@ plotSignalTableContainer {
 input.filterTextInput{
     width:95%;
     margin:1px;
+    flex-grow:0;
+
 }
 

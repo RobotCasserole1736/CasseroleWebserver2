@@ -3,38 +3,73 @@
 // want recorded.
 /////////////////////////////////////////////////////////////////////////
 
-import { SelectableSignal } from "./selectableSignal";
+import { SelectableSignal } from "./selectableSignal.js";
 
 export class SignalSelector {
 
     constructor(drawDiv_in) { 
         this.selectableSignalsList = [];
+        this.drawDiv = drawDiv_in;
     }
 
     // Add a new signal to the selector list
     addSignal(signal_in){
-        this.selectableSignalsList.push(new SelectableSignal(signal_in,TODO));
+        var newSelSigDiv = document.createElement("button");
+        this.selectableSignalsList.push(new SelectableSignal(signal_in,newSelSigDiv));
+        this.drawDiv.appendChild(newSelSigDiv);
     }
 
+    // Remove signal from selector list
     removeSignal(signal_in){
         for(var idx = 0; idx < this.selectableSignalsList.length; idx++){
-            if(signal_in == this.selectableSignalsList[idx]){
+            if(signal_in == this.selectableSignalsList[idx].signal){
+                this.drawDiv.removeChild(this.selectableSignalsList[idx].drawDiv);
                 this.selectableSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
             }
         }
     }
 
+    //Get all currently-selected signals
     getSelectedSignalList(){
         var retList = [];
 
-        for(selectableSignal in this.selectableSignalsList){
-            if(selectableSignal.isSelected){
-                retList.push(selectableSignal);
+        this.selectableSignalsList.forEach(ssig => {
+            if(ssig.isSelected){
+                retList.push(ssig);
             }
-        }
+        });
 
         return retList;
+    }
 
+    // Re-filter the signals shown to the user by a new spec
+    setFilterSpec(filterSpec_in){
+        var filterSpec = filterSpec_in.toLowerCase();
+
+        if(filterSpec.length == 0 ){ //no filter, show all
+            this.selectableSignalsList.forEach(ssig => ssig.show());
+        } else { //Filtering, do the inclusion check
+            this.selectableSignalsList.forEach(ssig => {
+                if(ssig.signal.name.toLowerCase().includes(filterSpec)){
+                    ssig.show();
+                } else {
+                    ssig.hide();
+                }
+            });
+        }
+    }
+
+    clearSelection(){
+        this.selectableSignalsList.forEach(ssig => ssig.selected = false);
+    }
+
+
+    enableUserInteraction(){
+        this.selectableSignalsList.forEach(ssig => ssig.enable());
+    }
+
+    disableUserInteraction(){
+        this.selectableSignalsList.forEach(ssig => ssig.disable());
     }
 
 }

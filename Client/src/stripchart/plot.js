@@ -5,6 +5,7 @@
 
 
 import { dflt_options, dflt_y_axis_cfg, dflt_x_axis_cfg } from './highChartDefaultConfigs.js'
+import { PlottedSignal } from './plottedSignal.js';
 
 
 export class Plot {
@@ -13,6 +14,10 @@ export class Plot {
 
         //Save off a reference to the relevant div
         this.drawDiv = drawDiv_in;
+
+        // Init the plotted signals list to be empty
+        this.plottedSignalsList = [];
+
 
         //Each plot has has two side-by-side flex containers - one for highcharts (the actual plot window)
         // and one for the table of currently plotted signals.
@@ -62,11 +67,19 @@ export class Plot {
     }
 
     addSignal(signal_in){
-
+        this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000"));
+        //TODO...maybe here... submit new signal to both the highcharts and table?
     }
 
     removeSignal(signal_in){
-        
+        //TODO...maybe here... remove signal from both the highcharts and table?
+
+        for(var idx = 0; idx < this.plottedSignalsList.length; idx++){
+            if(signal_in == this.plottedSignalsList[idx].signal){
+                this.plottedSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
+            }
+        }
+
     }
 
 }

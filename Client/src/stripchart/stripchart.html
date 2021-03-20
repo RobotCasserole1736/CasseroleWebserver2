@@ -25,6 +25,9 @@
             <buttonGroup class="outlined">
                 <button id="zoom_full_btn" type="button" onclick="handleZoomFullBtnClick()">Zoom Full</button>
             </buttonGroup>
+            <buttonGroup class="outlined">
+                <button id="unselect_all_btn" type="button" onclick="unselectAllBtnClick()">Unselect All</button>
+            </buttonGroup>
         </buttonsContainer>
 
 
@@ -38,6 +41,9 @@
             <signalListContainer class="outlined">
                 <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter"
                 onkeyup="filterChangeHandler(this.value)">
+                <selectableSignalContainer id="selectableSignalContainer">
+                    
+                </selectableSignalContainer>
             </signalListContainer>
 
         </dataContainer>
