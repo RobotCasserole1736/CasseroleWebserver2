@@ -15,6 +15,7 @@ addPlot()
 function addPlot(){
     numPlots++;
     var newPlotContainer = document.createElement('plot');
+    newPlotContainer.id = "plot" + numPlots.toString();
 
     plotsContainer.appendChild(newPlotContainer);
 
