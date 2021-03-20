@@ -1,8 +1,19 @@
+/////////////////////////////////////////////////////////////////////////
+// Stripchart - top-level entrypoint for the stripcharts view
+// Does... ummm... all the things:
+// 1) Handlers for GUI interactions
+// 2) Initializing first plot for the user (Presumably they want at least one.)
+// 3) Synchronizes X axes between all plots
+// 4) Synchronizes cursor positions between all plots
+/////////////////////////////////////////////////////////////////////////
+
 import { Plot } from './plot.js'
 
 var plotsContainer = document.getElementById("plotsContainer");
 var numPlots = 0;
 var plotList = [];
+
+var plottedSignalsList = [];
 
 
 //Attach resize callback to window changing size
@@ -16,6 +27,8 @@ function addPlot(){
     numPlots++;
     var newPlotContainer = document.createElement('plot');
     newPlotContainer.id = "plot" + numPlots.toString();
+    newPlotContainer.classList.add("outlined");
+
 
     plotsContainer.appendChild(newPlotContainer);
 
@@ -28,7 +41,11 @@ function addPlot(){
 
 function removePlot(){
     if(numPlots > 1){
-        var plotToRemove = numPlots; // assume last plot removed.
+        var remIdx = numPlots-1  // assume last plot removed.
+
+        plotsContainer.removeChild(plotList[remIdx].drawDiv);
+        delete plotList[remIdx];
+        plotList[remIdx] = null;
 
         numPlots--;
     }
@@ -63,10 +80,7 @@ function handleZoomFullBtnClick(){
 }
 
 function resizeAll(){
-
-
     for(var i = 0; i < numPlots; i++){
         plotList[i].resize();
     }
-
 }

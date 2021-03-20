@@ -150,7 +150,7 @@ Signal Reference - "Actual" auto routine - integer
 
 Some mapping of strings to integers to have nice human names for the autonomous routines
 
-Uses that mapping to display everything nicely to thhe user
+Uses that mapping to display everything nicely to the user
 
 #### Cameras
 

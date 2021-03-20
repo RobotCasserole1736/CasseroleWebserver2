@@ -42,7 +42,7 @@ export var dflt_options =  {
         backgroundColor: {
             linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
             stops: [
-                [0, '#111111'], //Yes, both black. Just in case I decide to change back....
+                [0, '#111111'],
                 [1, '#181818']
             ]
         },

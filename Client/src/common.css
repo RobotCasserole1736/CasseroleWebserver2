@@ -1,12 +1,19 @@
 
 @font-face {
     font-family: 'localMichroma';
-    src: url('fonts/Michroma-Regular.ttf')  format('truetype'), 
-         url('fonts/michroma-regular-webfont.woff2') format('woff2'),
-         url('fonts/michroma-regular-webfont.woff') format('woff');
+    src: url('/fonts/Michroma-Regular.ttf')  format('truetype'), 
+         url('/fonts/michroma-regular-webfont.woff2') format('woff2'),
+         url('/fonts/michroma-regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
+
+
+.outlined{
+    border: 1px solid #FFFFFF;
+    margin: 1px;
+}
+
 
 body {
     background: black;
@@ -21,5 +28,32 @@ body {
 html,body {
     height: 99vh;
 }
+
+/* Fancy schmancy buttons */
+button {
+    background: #222222;
+    padding: 6.5px 10px;
+    margin: 6.5px 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    color: white;
+    font-size: 13px;
+    font-family: "localMichroma", monospace;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor:pointer;
+ }
+ button:hover {
+    background: #444;
+    color: white;
+ }
+ button:active {
+    background: #333;
+ }
+ button:disabled {
+    background: black;
+    color: #555;
+ }
 
 
