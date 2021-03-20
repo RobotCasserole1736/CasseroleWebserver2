@@ -1,8 +1,9 @@
 import { Plot } from './plot.js'
 
-var plotsTable = document.getElementById("plotsTable");
+var plotsContainer = document.getElementById("plotsContainer");
 var numPlots = 0;
 var plotList = [];
+
 
 //Attach resize callback to window changing size
 window.addEventListener("resize", resizeAll);
@@ -13,13 +14,11 @@ addPlot()
 
 function addPlot(){
     numPlots++;
-    var tableCell = plotsTable.insertRow(-1).insertCell(0);
+    var newPlotContainer = document.createElement('plot');
 
-    var hcDiv = document.createElement('div');
-    hcDiv.id = "plot"+numPlots.toString();
-    tableCell.appendChild(hcDiv);
+    plotsContainer.appendChild(newPlotContainer);
 
-    var plotToAdd = new Plot(hcDiv);
+    var plotToAdd = new Plot(newPlotContainer);
     plotList[numPlots-1] = plotToAdd;
 
     resizeAll();
@@ -29,9 +28,7 @@ function addPlot(){
 function removePlot(){
     if(numPlots > 1){
         var plotToRemove = numPlots; // assume last plot removed.
-        delete plotList[plotToRemove];
-        plotList[plotToRemove] = null;
-        plotsTable.deleteRow(plotToRemove-1);
+
         numPlots--;
     }
 
@@ -66,14 +63,9 @@ function handleZoomFullBtnClick(){
 
 function resizeAll(){
 
-    if(numPlots > 0){
-        var pageWidth = document.getElementById('plotsTable').clientWidth * 0.98;
-        var plotHeight = document.getElementById("plotsTable").clientHeight / numPlots;
-        plotHeight = Math.min(plotHeight, 600);
-        plotHeight = Math.max(plotHeight, 250);
 
-        for(var i = 0; i < numPlots; i++){
-            plotList[i].resize(plotHeight, pageWidth);
-        }
+    for(var i = 0; i < numPlots; i++){
+        plotList[i].resize();
     }
+
 }

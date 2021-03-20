@@ -1,55 +1,75 @@
-div.mainDrawArea {
-    position:relative;
+topLevelContainer {
+    display: flex;
+    flex-direction: column;
+    width:100%;
     height:100%;
 }
 
-table.buttonTable {
-    position:relative;
-    width:100%
-}
-td.buttonGroup {
-    padding-left: 2vw;
-    padding-right: 2vw;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-}
 
-div.mainDrawArea {
-    position:relative;
-    width:100%;
-    height:90%;
-}
 
-td.signalSelect {
-    width:300px;
+buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
 }
 
 
-td.filterTextInputHolder {
-    height:35px
+buttonGroup {
+    flex-grow: 1;
 }
+
+dataContainer{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+plotsContainer{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;  
+}
+
+signalListContainer{
+    flex-grow: 0;  
+    width:250px;
+}
+
+plot {
+    display: flex;
+    flex-direction: row;
+}
+
+plotHighchartsContainer {
+    flex-grow:1;
+    min-height: 250px;
+    max-height: 600px;
+}
+
+plotSignalTableContainer {
+    flex-grow:0;
+    width: 250px;
+}
+
+
+
+
+
+
+.expandable {
+    flex-grow: 1;
+}
+
 input.filterTextInput{
-    width:90%;
-}
-
-table.plotSignalTable{
-    width:100%;
-    height:100%;
+    width:95%;
+    margin:1px;
 }
 
 
-.expandH{
-    height:100%;
-}
-.expandW{
-    width:100%;
-}
-.expand{
-    width:100%;
-    height:100%;
-}
+
 .outlined{
     border: 1px solid #FFFFFF;
+    margin: 1px;
 }
 
 
@@ -57,6 +77,7 @@ table.plotSignalTable{
 button {
     background: #222222;
     padding: 6.5px 10px;
+    margin: 6.5px 10px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;

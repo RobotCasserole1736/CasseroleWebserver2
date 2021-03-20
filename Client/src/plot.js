@@ -12,34 +12,19 @@ export class Plot {
         //Save off a reference to the relevant div
         this.drawDiv = drawDiv_in;
 
-        this.mainTable = document.createElement('table');
-        this.mainTable.classList.add("expand");
-        this.mainTable.classList.add("outlined");
-
-        var tableRow = this.mainTable.insertRow();
-        this.chartTableElem = tableRow.insertCell();
-        this.signalListElem = tableRow.insertCell();
-
-        this.signalListTable = document.createElement('table');
-        this.signalListTable.classList.add("plotSignalTable");
-        this.signalListTable.classList.add("outlined");
-
-
-        this.signalListElem.appendChild(this.signalListTable);
-
-
-        var chartDrawElemId = this.drawDiv.id + "_chart";
-        var signalListElemId = this.drawDiv.id + "_siglist";
-
-        this.chartTableElem.id = chartDrawElemId;
-
-
-        this.drawDiv.appendChild(this.mainTable);
+        this.newHCContainer = document.createElement('plotHighchartsContainer');
+        this.newHCContainer.id = this.drawDiv.id + "_hcContainer";
+        this.newPSContainer = document.createElement('plotSignalTableContainer');
+        this.newPSContainer.id = this.drawDiv.id + "_psContainer";
+    
+    
+        this.drawDiv.appendChild(this.newHCContainer);
+        this.drawDiv.appendChild(this.newPSContainer);
 
         //deep-copy the default chart options
         var options = dflt_options;
         //Modify as needed
-        options.chart.renderTo = chartDrawElemId;
+        options.chart.renderTo = this.newHCContainer.id; //TODO
         //Create highcharts object
         this.chart = new Highcharts.Chart(options);
 
@@ -47,13 +32,12 @@ export class Plot {
 
     }
 
-    resize(plotHeight, plotWidth){
-
-        this.signalListTable.style.height = plotHeight.toString() + "px";
-        this.signalListTable.style.width = "200px"
+    resize(){
+        var plotHeight = this.newHCContainer.clientHeight;
+        var plotWidth = this.newHCContainer.clientWidth;
 
         //Highcharts does not automatically flow to fill its container - this will do that manually.
-        this.chart.setSize(plotWidth - 200, plotHeight);
+        this.chart.setSize(plotWidth, plotHeight);
         this.chart.reflow();
         this.chart.redraw();
     }

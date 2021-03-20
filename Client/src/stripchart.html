@@ -10,53 +10,42 @@
 </head>
 
 <body>
-    <div>
+
+    <topLevelContainer>
+
         <!-- buttons area-->
-        <table class="buttonTable outlined">
-            <tr>
-                <td class="buttonGroup outlined">
-                    <button id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
-                    <button id="stop_btn" type="button" onclick="handleStopBtnClick()">Stop</button>
-                </td>
-                <td class="buttonGroup outlined">
-                    <button id="add_chart_btn" type="button" onclick="handleAddChartBtnClick()">Add Chart</button>
-                    <button id="rm_chart_btn" type="button" onclick="handleRmChartBtnClick()">Remove Chart</button>
-                </td>
-                <td class="buttonGroup outlined">
-                    <button id="zoom_full_btn" type="button" onclick="handleZoomFullBtnClick()">Zoom Full</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="mainDrawArea">
-        <table class="expand outlined">
-            <tr>
-                <td class="plots outlined">
-                    <table class="expand" id="plotsTable">
-                        <!-- Gets populated by javascript as user adds/removes plots-->
-                    </table>
-                </td>
-                <td class="signalSelect outlined">
-                    <!-- Signal List / Selection Area-->
-                    <table class="expand">
-                        <tr>
-                            <td class="filterTextInputHolder"> 
-                                <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter" onkeyup="filterChangeHandler(this.value)"> 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td >
-                                <div class="signalList">
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+        <buttonsContainer class="outlined">
+            <buttonGroup class="outlined"> 
+                <button id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
+                <button id="stop_btn" type="button" onclick="handleStopBtnClick()">Stop</button>
+            </buttonGroup>
+            <buttonGroup class="outlined">
+                <button id="add_chart_btn" type="button" onclick="handleAddChartBtnClick()">Add Chart</button>
+                <button id="rm_chart_btn" type="button" onclick="handleRmChartBtnClick()">Remove Chart</button>
+            </buttonGroup>
+            <buttonGroup class="outlined">
+                <button id="zoom_full_btn" type="button" onclick="handleZoomFullBtnClick()">Zoom Full</button>
+            </buttonGroup>
+        </buttonsContainer>
 
 
-    </div>
+        <dataContainer>
+            <!-- Chart Draw area-->
+            <plotsContainer  class="outlined" id="plotsContainer">
+                <!-- gets populated by javascript-->
+            </plotsContainer>
+
+            <!-- Signal List / Selection Area-->
+            <signalListContainer class="outlined">
+                <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter"
+                onkeyup="filterChangeHandler(this.value)">
+            </signalListContainer>
+
+        </dataContainer>
+
+    </topLevelContainer>
+
+
 
     <script type="module" src="./highcharts.js"></script>
     <script type="module" src="./stripchart.js"></script>
