@@ -60,10 +60,24 @@ export class SelectableSignal {
         this.updateColor();
     }
 
+    select(){
+        this.isSelected = true;
+        this.updateColor();
+    }
 
-    onclick = e => {
+    unselect(){
+        this.isSelected = false;
+        this.updateColor(); 
+    }
+
+    toggleSelect(){
         this.isSelected = !this.isSelected;
         this.updateColor();
+    }
+
+
+    onclick = e => {
+        this.toggleSelect();
     }
 
 }

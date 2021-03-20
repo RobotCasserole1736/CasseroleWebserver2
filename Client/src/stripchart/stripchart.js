@@ -29,6 +29,7 @@ signalSelector.addSignal(new Signal("Other Test Signal", "V"));
 signalSelector.addSignal(new Signal("Yet Another Test Signal", ""));
 signalSelector.addSignal(new Signal("TestSig2", "A"));
 signalSelector.addSignal(new Signal("class.otherclass.shooterRPM", "RPM"));
+signalSelector.attemptSignalSelectionRestore();
 //END TEST STUFF INJECTION
 
 
@@ -65,10 +66,13 @@ function removePlot(){
 window.handleStartBtnClick = handleStartBtnClick;
 function handleStartBtnClick(){
     signalSelector.disableUserInteraction();
+    signalSelector.updateStoredSignalSelection();
+
     //TODO - read out currently-selected signals, clear charts, start up data collection from signals
 
 }
 
+//User Button Handlers
 window.handleStopBtnClick = handleStopBtnClick;
 function handleStopBtnClick(){
     //TODO - stop data collection
@@ -93,6 +97,7 @@ function handleZoomFullBtnClick(){
 window.unselectAllBtnClick = unselectAllBtnClick;
 function unselectAllBtnClick(){
     signalSelector.clearSelection();
+    signalSelector.updateStoredSignalSelection();
 }
 
 window.filterChangeHandler = filterChangeHandler;
@@ -100,6 +105,7 @@ function filterChangeHandler(filterSpec_in){
     signalSelector.setFilterSpec(filterSpec_in);
 }
 
+//Utility Functions
 function resizeAll(){
     plotList.forEach(plot => plot.resize());
 }
