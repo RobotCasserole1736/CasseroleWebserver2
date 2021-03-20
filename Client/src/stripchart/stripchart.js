@@ -10,12 +10,15 @@
 import { Plot } from './plot.js'
 import { SignalSelector } from './signalSelector.js';
 import { Signal } from './signal.js';
+import { SignalDAQ } from '../signalDaq/signalDAQ.js';
 
 var plotsContainer = document.getElementById("plotsContainer");
 var plotList = [];
 var plotUniqueIdIdx = 0; //Used to ensure every newly added plot has a unique id
 
 var signalSelector = new SignalSelector(document.getElementById("selectableSignalContainer"))
+
+var mainDAQ = new SignalDAQ()
 
 //Attach resize callback to window changing size
 window.addEventListener("resize", resizeAll);
@@ -32,6 +35,8 @@ signalSelector.addSignal(new Signal("class.otherclass.shooterRPM", "RPM"));
 signalSelector.attemptSignalSelectionRestore();
 //END TEST STUFF INJECTION
 
+/////////////////////////////////////////////////////////////
+//Utility Functions
 
 
 function addPlot(){
@@ -63,19 +68,28 @@ function removePlot(){
     
 }
 
+function resizeAll(){
+    plotList.forEach(plot => plot.resize());
+}
+
+
+/////////////////////////////////////////////////////////////
+//User Button Handlers
+
 window.handleStartBtnClick = handleStartBtnClick;
 function handleStartBtnClick(){
     signalSelector.disableUserInteraction();
     signalSelector.updateStoredSignalSelection();
+    mainDAQ.clearSignalList();
 
-    //TODO - read out currently-selected signals, clear charts, start up data collection from signals
+    //TODO - read out currently-selected signals, clear charts
+    mainDAQ.startDAQ();
 
 }
 
-//User Button Handlers
 window.handleStopBtnClick = handleStopBtnClick;
 function handleStopBtnClick(){
-    //TODO - stop data collection
+    mainDAQ.stopDAQ();
     signalSelector.enableUserInteraction();
 }
 
@@ -105,7 +119,21 @@ function filterChangeHandler(filterSpec_in){
     signalSelector.setFilterSpec(filterSpec_in);
 }
 
-//Utility Functions
-function resizeAll(){
-    plotList.forEach(plot => plot.resize());
+/////////////////////////////////////////////////////////////
+//Data Event Handlers
+
+function onConnect(){
+
+}
+
+function onDisconnect(){
+
+}
+
+function onSignalAnnounce(){
+
+}
+
+function onSignalUnannounce(){
+
 }
