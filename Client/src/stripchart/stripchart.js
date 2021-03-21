@@ -23,7 +23,7 @@ var signalSelector = new SignalSelector(document.getElementById("selectableSigna
 
 var mainDAQ = new SignalDAQ(onSignalAnnounce,
                             onSignalUnAnnounce,
-                            onData,
+                            onNewSampleData,
                             onConnect,
                             onDisconnect
                             );
@@ -142,7 +142,7 @@ function onSignalUnAnnounce(name){
     allSignalsMap.delete(name);
 }
 
-function onData(name, timestamp, units){
+function onNewSampleData(name, timestamp, units){
     allSignalsMap[name].addSample(new Sample(timestamp, units));
     plotList.forEach(plot => plot.updateDisplayedValues());
 }

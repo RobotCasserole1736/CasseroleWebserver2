@@ -137,6 +137,7 @@ export class Plot {
     
     drop = e => {
         // get the draggable element
+        e.preventDefault();
         const signalName = e.dataTransfer.getData('text/plain');
         this.addSignal(this.signalFromNameCallback(signalName));
         this.drawDiv.classList.remove('drag-over');

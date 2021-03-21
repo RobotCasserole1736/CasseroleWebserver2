@@ -10,12 +10,12 @@ export class SignalDAQ {
 
     constructor(onSignalAnnounce_in,   //Gets called when server announces enough topics to form a new signal
                 onSignalUnAnnounce_in, //Gets called when server unannounces any part of a signal
-                onData_in,             //Gets called when any new data is available
+                onNewSampleData_in,    //Gets called when any new data is available
                 onConnect_in,          //Gets called once client completes initial handshake with server
                 onDisconnect_in) {     //Gets called once client detects server has disconnected
         this.onSignalAnnounce = onSignalAnnounce_in;
         this.onSignalUnAnnounce = onSignalUnAnnounce_in;
-        this.onData = onData_in;
+        this.onNewSampleData = onNewSampleData_in;
         this.onConnect = onConnect_in;
         this.onDisconnect = onDisconnect_in;
 
@@ -76,13 +76,13 @@ export class SignalDAQ {
             //DAQ is running, announce values for signals in the signalList.
             this.signalList.forEach(sigName => {
                 if(sigName == "TestFastSin1"){
-                    this.onData(sigName, curTimeSec, testFastSin1);
+                    this.onNewSampleData(sigName, curTimeSec, testFastSin1);
                 } else if(sigName == "TestFastSin2"){
-                    this.onData(sigName, curTimeSec, testFastSin2);
+                    this.onNewSampleData(sigName, curTimeSec, testFastSin2);
                 } else if(sigName == "TestSquare1"){
-                    this.onData(sigName, curTimeSec, testSquare1);
+                    this.onNewSampleData(sigName, curTimeSec, testSquare1);
                 } else if(sigName == "TestSlowSin1"){
-                    this.onData(sigName, curTimeSec, testSlowSin1);
+                    this.onNewSampleData(sigName, curTimeSec, testSlowSin1);
                 } else {
                     console.log("Error! Unknown signal " + sigName + " requested!");
                 }
