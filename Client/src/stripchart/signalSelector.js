@@ -64,7 +64,7 @@ export class SignalSelector {
         if(this.local_storage_available){
             var ls_sel_signals = [];
             this.getSelectedSignalList().forEach(selSig =>{
-                ls_sel_signals.push(selSig.signal.name);
+                ls_sel_signals.push(selSig.name);
             })
             localStorage.setItem(SignalSelector.LOCAL_STORAGE_KEY_NAME, JSON.stringify(ls_sel_signals));
         }
@@ -76,7 +76,7 @@ export class SignalSelector {
 
         this.selectableSignalsList.forEach(ssig => {
             if(ssig.isSelected){
-                retList.push(ssig);
+                retList.push(ssig.signal);
             }
         });
 

@@ -10,35 +10,28 @@
 import { Plot } from './plot.js'
 import { SignalSelector } from './signalSelector.js';
 import { Signal } from './signal.js';
+import { Sample } from './sample.js';
 import { SignalDAQ } from '../signalDaq/signalDAQ.js';
 
 var plotsContainer = document.getElementById("plotsContainer");
 var plotList = [];
 var plotUniqueIdIdx = 0; //Used to ensure every newly added plot has a unique id
 
+var allSignalsMap = new Map();
+
 var signalSelector = new SignalSelector(document.getElementById("selectableSignalContainer"))
 
-var mainDAQ = new SignalDAQ( onSignalAnnounce,
-                             onSignalUnAnnounce,
-                             onData,
-                             onConnect,
-                             onDisconnect
+var mainDAQ = new SignalDAQ(onSignalAnnounce,
+                            onSignalUnAnnounce,
+                            onData,
+                            onConnect,
+                            onDisconnect
                             );
 
 //Attach resize callback to window changing size
 window.addEventListener("resize", resizeAll);
 //Add our first plot
 addPlot()
-
-
-//TEMP TEST ONLY
-signalSelector.addSignal();
-signalSelector.addSignal(new Signal("Other Test Signal", "V"));
-signalSelector.addSignal(new Signal("Yet Another Test Signal", ""));
-signalSelector.addSignal(new Signal("TestSig2", "A"));
-signalSelector.addSignal(new Signal("class.otherclass.shooterRPM", "RPM"));
-signalSelector.attemptSignalSelectionRestore();
-//END TEST STUFF INJECTION
 
 /////////////////////////////////////////////////////////////
 //Utility Functions
@@ -87,8 +80,9 @@ function handleStartBtnClick(){
     signalSelector.updateStoredSignalSelection();
     mainDAQ.clearSignalList();
     signalSelector.getSelectedSignalList().forEach(sig => mainDAQ.addSignal(sig.name));
-    signalSelector.getSelectedSignalList().forEach(sig => sig.clearValues());
+    allSignalsMap.forEach(sig => sig.clearValues());
     mainDAQ.startDAQ();
+
 }
 
 window.handleStopBtnClick = handleStopBtnClick;
@@ -127,23 +121,28 @@ function filterChangeHandler(filterSpec_in){
 //Data Event Handlers
 
 function onConnect(){
-    signalSelector.clearSignalList();
-    //TODO - change some status indicator about being connected.
+    allSignalsMap.clear();
+
 }
 
 function onDisconnect(){
-    signalSelector.updateStoredSignalSelection();
-    //TODO - put some status marker out about disconnect.
+
 }
 
 function onSignalAnnounce(name, units){
-    signalSelector.addSignal(new Signal(name, units));
+    var newSignal = new Signal(name, units);
+    allSignalsMap[name] = newSignal;
+    signalSelector.addSignal(newSignal);
+    signalSelector.attemptSignalSelectionRestore(); //TODO - do this every time?
 }
 
 function onSignalUnAnnounce(name){
-    //TODO
+    var sigToRemove = allSignalsMap[name];
+    signalSelector.removeSignal(sigToRemove);
+    allSignalsMap.delete(name);
 }
 
-function onData(name, timestamp, value){
-
+function onData(name, timestamp, units){
+    allSignalsMap[name].addSample(new Sample(timestamp, units));
+    //Todo: trigger plot redraw
 }
