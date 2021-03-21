@@ -104,7 +104,6 @@ export class SignalSelector {
         this.selectableSignalsList.forEach(ssig => ssig.unselect());
     }
 
-
     enableUserInteraction(){
         this.selectableSignalsList.forEach(ssig => ssig.enable());
     }

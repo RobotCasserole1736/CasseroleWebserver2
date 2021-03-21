@@ -10,7 +10,7 @@ import { PlottedSignal } from './plottedSignal.js';
 
 export class Plot {
 
-    constructor(drawDiv_in) { 
+    constructor(drawDiv_in, signalFromNameCallback_in) { 
 
         //Save off a reference to the relevant div
         this.drawDiv = drawDiv_in;
@@ -31,7 +31,7 @@ export class Plot {
         // Separately, in the resize() function, we'll manually adjust the highchart object size
         // to match the container.
         this.hcRelDiv = document.createElement('div');
-        this.hcRelDiv.style.position = "absolute";
+        this.hcRelDiv.classList.add("HCAbsPosDiv");
         this.hcRelDiv.id = this.drawDiv.id + "_hcRelDiv"
         
         
@@ -39,7 +39,14 @@ export class Plot {
         this.drawDiv.appendChild(this.hcContainer);
         this.drawDiv.appendChild(this.psContainer);
 
-        //deep-copy the default chart options
+        //Configure the whole plot div to support signals dropped onto them.
+        this.signalFromNameCallback = signalFromNameCallback_in; //supporting drop operation requires getting the actual signal object using only the name, which would come from the next architectural layer up. Yucky, but functional.
+        this.drawDiv.addEventListener('dragenter', this.dragEnter)
+        this.drawDiv.addEventListener('dragover', this.dragOver);
+        this.drawDiv.addEventListener('dragleave', this.dragLeave);
+        this.drawDiv.addEventListener('drop', this.drop);
+
+        //copy the default chart options
         var options = dflt_options;
         //Modify as needed
         options.chart.renderTo = this.hcRelDiv.id; 
@@ -83,7 +90,29 @@ export class Plot {
                 this.plottedSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
             }
         }
+    }
 
+    ////////////////////////////////////////////
+    // Drag & Drop Handlers
+    dragEnter = e => {
+        e.preventDefault();
+        this.drawDiv.classList.add('drag-over');
+    }
+    
+    dragOver = e => {
+        e.preventDefault();
+        this.drawDiv.classList.add('drag-over');
+    }
+    
+    dragLeave = e => {
+        this.drawDiv.classList.remove('drag-over');
+    }
+    
+    drop = e => {
+        // get the draggable element
+        const signalName = e.dataTransfer.getData('text/plain');
+        this.addSignal(this.signalFromNameCallback(signalName));
+        this.drawDiv.classList.remove('drag-over');
     }
 
 }

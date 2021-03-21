@@ -46,7 +46,7 @@ function addPlot(){
 
     plotsContainer.appendChild(newPlotContainer);
 
-    var plotToAdd = new Plot(newPlotContainer);
+    var plotToAdd = new Plot(newPlotContainer, signalFromName);
     plotList.push(plotToAdd); //Assume add to end
 
     resizeAll();
@@ -145,4 +145,8 @@ function onSignalUnAnnounce(name){
 function onData(name, timestamp, units){
     allSignalsMap[name].addSample(new Sample(timestamp, units));
     //Todo: trigger plot redraw
+}
+
+function signalFromName(name_in){
+    return allSignalsMap[name_in];
 }
