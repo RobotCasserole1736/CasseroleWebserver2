@@ -17,8 +17,14 @@ var plotsContainer = document.getElementById("plotsContainer");
 var plotList = [];
 var plotUniqueIdIdx = 0; //Used to ensure every newly added plot has a unique id
 
-var allSignalsMap = new Map();
+var LOCAL_STORAGE_KEY_NAME = "CasseroleStripchartConfig";
 
+var local_storage_available = false;
+if (typeof(Storage) !== "undefined") {
+    local_storage_available = true;
+} 
+
+var allSignalsMap = new Map();
 var signalSelector = new SignalSelector(document.getElementById("selectableSignalContainer"))
 
 var mainDAQ = new SignalDAQ(onSignalAnnounce,
@@ -28,10 +34,11 @@ var mainDAQ = new SignalDAQ(onSignalAnnounce,
                             onDisconnect
                             );
 
+
 //Attach resize callback to window changing size
 window.addEventListener("resize", resizeAll);
 //Add our first plot
-addPlot()
+addPlot();
 
 /////////////////////////////////////////////////////////////
 //Utility Functions
@@ -77,7 +84,7 @@ function resizeAll(){
 window.handleStartBtnClick = handleStartBtnClick;
 function handleStartBtnClick(){
     signalSelector.disableUserInteraction();
-    signalSelector.updateStoredSignalSelection();
+    saveCurrentConfig();
     mainDAQ.clearSignalList();
     signalSelector.getSelectedSignalList().forEach(sig => mainDAQ.addSignal(sig.name));
     allSignalsMap.forEach(sig => sig.clearValues());
@@ -109,7 +116,7 @@ function handleZoomFullBtnClick(){
 window.unselectAllBtnClick = unselectAllBtnClick;
 function unselectAllBtnClick(){
     signalSelector.clearSelection();
-    signalSelector.updateStoredSignalSelection();
+    saveCurrentConfig();
 }
 
 window.filterChangeHandler = filterChangeHandler;
@@ -133,7 +140,7 @@ function onSignalAnnounce(name, units){
     var newSignal = new Signal(name, units);
     allSignalsMap[name] = newSignal;
     signalSelector.addSignal(newSignal);
-    signalSelector.attemptSignalSelectionRestore(); //TODO - do this every time?
+    restoreConfig(); 
 }
 
 function onSignalUnAnnounce(name){
@@ -149,4 +156,40 @@ function onNewSampleData(name, timestamp, units){
 
 function signalFromName(name_in){
     return allSignalsMap[name_in];
+}
+
+/////////////////////////////////////////////////////////////
+//Save/Recal config handlers
+function saveCurrentConfig(){
+    if(local_storage_available){
+        var lsData = new Map();
+
+        var ls_sel_signals = [];
+        signalSelector.getSelectedSignalList().forEach(selSig =>{
+            ls_sel_signals.push(selSig.name);
+        });
+
+        lsData["selSigList"] = ls_sel_signals;
+
+        localStorage.setItem(SignalSelector.LOCAL_STORAGE_KEY_NAME, JSON.stringify(lsData));
+    }
+}
+
+
+function restoreConfig(){
+    var lsData = new Map();
+    var ls_sel_signals = [];
+    if(local_storage_available == true){
+        lsData = JSON.parse(localStorage.getItem(SignalSelector.LOCAL_STORAGE_KEY_NAME))
+
+        var ls_sel_signals = lsData["selSigList"];
+
+        if(ls_sel_signals == null){
+            ls_sel_signals = [];
+        }
+    }
+
+    ls_sel_signals.forEach(sigName => {
+        signalSelector.selectSignalByName(sigName);
+    });
 }

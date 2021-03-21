@@ -7,16 +7,11 @@ import { SelectableSignal } from "./selectableSignal.js";
 
 export class SignalSelector {
 
-    LOCAL_STORAGE_KEY_NAME = "CasseroleStripchartSelSig";
 
     constructor(drawDiv_in) { 
         this.selectableSignalsList = [];
         this.drawDiv = drawDiv_in;
 
-        this.local_storage_available = false;
-        if (typeof(Storage) !== "undefined") {
-            this.local_storage_available = true;
-        } 
     }
 
     // Add a new signal to the selector list
@@ -40,34 +35,12 @@ export class SignalSelector {
         this.selectableSignalsList = [];
     }
 
-    attemptSignalSelectionRestore(){
-        //Attempt to read a list of signal names out of local storage that were
-        // previously selected.
-        var ls_sel_signals = [];
-        if(this.local_storage_available == true){
-            ls_sel_signals = JSON.parse(localStorage.getItem(SignalSelector.LOCAL_STORAGE_KEY_NAME))
-            if(ls_sel_signals == null){
-                ls_sel_signals = [];
+    selectSignalByName(sigName){
+        this.selectableSignalsList.forEach(ssig => {
+            if(ssig.signal.name == sigName){
+                ssig.select();
             }
-        }
-        ls_sel_signals.forEach(sigName => {
-            this.selectableSignalsList.forEach(selSig => {
-                if(sigName.localeCompare(selSig.signal.name) == 0 ){
-                    selSig.select();
-                }
-            })
         });
-    }
-
-    updateStoredSignalSelection(){
-        //Update local storage with list of currently selected signals
-        if(this.local_storage_available){
-            var ls_sel_signals = [];
-            this.getSelectedSignalList().forEach(selSig =>{
-                ls_sel_signals.push(selSig.name);
-            })
-            localStorage.setItem(SignalSelector.LOCAL_STORAGE_KEY_NAME, JSON.stringify(ls_sel_signals));
-        }
     }
 
     //Get all currently-selected signals
