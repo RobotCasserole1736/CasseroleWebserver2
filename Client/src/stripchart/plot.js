@@ -80,8 +80,28 @@ export class Plot {
 
     updateDisplayedValues(){
         this.plottedSignalsList.forEach(ps => {
-            ps.showLatestSampleValue();
+            ps.showValueAtTime(null); //latest
         })
+    }
+
+    drawDataToChart(startTime, endTime){
+        for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
+            var samples = this.plottedSignalsList[sigIdx].signal.getSamples(startTime,endTime);
+            var hcPointsArray = []
+            samples.forEach(sample => {
+                hcPointsArray.push([sample.time,sample.value]);
+            })
+
+            this.chart.series[sigIdx].setData(hcPointsArray,false,false,true);
+
+        }
+
+        this.chart.xAxis[0].setExtremes(startTime, endTime,false)
+        //Force a chart update to display the table
+        this.chart.redraw();
+
+        this.updateDisplayedValues();
+
     }
 
     addSignal(signal_in){
@@ -99,7 +119,16 @@ export class Plot {
             this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000", newPltSigDiv));
             this.psContainer.appendChild(newPltSigDiv);
     
-            //TODO...maybe here... submit new signal to highcharts
+            //submit new series to highcharts
+            var hcYAxisCfg = dflt_y_axis_cfg;
+            var hcSeriesCfg = dflt_x_axis_cfg;
+
+            hcYAxisCfg.title.text = signal_in.units;
+            hcSeriesCfg.name = signal_in.name;
+            hcSeriesCfg.yAxis = this.plottedSignalsList.length-1; //TODO - make this not 1-for-1 with series
+
+            this.chart.addAxis(hcYAxisCfg, false, false, false);
+            this.chart.addSeries(hcSeriesCfg, false, false);
         }
 
         this.resize();

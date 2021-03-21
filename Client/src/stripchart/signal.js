@@ -21,13 +21,11 @@ export class Signal {
     getSamples(startTime, endTime){
         var retList = [];
 
-        for(var sample in this.sampleList){ //TODO - optimize me?
+        this.sampleList.forEach(sample => {
             if(sample.time >= startTime && sample.time <= endTime){
                 retList.push(sample);
-            } else if (sample.time > endTime ){
-                break;
-            }
-        }
+            } 
+        });
 
         return retList;
     }
@@ -36,10 +34,9 @@ export class Signal {
     //Might return null if no sample is after given time.
     getSample(time_in){
         var retSample = null;
-        this.sampleList.every(sample =>{
+        this.sampleList.forEaach(sample =>{
             if(sample.time >= time_in){
                 retSample = sample;
-                return false; //aka "break"
             }
         });
         return retSample;

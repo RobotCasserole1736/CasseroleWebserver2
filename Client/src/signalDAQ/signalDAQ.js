@@ -70,7 +70,7 @@ export class SignalDAQ {
         var testSlowSin1 = 50+50*Math.sin( curTimeSec * 2 * Math.PI * 0.1);
         var testFastSin1 = 50+30*Math.sin( curTimeSec* 2 * Math.PI * 1.0);
         var testFastSin2 = 20*Math.sin( (curTimeSec + 0.2 )* 2 * Math.PI * 1.0);
-        var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500);
+        var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500) ? 1.0 : 0.0;
 
         if(this.daqRunning){
             //DAQ is running, announce values for signals in the signalList.

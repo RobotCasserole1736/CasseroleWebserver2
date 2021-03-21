@@ -30,8 +30,15 @@ export class PlottedSignal {
         this.drawDiv.style.color = this.colorStr;
     }
 
-    showLatestSampleValue(){
-        var sample = this.signal.getLatestSample();
+    showValueAtTime(time_in){
+        var sample = null;
+
+        if(time_in == null){
+            sample = this.signal.getLatestSample();
+        } else {
+            sample = this.signal.getSample(time_in);
+        }
+
         if(sample != null){
             if (typeof sample.value === "number") {
                 this.valueInfo.innerHTML = sample.value.toPrecision(4);

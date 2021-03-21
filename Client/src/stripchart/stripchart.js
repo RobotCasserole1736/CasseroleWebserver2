@@ -151,7 +151,7 @@ function onSignalUnAnnounce(name){
 
 function onNewSampleData(name, timestamp, units){
     allSignalsMap[name].addSample(new Sample(timestamp, units));
-    plotList.forEach(plot => plot.updateDisplayedValues());
+    plotList.forEach(plot => plot.drawDataToChart(timestamp-10.0, timestamp));
 }
 
 function signalFromName(name_in){
