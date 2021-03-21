@@ -68,10 +68,38 @@ plotHighchartsContainer {
     flex-grow:1;
 }
 
-plotSignalTableContainer {
+plotSignalInfoContainer {
+    display: flex;
+    flex-direction: column;
     flex-grow:0;
+    font-family: monospace;
     width: 250px;
 }
+
+plottedSignalInfo {
+    display: flex;
+    flex-direction: row;
+    flex-grow:0;
+    height:25px;
+}
+
+plottedSignalName {
+    flex-direction: column;
+    flex-grow:1;
+}
+
+plottedSignalUnits {
+    flex-direction: column;
+    flex-grow:0;
+    width: 50px;
+}
+
+plottedSignalValue {
+    flex-direction: column;
+    flex-grow:0;
+    width: 75px;
+}
+
 
 .expandable {
     flex-grow: 1;

@@ -144,7 +144,7 @@ function onSignalUnAnnounce(name){
 
 function onData(name, timestamp, units){
     allSignalsMap[name].addSample(new Sample(timestamp, units));
-    //Todo: trigger plot redraw
+    plotList.forEach(plot => plot.updateDisplayedValues());
 }
 
 function signalFromName(name_in){

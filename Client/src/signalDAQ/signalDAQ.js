@@ -67,9 +67,9 @@ export class SignalDAQ {
         var curTimeSec = window.performance.now()/1000.0;
 
         //Calculate values for each signal
-        var testSlowSin1 = 50+50*Math.sin( curTimeSec/1000.0 * 2 * Math.PI * 0.1);
-        var testFastSin1 = 50+30*Math.sin( curTimeSec/1000.0 * 2 * Math.PI * 1.0);
-        var testFastSin2 = 20*Math.sin( (curTimeSec/1000.0 + 0.2 )* 2 * Math.PI * 1.0);
+        var testSlowSin1 = 50+50*Math.sin( curTimeSec * 2 * Math.PI * 0.1);
+        var testFastSin1 = 50+30*Math.sin( curTimeSec* 2 * Math.PI * 1.0);
+        var testFastSin2 = 20*Math.sin( (curTimeSec + 0.2 )* 2 * Math.PI * 1.0);
         var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500);
 
         if(this.daqRunning){

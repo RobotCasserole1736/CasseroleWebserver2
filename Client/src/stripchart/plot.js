@@ -23,7 +23,7 @@ export class Plot {
         // and one for the table of currently plotted signals.
         this.hcContainer = document.createElement('plotHighchartsContainer');
         this.hcContainer.id = this.drawDiv.id + "_hcContainer";
-        this.psContainer = document.createElement('plotSignalTableContainer');
+        this.psContainer = document.createElement('plotSignalInfoContainer');
         this.psContainer.id = this.drawDiv.id + "_psContainer";
 
         //Highcharts object likes to be fixed height, which plays poorly with the flex layout we're wanting
@@ -77,9 +77,31 @@ export class Plot {
         this.plottedSignalsList = [];
     }
 
+    updateDisplayedValues(){
+
+        this.plottedSignalsList.forEach(ps => {
+            ps.showLatestSampleValue();
+        })
+    }
+
     addSignal(signal_in){
-        this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000"));
-        //TODO...maybe here... submit new signal to both the highcharts and table?
+
+        //Reject duplicate adds
+        var duplicate = false;
+        this.plottedSignalsList.forEach(ps => {
+            if(signal_in == ps.signal){
+                duplicate = true;
+            }
+        })
+
+        if(!duplicate){
+            var newPltSigDiv = document.createElement("plottedSignalInfo");
+            this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000", newPltSigDiv));
+            this.psContainer.appendChild(newPltSigDiv);
+    
+            //TODO...maybe here... submit new signal to highcharts
+        }
+
     }
 
     removeSignal(signal_in){
