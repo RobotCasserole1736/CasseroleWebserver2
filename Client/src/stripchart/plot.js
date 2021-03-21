@@ -18,6 +18,9 @@ export class Plot {
         // Init the plotted signals list to be empty
         this.plottedSignalsList = [];
 
+        // Externally, this should be set to whatever time the server currently has.
+        // we will synchronize our plots during animation to be between server time and server time - 10 seconds.
+        this.serverTime = 0;
 
         //Each plot has has two side-by-side flex containers - one for highcharts (the actual plot window)
         // and one for the table of currently plotted signals.
@@ -52,6 +55,9 @@ export class Plot {
         options.chart.renderTo = this.hcRelDiv.id; 
         //Create highcharts object
         this.chart = new Highcharts.Chart(options);
+
+        //Start main animation loop
+        this.mainAnimationLoop();
     }
 
     resize(){
@@ -61,47 +67,30 @@ export class Plot {
         //Highcharts does not automatically flow to fill its container, so we do that here.
         this.chart.setSize(plotWidth, plotHeight);
         this.chart.reflow();
-        this.chart.redraw();
-    }
-
-    setXLimits(xMin, xMax){
-        this.chart.xAxis.min = xMin;
-        this.chart.xAxis.max = xMax;
     }
 
     setCursorPos(xPos){
         //TODO
     }
 
-    clearAllData(){
-        this.plottedSignalsList = [];
-        this.resize();
-    }
-
-    updateDisplayedValues(){
-        this.plottedSignalsList.forEach(ps => {
-            ps.showValueAtTime(null); //latest
-        })
-    }
-
     drawDataToChart(startTime, endTime){
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
-            var samples = this.plottedSignalsList[sigIdx].signal.getSamples(startTime,endTime);
-            var hcPointsArray = []
+            var ps = this.plottedSignalsList[sigIdx];
+            var samples = ps.signal.getSamples(ps.prevMaxTime,endTime);
+            var removeFirstSample = false;
+            if(samples.length > 0 && samples[0].time < startTime){
+                removeFirstSample = true;
+            }
             samples.forEach(sample => {
-                hcPointsArray.push([sample.time,sample.value]);
-            })
+                this.chart.series[sigIdx].addPoint([sample.time,sample.value],false,removeFirstSample,true);
+            });
 
-            this.chart.series[sigIdx].setData(hcPointsArray,false,false,true);
-
+            ps.prevMaxTime = endTime;
         }
 
         this.chart.xAxis[0].setExtremes(startTime, endTime,false)
-        //Force a chart update to display the table
-        this.chart.redraw();
-
-        this.updateDisplayedValues();
-
+        //Actual chart redraw handled in animation loop.
+        
     }
 
     addSignal(signal_in){
@@ -146,6 +135,30 @@ export class Plot {
 
         this.resize();
 
+    }
+
+    setServerTime(time_in){
+        this.serverTime = time_in;
+    }
+
+    clearChartData(){
+        this.chart.series.forEach(series => series.setData([],false, false, false))
+    }
+
+    ////////////////////////////////////////////
+    // Main Animation Loop & utilities
+    mainAnimationLoop(){
+
+        this.drawDataToChart(this.serverTime - 10, this.serverTime );
+        this.chart.redraw();
+        this.updateDisplayedValues();
+        window.requestAnimationFrame(this.mainAnimationLoop.bind(this));
+    }
+
+    updateDisplayedValues(){
+        this.plottedSignalsList.forEach(ps => {
+            ps.showValueAtTime(null); //latest
+        })
     }
 
     ////////////////////////////////////////////

@@ -88,6 +88,7 @@ function handleStartBtnClick(){
     mainDAQ.clearSignalList();
     signalSelector.getSelectedSignalList().forEach(sig => mainDAQ.addSignal(sig.name));
     allSignalsMap.forEach(sig => sig.clearValues());
+    plotList.forEach(plt => plt.clearChartData());
     mainDAQ.startDAQ();
 
 }
@@ -151,7 +152,7 @@ function onSignalUnAnnounce(name){
 
 function onNewSampleData(name, timestamp, units){
     allSignalsMap[name].addSample(new Sample(timestamp, units));
-    plotList.forEach(plot => plot.drawDataToChart(timestamp-10.0, timestamp));
+    plotList.forEach(plt => plt.setServerTime(timestamp)); //TODO - does NT4 expose a better way to do this?
 }
 
 function signalFromName(name_in){

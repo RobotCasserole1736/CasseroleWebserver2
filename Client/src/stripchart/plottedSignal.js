@@ -11,6 +11,8 @@ export class PlottedSignal {
         this.colorStr = initial_color; //Hex String
         this.drawDiv = drawDiv_in;
 
+        this.prevMaxTime = 0;
+
         this.drawDiv.classList.add("plottedSignalInfo");
         this.drawDiv.setAttribute('draggable', true);
         this.drawDiv.addEventListener( "dragstart", this.onDragStart );
