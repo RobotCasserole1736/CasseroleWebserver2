@@ -18,7 +18,12 @@ var plotUniqueIdIdx = 0; //Used to ensure every newly added plot has a unique id
 
 var signalSelector = new SignalSelector(document.getElementById("selectableSignalContainer"))
 
-var mainDAQ = new SignalDAQ()
+var mainDAQ = new SignalDAQ( onSignalAnnounce,
+                             onSignalUnAnnounce,
+                             onData,
+                             onConnect,
+                             onDisconnect
+                            );
 
 //Attach resize callback to window changing size
 window.addEventListener("resize", resizeAll);
@@ -27,7 +32,7 @@ addPlot()
 
 
 //TEMP TEST ONLY
-signalSelector.addSignal(new Signal("Test Signal 1", "RPM"));
+signalSelector.addSignal();
 signalSelector.addSignal(new Signal("Other Test Signal", "V"));
 signalSelector.addSignal(new Signal("Yet Another Test Signal", ""));
 signalSelector.addSignal(new Signal("TestSig2", "A"));
@@ -81,10 +86,9 @@ function handleStartBtnClick(){
     signalSelector.disableUserInteraction();
     signalSelector.updateStoredSignalSelection();
     mainDAQ.clearSignalList();
-
-    //TODO - read out currently-selected signals, clear charts
+    signalSelector.getSelectedSignalList().forEach(sig => mainDAQ.addSignal(sig.name));
+    signalSelector.getSelectedSignalList().forEach(sig => sig.clearValues());
     mainDAQ.startDAQ();
-
 }
 
 window.handleStopBtnClick = handleStopBtnClick;
@@ -123,17 +127,23 @@ function filterChangeHandler(filterSpec_in){
 //Data Event Handlers
 
 function onConnect(){
-
+    signalSelector.clearSignalList();
+    //TODO - change some status indicator about being connected.
 }
 
 function onDisconnect(){
-
+    signalSelector.updateStoredSignalSelection();
+    //TODO - put some status marker out about disconnect.
 }
 
-function onSignalAnnounce(){
-
+function onSignalAnnounce(name, units){
+    signalSelector.addSignal(new Signal(name, units));
 }
 
-function onSignalUnannounce(){
+function onSignalUnAnnounce(name){
+    //TODO
+}
+
+function onData(name, timestamp, value){
 
 }

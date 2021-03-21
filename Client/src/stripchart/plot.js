@@ -66,6 +66,10 @@ export class Plot {
         //TODO
     }
 
+    clearAllData(){
+        this.plottedSignalsList = [];
+    }
+
     addSignal(signal_in){
         this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000"));
         //TODO...maybe here... submit new signal to both the highcharts and table?

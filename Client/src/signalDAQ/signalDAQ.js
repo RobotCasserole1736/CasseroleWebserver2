@@ -5,21 +5,23 @@
 // Mirroring (I assume) NT4 architecture, it's heavily callback driven
 /////////////////////////////////////////////////////////////////////////
 
+import { Signal } from "../stripchart/signal";
+
 export class SignalDAQ {
 
 
-    constructor(onSignalAnnounce_in,  //Gets called when server announces enough topics to form a new signal
-                onSignalUnAnnounce_in, //Gets called when server unannounces any part of a signal
-                onData_in,            //Gets called when any new data is available
-                onConnect_in,         //Gets called once client completes initial handshake with server
-                onDisconnect_in) {    //Gets called once client detects server has disconnected
+    constructor(onSignalListUpdated_in, //Gets called whenever the all-signal list itself has been updated.
+                onConnect_in,          //Gets called once client completes initial handshake with server
+                onDisconnect_in) {     //Gets called once client detects server has disconnected
         this.onSignalAnnounce = onSignalAnnounce_in;
         this.onSignalUnAnnounce = onSignalUnAnnounce_in;
+        this.onSignalListUpdated = onSignalListUpdated_in;
         this.onData = onData_in;
         this.onConnect = onConnect_in;
         this.onDisconnect = onDisconnect_in;
 
-        this.signalList = []; //start assuming no signals.
+        this.capturingSignalsList = []; //start assuming no signals.
+        this.allSignalsList = []; //start assuming no signals.
 
         this.daqRunning = false;
 
@@ -30,21 +32,21 @@ export class SignalDAQ {
     }
 
     //Request a signal get added to the DAQ
-    addSignal(signalNameIn){
-        this.signalList.push(signalIn);
+    addSignal(signalIn){
+        this.capturingSignalsList.push(signalIn);
     }
 
     //Call to remove a signal from the DAQ
-    removeSignal(signalNameIn){
-        for(var idx = 0; idx < this.signalList.length; idx++){
-            if(signalNameIn == this.signalList[idx]){
-                this.signalList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
+    removeSignal(signalIn){
+        for(var idx = 0; idx < this.capturingSignalsList.length; idx++){
+            if(signalIn.name == this.capturingSignalsList[idx].name){
+                this.capturingSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
             }
         }
     }
 
     clearSignalList(){
-        this.signalList = [];
+        this.capturingSignalsList = [];
     }
 
     //Request RIO start sending periodic updates with data values
@@ -57,40 +59,67 @@ export class SignalDAQ {
     stopDAQ(){
         //TODO: Map to the NT4 UnSubscribe operation
         this.daqRunning = false;
-
     }
 
+    getAllAvailableSignals(){
+        return this.allSignalsList;
+    }
+
+    onSignalAnnounce(name, units){
+        this.allSignalsList.push(new Signal(name, units));
+    }
+
+    onSignalUnAnnounce(name){
+        //Remove signal from all signal-containing lists.
+        for(var idx = 0; idx < this.allSignalsList.length; idx++){
+            if(name == this.allSignalsList[idx].name){
+                this.allSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
+            }
+        }
+
+        for(var idx = 0; idx < this.capturingSignalsList.length; idx++){
+            if(name == this.capturingSignalsList[idx].name){
+                this.capturingSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
+            }
+        }
+    }
 
     // TEST ONLY - this is a periodic loop which simulates
     // a NT server with signals and data in it
+
+    testConnect(){
+        this.onConnect();
+    }
+
+    testAnnounceSignals(){
+        this.onSignalAnnounce(new Signal("TestFastSin1", "RPM"));
+        this.onSignalAnnounce(new Signal("TestFastSin2", ""));
+        this.onSignalAnnounce(new Signal("TestSlowSin1", "A"));
+    }
+
+
     testDataSourceLoop(){
         var curTimeSec = window.performance.now();
 
         //Calculate values for each signal
-        var testSlowSin1 = 50+50*Math.sin( curTimeSec/1000.0 * 2 * Math.PI * 0.1);
-        var testFastSin1 = 50+30*Math.sin( curTimeSec/1000.0 * 2 * Math.PI * 1.0);
-        var testFastSin2 = 20*Math.sin( (curTimeSec/1000.0 + 0.2 )* 2 * Math.PI * 1.0);
+        var testSlowSin1Val = 50+50*Math.sin( curTimeSec/1000.0 * 2 * Math.PI * 0.1);
+        var testFastSin1Val = 50+30*Math.sin( curTimeSec/1000.0 * 2 * Math.PI * 1.0);
+        var testFastSin2Val = 20*Math.sin( (curTimeSec/1000.0 + 0.2 )* 2 * Math.PI * 1.0);
 
         if(this.daqRunning){
             //DAQ is running, announce values for signals in the signalList.
-            this.signalList.forEach(sigName => {
+            this.capturingSignalsList.forEach(sig => {
+                var sigName = sig.name;
                 if(sigName == "TestFastSin1"){
-                    this.onData(curTimeSec, testFastSin1);
+                    this.onData(sigName, curTimeSec, testFastSin1Val);
+                } else if(sigName == "TestFastSin2") {
+                    this.onData(sigName, curTimeSec, testFastSin2Val);
+                } else if(sigName == "TestSlowSin1") {
+                    this.onData(sigName, curTimeSec, testSlowSin1Val);
                 }
             })
         }
 
-    }
-
-    testAnnounceSignals(){
-        this.onSignalAnnounce("TestFastSin1", "RPM");
-        this.onSignalAnnounce("TestFastSin2", "");
-        this.onSignalAnnounce("TestSlowSin1", "A");
-        this.onSignalAnnounce("TestSquare1", "V");
-    }
-
-    testConnect(){
-        this.onConnect();
     }
 
 

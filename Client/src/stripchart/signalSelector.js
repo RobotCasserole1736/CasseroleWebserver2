@@ -36,6 +36,10 @@ export class SignalSelector {
         }
     }
 
+    clearSignalList(){
+        this.selectableSignalsList = [];
+    }
+
     attemptSignalSelectionRestore(){
         //Attempt to read a list of signal names out of local storage that were
         // previously selected.
