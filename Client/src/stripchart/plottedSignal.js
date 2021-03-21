@@ -27,13 +27,17 @@ export class PlottedSignal {
         this.valueInfo.innerHTML = "----";
         this.drawDiv.appendChild(this.valueInfo);
 
-        this.drawDiv.color = this.colorStr;
+        this.drawDiv.style.color = this.colorStr;
     }
 
     showLatestSampleValue(){
         var sample = this.signal.getLatestSample();
         if(sample != null){
-            this.valueInfo.innerHTML = sample.value.toString();
+            if (typeof sample.value === "number") {
+                this.valueInfo.innerHTML = sample.value.toPrecision(4);
+            } else {
+                this.valueInfo.innerHTML = sample.value.toString();
+            }
         } else {
             this.valueInfo.innerHTML = "----";
         }

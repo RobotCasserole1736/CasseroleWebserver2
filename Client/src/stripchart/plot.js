@@ -75,10 +75,10 @@ export class Plot {
 
     clearAllData(){
         this.plottedSignalsList = [];
+        this.resize();
     }
 
     updateDisplayedValues(){
-
         this.plottedSignalsList.forEach(ps => {
             ps.showLatestSampleValue();
         })
@@ -102,6 +102,8 @@ export class Plot {
             //TODO...maybe here... submit new signal to highcharts
         }
 
+        this.resize();
+
     }
 
     removeSignal(signal_in){
@@ -112,6 +114,9 @@ export class Plot {
                 this.plottedSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
             }
         }
+
+        this.resize();
+
     }
 
     ////////////////////////////////////////////
