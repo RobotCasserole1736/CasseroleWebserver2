@@ -16,26 +16,12 @@ export var dflt_options =  {
         animation: false,
         ignoreHiddenSeries: true,
         resetZoomButton: {
-            position: {
-                align: 'left',
-            },
-            theme: {
-                fill: '#822',
-                stroke: '#999',
-                r: 3,
-                style: {
-                    color: '#999'
-                },
-                states: {
-                    hover: {
-                        fill: '#782828',
-                        style: {
-                            color: '#ccc'
-                        },
-                    },
-                },
-            },
+            enabled: false,
         },
+        enableMouseTracking: false, 
+        stickyTracking: true, 
+        shadow: false, 
+        dataLabels: { style: { textShadow: false } },
         panning: true,
         panKey: 'shift',
         showAxes: true,
@@ -76,19 +62,7 @@ export var dflt_options =  {
     yAxis: [],
     
     legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'top',
-        borderWidth: 1,
-        floating: true,
-        itemStyle: {
-            font: '9pt Trebuchet MS, Verdana, sans-serif',
-            color: '#DDD'
-        },
-        itemHoverStyle:{
-            color: 'gray'
-        }  
-        
+        enabled: false,
     },
     
     exporting: {
@@ -108,20 +82,7 @@ export var dflt_options =  {
         }
     },
     tooltip: {
-        crosshairs: true,
-        hideDelay: 0,
-        shared: true,
-        backgroundColor: null,
-        snap: 30,
-        borderWidth: 1,
-        borderColor: '#FF0000',
-        shadow: true,
-        animation: false,
-        useHTML: false,
-        style: {
-            padding: 0,
-            color: '#D43',
-        }
+        enabled: false,
     },  
 
     series: []

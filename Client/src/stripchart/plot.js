@@ -56,8 +56,6 @@ export class Plot {
         //Create highcharts object
         this.chart = new Highcharts.Chart(options);
 
-        //Start main animation loop
-        this.mainAnimationLoop();
     }
 
     resize(){
@@ -152,7 +150,6 @@ export class Plot {
         this.drawDataToChart(this.serverTime - 10, this.serverTime );
         this.chart.redraw();
         this.updateDisplayedValues();
-        window.requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
 
     updateDisplayedValues(){

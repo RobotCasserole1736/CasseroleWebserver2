@@ -27,6 +27,7 @@ export class SignalDAQ {
         setTimeout(this.testConnect.bind(this),500);
         setTimeout(this.testAnnounceSignals.bind(this),750);
         setInterval(this.testDataSourceLoop.bind(this), 50);
+        this.loopCount = 0;
     }
 
     //Request a signal get added to the DAQ
@@ -64,30 +65,38 @@ export class SignalDAQ {
     // TEST ONLY - this is a periodic loop which simulates
     // a NT server with signals and data in it
     testDataSourceLoop(){
-        var curTimeSec = window.performance.now()/1000.0;
+        var curWallTime = window.performance.now()/1000.0;
+        var curTimeSec = this.loopCount * 0.020; //20ms robot code;
 
-        //Calculate values for each signal
-        var testSlowSin1 = 50+50*Math.sin( curTimeSec * 2 * Math.PI * 0.1);
-        var testFastSin1 = 50+30*Math.sin( curTimeSec* 2 * Math.PI * 1.0);
-        var testFastSin2 = 20*Math.sin( (curTimeSec + 0.2 )* 2 * Math.PI * 1.0);
-        var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500) ? 1.0 : 0.0;
 
-        if(this.daqRunning){
-            //DAQ is running, announce values for signals in the signalList.
-            this.signalList.forEach(sigName => {
-                if(sigName == "TestFastSin1"){
-                    this.onNewSampleData(sigName, curTimeSec, testFastSin1);
-                } else if(sigName == "TestFastSin2"){
-                    this.onNewSampleData(sigName, curTimeSec, testFastSin2);
-                } else if(sigName == "TestSquare1"){
-                    this.onNewSampleData(sigName, curTimeSec, testSquare1);
-                } else if(sigName == "TestSlowSin1"){
-                    this.onNewSampleData(sigName, curTimeSec, testSlowSin1);
-                } else {
-                    console.log("Error! Unknown signal " + sigName + " requested!");
-                }
-            })
+        while(curTimeSec < curWallTime){
+            //Calculate values for each signal
+            var testSlowSin1 = 50+50*Math.sin( curTimeSec * 2 * Math.PI * 0.1);
+            var testFastSin1 = 50+30*Math.sin( curTimeSec* 2 * Math.PI * 1.0);
+            var testFastSin2 = 20*Math.sin( (curTimeSec + 0.2 )* 2 * Math.PI * 1.0);
+            var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500) ? 1.0 : 0.0;
+
+            if(this.daqRunning){
+                //DAQ is running, announce values for signals in the signalList.
+                this.signalList.forEach(sigName => {
+                    if(sigName == "TestFastSin1"){
+                        this.onNewSampleData(sigName, curTimeSec, testFastSin1);
+                    } else if(sigName == "TestFastSin2"){
+                        this.onNewSampleData(sigName, curTimeSec, testFastSin2);
+                    } else if(sigName == "TestSquare1"){
+                        this.onNewSampleData(sigName, curTimeSec, testSquare1);
+                    } else if(sigName == "TestSlowSin1"){
+                        this.onNewSampleData(sigName, curTimeSec, testSlowSin1);
+                    } else {
+                        console.log("Error! Unknown signal " + sigName + " requested!");
+                    }
+                })
+            }
+            this.loopCount++;
+            curTimeSec = this.loopCount * 0.020;
         }
+
+
 
     }
 

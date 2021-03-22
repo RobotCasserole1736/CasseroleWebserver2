@@ -40,6 +40,9 @@ window.addEventListener("resize", resizeAll);
 //Add our first plot
 addPlot();
 
+//Start main animation loop
+mainAnimationLoop();
+
 /////////////////////////////////////////////////////////////
 //Utility Functions
 
@@ -157,6 +160,14 @@ function onNewSampleData(name, timestamp, units){
 
 function signalFromName(name_in){
     return allSignalsMap[name_in];
+}
+
+///////////////////////////
+// Animation Loop
+
+function mainAnimationLoop(){
+    plotList.forEach(plot=>plot.mainAnimationLoop());
+    window.requestAnimationFrame(mainAnimationLoop);
 }
 
 /////////////////////////////////////////////////////////////
