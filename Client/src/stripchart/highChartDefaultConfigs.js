@@ -16,10 +16,14 @@ export var dflt_options =  {
         animation: false,
         ignoreHiddenSeries: true,
         resetZoomButton: {
-            enabled: false,
+            theme: {
+                style: {
+                    display: 'none'
+                }
+            }
         },
-        enableMouseTracking: false, 
-        stickyTracking: true, 
+        //enableMouseTracking: false, 
+        //stickyTracking: true, 
         shadow: false, 
         dataLabels: { style: { textShadow: false } },
         panning: true,
@@ -110,6 +114,7 @@ export var dflt_y_axis_cfg = {
             fontWeight: 'bold'
         },
     },
+    visible:false,
 }
 
 export var dflt_x_axis_cfg = {name:"",

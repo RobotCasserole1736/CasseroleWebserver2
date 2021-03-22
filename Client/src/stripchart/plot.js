@@ -18,9 +18,12 @@ export class Plot {
         // Init the plotted signals list to be empty
         this.plottedSignalsList = [];
 
-        // Externally, this should be set to whatever time the server currently has.
-        // we will synchronize our plots during animation to be between server time and server time - 10 seconds.
-        this.serverTime = 0;
+        // External ranges to synchronize all plots in terms of what they show 
+        // and what actually needs drawn on the screen at any given time.
+        this.drawStartTime = 0;
+        this.drawEndTime = 0;
+        this.viewStartTime = 0;
+        this.viewEndTime = 0;
 
         //Each plot has has two side-by-side flex containers - one for highcharts (the actual plot window)
         // and one for the table of currently plotted signals.
@@ -71,22 +74,22 @@ export class Plot {
         //TODO
     }
 
-    drawDataToChart(startTime, endTime){
+    drawDataToChart(){
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
-            var samples = ps.signal.getSamples(ps.prevMaxTime,endTime);
+            var samples = ps.signal.getSamples(ps.prevMaxTime,this.drawEndTime);
             var removeFirstSample = false;
-            if(samples.length > 0 && samples[0].time < startTime){
+            if(samples.length > 0 && samples[0].time < this.drawStartTime){
                 removeFirstSample = true;
             }
             samples.forEach(sample => {
                 this.chart.series[sigIdx].addPoint([sample.time,sample.value],false,removeFirstSample,true);
             });
 
-            ps.prevMaxTime = endTime;
+            ps.prevMaxTime = this.drawEndTime;
         }
 
-        this.chart.xAxis[0].setExtremes(startTime, endTime,false)
+        this.chart.xAxis[0].setExtremes(this.viewStartTime, this.viewEndTime,false)
         //Actual chart redraw handled in animation loop.
         
     }
@@ -135,22 +138,28 @@ export class Plot {
 
     }
 
-    setServerTime(time_in){
-        this.serverTime = time_in;
-    }
-
     clearChartData(){
         this.chart.series.forEach(series => series.setData([],false, false, false))
+    }
+
+    setDrawRange(startTime, endTime){
+        this.drawStartTime = startTime;
+        this.drawEndTime = endTime;
+    }
+
+    setViewRange(startTime, endTime){
+        this.viewStartTime = startTime;
+        this.viewEndTime = endTime;
     }
 
     ////////////////////////////////////////////
     // Main Animation Loop & utilities
     mainAnimationLoop(){
 
-        this.drawDataToChart(this.serverTime - 10, this.serverTime );
+        this.drawDataToChart();
         this.chart.redraw();
         this.updateDisplayedValues();
-    }
+     }
 
     updateDisplayedValues(){
         this.plottedSignalsList.forEach(ps => {

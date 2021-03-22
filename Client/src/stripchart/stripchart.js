@@ -34,6 +34,9 @@ var mainDAQ = new SignalDAQ(onSignalAnnounce,
                             onDisconnect
                             );
 
+var recordingStartTime = null;
+var recordingEndTime = null;
+var recordingRunning = false;
 
 //Attach resize callback to window changing size
 window.addEventListener("resize", resizeAll);
@@ -80,26 +83,40 @@ function resizeAll(){
     plotList.forEach(plot => plot.resize());
 }
 
-
-/////////////////////////////////////////////////////////////
-//User Button Handlers
-
-window.handleStartBtnClick = handleStartBtnClick;
-function handleStartBtnClick(){
+function startRecording(){
     signalSelector.disableUserInteraction();
     saveCurrentConfig();
     mainDAQ.clearSignalList();
     signalSelector.getSelectedSignalList().forEach(sig => mainDAQ.addSignal(sig.name));
     allSignalsMap.forEach(sig => sig.clearValues());
     plotList.forEach(plt => plt.clearChartData());
+    recordingStartTime = null;
+    recordingEndTime = null;
+    recordingRunning = true;
     mainDAQ.startDAQ();
+}
 
+function stopRecording(){
+    mainDAQ.stopDAQ();
+    recordingRunning = false;
+    signalSelector.enableUserInteraction();
+    plotList.forEach(plot=>plot.setDrawRange(recordingStartTime, recordingEndTime));
+    plotList.forEach(plot=>plot.setViewRange(recordingStartTime, recordingEndTime));
+
+}
+
+
+/////////////////////////////////////////////////////////////
+//User Button Handlers
+
+window.handleStartBtnClick = handleStartBtnClick;
+function handleStartBtnClick(){
+    startRecording();
 }
 
 window.handleStopBtnClick = handleStopBtnClick;
 function handleStopBtnClick(){
-    mainDAQ.stopDAQ();
-    signalSelector.enableUserInteraction();
+    stopRecording();
 }
 
 window.handleAddChartBtnClick = handleAddChartBtnClick;
@@ -114,7 +131,7 @@ function handleRmChartBtnClick(){
 
 window.handleZoomFullBtnClick = handleZoomFullBtnClick;
 function handleZoomFullBtnClick(){
-    
+    plotList.forEach(plot=>plot.setViewRange(recordingStartTime, recordingEndTime));
 }
 
 window.unselectAllBtnClick = unselectAllBtnClick;
@@ -137,7 +154,7 @@ function onConnect(){
 }
 
 function onDisconnect(){
-
+    stopRecording();
 }
 
 function onSignalAnnounce(name, units){
@@ -155,7 +172,13 @@ function onSignalUnAnnounce(name){
 
 function onNewSampleData(name, timestamp, units){
     allSignalsMap[name].addSample(new Sample(timestamp, units));
-    plotList.forEach(plt => plt.setServerTime(timestamp)); //TODO - does NT4 expose a better way to do this?
+
+    //Save off incoming sample timing stats
+    //TODO - does NT4 expose a better way to do this?
+    if(recordingStartTime == null){
+        recordingStartTime = timestamp;
+    }
+    recordingEndTime = timestamp;
 }
 
 function signalFromName(name_in){
@@ -166,7 +189,12 @@ function signalFromName(name_in){
 // Animation Loop
 
 function mainAnimationLoop(){
+    if(recordingRunning){
+        plotList.forEach(plot=>plot.setDrawRange(recordingEndTime - 10.0, recordingEndTime));
+        plotList.forEach(plot=>plot.setViewRange(recordingEndTime - 10.0, recordingEndTime));
+    } 
     plotList.forEach(plot=>plot.mainAnimationLoop());
+    plotList.forEach(plot=>plot.resize());
     window.requestAnimationFrame(mainAnimationLoop);
 }
 
@@ -183,7 +211,7 @@ function saveCurrentConfig(){
 
         lsData["selSigList"] = ls_sel_signals;
 
-        localStorage.setItem(SignalSelector.LOCAL_STORAGE_KEY_NAME, JSON.stringify(lsData));
+        localStorage.setItem(LOCAL_STORAGE_KEY_NAME, JSON.stringify(lsData));
     }
 }
 
@@ -192,12 +220,11 @@ function restoreConfig(){
     var lsData = new Map();
     var ls_sel_signals = [];
     if(local_storage_available == true){
-        lsData = JSON.parse(localStorage.getItem(SignalSelector.LOCAL_STORAGE_KEY_NAME))
+        lsData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_NAME))
 
-        var ls_sel_signals = lsData["selSigList"];
-
-        if(ls_sel_signals == null){
-            ls_sel_signals = [];
+        var ls_sel_signals = []
+        if(lsData != null){
+            var ls_sel_signals = lsData["selSigList"];
         }
     }
 
