@@ -8,8 +8,8 @@ export class FastChart {
         this.startTime = 0;
         this.endTime = 1;
 
-        this.minY = 0;
-        this.maxY = 1;
+        this.yMin = 0;
+        this.yMax = 1;
 
         // Set up drawing canvas within provided div
         this.drawContainer = drawContainer_in;
@@ -49,6 +49,15 @@ export class FastChart {
 
     }
 
+    drawXMarkers(startTime, endTime){
+        var duration = endTime - startTime;
+        var delta = Math.floor(Math.log10(duration)*2);
+    }
+
+    drawYMarkers(yMin, yMax){
+        //TODO
+    }
+
     drawAxes(){
         this.ctx.strokeStyle = "#FFFFFF";
         this.ctx.beginPath();
@@ -83,8 +92,8 @@ export class FastChart {
         return this.plotOriginX_px + this.xAxisLen_px * frac;
     }
 
-    valToY_px(val_in, minY, maxY){
-        var frac = (val_in - minY)/(maxY - minY);
+    valToY_px(val_in, yMin, yMax){
+        var frac = (val_in - yMin)/(yMax - yMin);
         return this.plotOriginY_px - this.yAxisLen_px * frac; //Negative produces coordinate transform to pixel space
     }
 
