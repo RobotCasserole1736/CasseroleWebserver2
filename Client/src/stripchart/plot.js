@@ -44,6 +44,8 @@ export class Plot {
 
         this.chart = new FastChart(this.hcContainer);
 
+        this.DFLT_COLORS = ["#DD0000", "#00DD00", "#4444FF", "#DDDD00", "#DD00DD", "#00DDDD"];
+
     }
 
     setCursorPos(xPos){
@@ -76,8 +78,9 @@ export class Plot {
         })
 
         if(!duplicate){
+            var color = this.DFLT_COLORS[this.plottedSignalsList.length % this.DFLT_COLORS.length];
             var newPltSigDiv = document.createElement("plottedSignalInfo");
-            this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000", newPltSigDiv));
+            this.plottedSignalsList.push(new PlottedSignal(signal_in, color, newPltSigDiv));
             this.psContainer.appendChild(newPltSigDiv);
         }
 
