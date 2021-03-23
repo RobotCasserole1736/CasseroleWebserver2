@@ -38,8 +38,6 @@ var recordingStartTime = null;
 var recordingEndTime = null;
 var recordingRunning = false;
 
-//Attach resize callback to window changing size
-window.addEventListener("resize", resizeAll);
 //Add our first plot
 addPlot();
 
@@ -62,8 +60,6 @@ function addPlot(){
     var plotToAdd = new Plot(newPlotContainer, signalFromName);
     plotList.push(plotToAdd); //Assume add to end
 
-    resizeAll();
-
 }
 
 function removePlot(){
@@ -73,14 +69,7 @@ function removePlot(){
         plotsContainer.removeChild(plotList[remIdx].drawDiv);
         delete plotList[remIdx];
         plotList.splice(remIdx, 1);
-    }
-
-    resizeAll();
-    
-}
-
-function resizeAll(){
-    plotList.forEach(plot => plot.resize());
+    }    
 }
 
 function startRecording(){
@@ -89,7 +78,6 @@ function startRecording(){
     mainDAQ.clearSignalList();
     signalSelector.getSelectedSignalList().forEach(sig => mainDAQ.addSignal(sig.name));
     allSignalsMap.forEach(sig => sig.clearValues());
-    plotList.forEach(plt => plt.clearChartData());
     recordingStartTime = null;
     recordingEndTime = null;
     recordingRunning = true;
@@ -194,7 +182,6 @@ function mainAnimationLoop(){
         plotList.forEach(plot=>plot.setViewRange(recordingEndTime - 10.0, recordingEndTime));
     } 
     plotList.forEach(plot=>plot.mainAnimationLoop());
-    plotList.forEach(plot=>plot.resize());
     window.requestAnimationFrame(mainAnimationLoop);
 }
 

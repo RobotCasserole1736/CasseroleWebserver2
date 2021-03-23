@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 
-import { dflt_options, dflt_y_axis_cfg, dflt_x_axis_cfg } from './highChartDefaultConfigs.js'
+import { FastChart } from './fastChart.js';
 import { PlottedSignal } from './plottedSignal.js';
 
 
@@ -31,17 +31,7 @@ export class Plot {
         this.hcContainer.id = this.drawDiv.id + "_hcContainer";
         this.psContainer = document.createElement('plotSignalInfoContainer');
         this.psContainer.id = this.drawDiv.id + "_psContainer";
-
-        //Highcharts object likes to be fixed height, which plays poorly with the flex layout we're wanting
-        // Wrap it in a abs-pos div so it won't drive a dimension into its container.
-        // Separately, in the resize() function, we'll manually adjust the highchart object size
-        // to match the container.
-        this.hcRelDiv = document.createElement('div');
-        this.hcRelDiv.classList.add("HCAbsPosDiv");
-        this.hcRelDiv.id = this.drawDiv.id + "_hcRelDiv"
         
-        
-        this.hcContainer.appendChild(this.hcRelDiv);
         this.drawDiv.appendChild(this.hcContainer);
         this.drawDiv.appendChild(this.psContainer);
 
@@ -52,22 +42,8 @@ export class Plot {
         this.drawDiv.addEventListener('dragleave', this.dragLeave);
         this.drawDiv.addEventListener('drop', this.drop);
 
-        //copy the default chart options
-        var options = dflt_options;
-        //Modify as needed
-        options.chart.renderTo = this.hcRelDiv.id; 
-        //Create highcharts object
-        this.chart = new Highcharts.Chart(options);
+        this.chart = new FastChart(this.hcContainer);
 
-    }
-
-    resize(){
-        var plotHeight = this.hcContainer.clientHeight;
-        var plotWidth = this.hcContainer.clientWidth;
-
-        //Highcharts does not automatically flow to fill its container, so we do that here.
-        this.chart.setSize(plotWidth, plotHeight);
-        this.chart.reflow();
     }
 
     setCursorPos(xPos){
@@ -75,24 +51,19 @@ export class Plot {
     }
 
     drawDataToChart(){
+        this.chart.recalcDrawConstants();
+        this.chart.clearDrawing();
+        this.chart.drawAxes();
+        this.chart.setTimeRange(this.viewStartTime, this.viewEndTime);
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
-            var samples = ps.signal.getSamples(ps.prevMaxTime,this.drawEndTime);
-            var removeFirstSample = false;
-            if(samples.length > 0 && samples[0].time < this.drawStartTime){
-                removeFirstSample = true;
-            }
-            samples.forEach(sample => {
-                this.chart.series[sigIdx].addPoint([sample.time,sample.value],false,removeFirstSample,true);
-            });
-
-            ps.prevMaxTime = this.drawEndTime;
+            var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
+            this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr);
         }
-
-        this.chart.xAxis[0].setExtremes(this.viewStartTime, this.viewEndTime,false)
-        //Actual chart redraw handled in animation loop.
         
     }
+
+
 
     addSignal(signal_in){
 
@@ -108,20 +79,7 @@ export class Plot {
             var newPltSigDiv = document.createElement("plottedSignalInfo");
             this.plottedSignalsList.push(new PlottedSignal(signal_in, "#FF0000", newPltSigDiv));
             this.psContainer.appendChild(newPltSigDiv);
-    
-            //submit new series to highcharts
-            var hcYAxisCfg = dflt_y_axis_cfg;
-            var hcSeriesCfg = dflt_x_axis_cfg;
-
-            hcYAxisCfg.title.text = signal_in.units;
-            hcSeriesCfg.name = signal_in.name;
-            hcSeriesCfg.yAxis = this.plottedSignalsList.length-1; //TODO - make this not 1-for-1 with series
-
-            this.chart.addAxis(hcYAxisCfg, false, false, false);
-            this.chart.addSeries(hcSeriesCfg, false, false);
         }
-
-        this.resize();
 
     }
 
@@ -133,13 +91,6 @@ export class Plot {
                 this.plottedSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
             }
         }
-
-        this.resize();
-
-    }
-
-    clearChartData(){
-        this.chart.series.forEach(series => series.setData([],false, false, false))
     }
 
     setDrawRange(startTime, endTime){
@@ -157,7 +108,6 @@ export class Plot {
     mainAnimationLoop(){
 
         this.drawDataToChart();
-        this.chart.redraw();
         this.updateDisplayedValues();
      }
 

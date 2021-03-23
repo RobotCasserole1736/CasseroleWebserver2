@@ -11,8 +11,11 @@ export class PlottedSignal {
         this.colorStr = initial_color; //Hex String
         this.drawDiv = drawDiv_in;
 
-        this.prevMaxTime = 0;
+        // Min/Max for plot draw scaling purposes
+        this.lowerPlotRange = 0;
+        this.upperPlotRange = 0;
 
+        // Draw textual value display
         this.drawDiv.classList.add("plottedSignalInfo");
         this.drawDiv.setAttribute('draggable', true);
         this.drawDiv.addEventListener( "dragstart", this.onDragStart );
@@ -30,6 +33,36 @@ export class PlottedSignal {
         this.drawDiv.appendChild(this.valueInfo);
 
         this.drawDiv.style.color = this.colorStr;
+    }
+
+    getSamplesWithPlotRangeUpdate(startTime, endTime){
+        var sampleList = this.signal.getSamples(startTime, endTime);
+
+        if(sampleList.length > 0){
+            this.lowerPlotRange = sampleList[0].value;
+            this.upperPlotRange = sampleList[0].value;
+
+            sampleList.forEach(sample => {
+                if(sample.value > this.upperPlotRange){
+                    this.upperPlotRange = sample.value;
+                }
+                if(sample.value < this.lowerPlotRange){
+                    this.lowerPlotRange  = sample.value;
+                }
+            });
+
+            //Apply small margin
+            var margin = (this.upperPlotRange - this.lowerPlotRange) * 0.03;
+            this.lowerPlotRange -= margin;
+            this.upperPlotRange += margin;
+
+        } else {
+            this.lowerPlotRange = -1.0;
+            this.upperPlotRange = 1.0;
+        }
+
+
+        return sampleList;
     }
 
     showValueAtTime(time_in){
