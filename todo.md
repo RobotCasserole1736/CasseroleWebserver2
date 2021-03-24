@@ -6,18 +6,20 @@
 
 # Stripcharts
 
-* vertical cursor (synced) support
-* Synced zoom/pan
 * color chooser support on plottedSignals
-* plotted Signal default colors from reasonable palate
 * save & restore chart/signal config to local storage
 * save signal data to file
-* scroll-wheel zoom support
 * better color coding & synchronization of "has data"/"selected"/"no-data" states between plottedSignal and selectableSignal.
   * Add state to the signal itself?
-* Investigate custom svg-based chart drawing (seeing if we can improve framerate)
 * Test/flesh-out signal unannounce behavior
   * signal should have an "is-announced" state which gets set to false on unannounce, but the object isn't removed (and all things that display the signal go to error state?)
+* Y axis groupings like last time
+  * Sync number of y axes across all plots
+  * Same units signals auto-scale together
+    * Update auto-scale logic to accept a "seed" min/max
+  * Probably a new "valueAxis" class which is created new or 
+* continue line drawing off end of chart (support very-high zoom levels).
+* click-to-highlight plottedSignal (Selected vs. not state?)
 
 # Data Logs
 

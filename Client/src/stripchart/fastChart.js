@@ -32,6 +32,13 @@ export class FastChart {
         this.canvas.addEventListener('mouseleave', this.mouseleaveHandler.bind(this), false);
         this.canvas.addEventListener('mouseup', this.mouseupHandler.bind(this), false);
         this.canvas.addEventListener('mousedown', this.mousedownHandler.bind(this), false);
+        if (this.canvas.addEventListener) {
+            this.canvas.addEventListener("mousewheel", this.mousewheelHandler.bind(this), false);
+            this.canvas.addEventListener("DOMMouseScroll", this.mousewheelHandler.bind(this), false);
+        } else {
+            this.canvas.attachEvent("onmousewheel", this.mousewheelHandler.bind(this));
+        }
+        
 
     }
 
@@ -64,6 +71,8 @@ export class FastChart {
         this.yAxisLen_px = this.plotOriginY_px;
 
         this.dataMarkerCircleRadius = this.canvas.height * 0.005;
+
+        this.cursorTime = null;
 
     }
 
@@ -266,6 +275,46 @@ export class FastChart {
         this.zoomRangeUp = null;
         this.zoomRangeDn = null;
     }
+
+    ///////////////////////////////////
+    // scroll-to-zoom handlers
+    mousewheelHandler(e) {
+        // cross-browser wheel delta
+        var e = window.event || e;
+        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        
+
+        //We should adjust the view extents based on the read-in mouse wheel scroll action
+
+        //Calculate the zoom action center (presumed to be center of chart if not yet set)
+        var center = (this.endTime + this.startTime)/2;
+        if(this.cursorTime != null){
+            center = this.cursorTime ;
+        } 
+        
+        //Calculate the above/below center widths
+        var old_right_size = this.endTime - center;
+        var old_left_size = center - this.startTime;
+        
+        //Calculate a multiplicative factor (1.0 for no change, > 1.0 for more zoom, < 1.0 for less zoom)
+        var scaler = (1-delta*0.1);
+        
+        //Apply the factor to the above/below center widths
+        var new_right_size = old_right_size * scaler;
+        var new_left_size = old_left_size * scaler;
+        
+        //calculate the new extents
+        var newEndTime = center + new_right_size;
+        var newStartTime = center - new_left_size;
+        
+        this.zoomRangeUpdateCallback(newStartTime, newEndTime);
+
+    
+        //Return false to prevent this mouse event we're handling here from scrolling the page
+        if (e.preventDefault)e.preventDefault();
+        return false;
+    }
+
 
     ///////////////////////////////////
     // Pixel/time/value/units 
