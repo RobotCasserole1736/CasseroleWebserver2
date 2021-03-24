@@ -57,11 +57,13 @@ export class Plot {
         this.chart.clearDrawing();
         this.chart.drawAxes();
         this.chart.setTimeRange(this.viewStartTime, this.viewEndTime);
+        this.chart.drawXMarkers();
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
             var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
             this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr);
         }
+        this.chart.drawCursor();
         
     }
 
