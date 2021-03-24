@@ -59,6 +59,7 @@ function addPlot(){
 
     var plotToAdd = new Plot(newPlotContainer, signalFromName);
     plotToAdd.chart.mouseoverAtTimeCallback = onChartMouseOver; //Install our mouseover handler for cursor purposes
+    plotToAdd.chart.zoomRangeUpdateCallback = onChartZoomAction; //Install our zoom handler for synced zoom purposes
     plotList.push(plotToAdd); //Assume add to end
 
 }
@@ -90,7 +91,6 @@ function stopRecording(){
     recordingRunning = false;
     signalSelector.enableUserInteraction();
     plotList.forEach(plot=>plot.setDrawRange(recordingStartTime, recordingEndTime));
-    plotList.forEach(plot=>plot.setViewRange(recordingStartTime, recordingEndTime));
 
 }
 
@@ -120,7 +120,7 @@ function handleRmChartBtnClick(){
 
 window.handleZoomFullBtnClick = handleZoomFullBtnClick;
 function handleZoomFullBtnClick(){
-    plotList.forEach(plot=>plot.setViewRange(recordingStartTime, recordingEndTime));
+    plotList.forEach(plot=>plot.setDrawRange(recordingStartTime, recordingEndTime));
 }
 
 window.unselectAllBtnClick = unselectAllBtnClick;
@@ -178,7 +178,18 @@ function signalFromName(name_in){
 // Mouse Events
 
 function onChartMouseOver(timeAtMouse){
-    plotList.forEach(plot=>plot.setCursorPos(timeAtMouse));
+    if(recordingRunning){
+        plotList.forEach(plot=>plot.setCursorPos(null)); //disable cursor while running
+    } else {
+        plotList.forEach(plot=>plot.setCursorPos(timeAtMouse));
+    }
+}
+
+
+function onChartZoomAction(startTime, endTime){
+    if(!recordingRunning){
+        plotList.forEach(plot=>plot.setDrawRange(startTime, endTime));
+    } 
 }
 
 
@@ -188,7 +199,6 @@ function onChartMouseOver(timeAtMouse){
 function mainAnimationLoop(){
     if(recordingRunning){
         plotList.forEach(plot=>plot.setDrawRange(recordingEndTime - 10.0, recordingEndTime));
-        plotList.forEach(plot=>plot.setViewRange(recordingEndTime - 10.0, recordingEndTime));
     } 
     plotList.forEach(plot=>plot.mainAnimationLoop());
     window.requestAnimationFrame(mainAnimationLoop);

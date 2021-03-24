@@ -13,7 +13,12 @@ export class FastChart {
         
         this.cursorTime = null;
 
-        this.mouseoverAtTimeCallback = null;
+        this.mouseoverAtTimeCallback = null; //expect to be set to a function by the top-level stripcharts functionality to sync all charts.
+
+        this.zoomRangeDn = null;
+        this.zoomRangeUp = null;
+
+        this.zoomRangeUpdateCallback = null; //expect to be set to a function by the top-level stripcharts functionality to sync all charts.
 
         // Set up drawing canvas within provided div
         this.drawContainer = drawContainer_in;
@@ -25,6 +30,8 @@ export class FastChart {
         this.ctx = this.canvas.getContext("2d");
         this.canvas.addEventListener('mousemove', this.mouseoverHandler.bind(this), false);
         this.canvas.addEventListener('mouseleave', this.mouseleaveHandler.bind(this), false);
+        this.canvas.addEventListener('mouseup', this.mouseupHandler.bind(this), false);
+        this.canvas.addEventListener('mousedown', this.mousedownHandler.bind(this), false);
 
     }
 
@@ -103,6 +110,21 @@ export class FastChart {
         }
     }
 
+    drawZoomBox(){
+        if(this.zoomRangeDn != null && this.cursorTime != null){
+            var zpx = this.timeToX_px(this.zoomRangeDn);
+            var cpx = this.timeToX_px(this.cursorTime);
+            this.ctx.fillStyle = "#333355";
+            this.ctx.lineWidth = 0;
+            this.ctx.moveTo(zpx, 0);
+            this.ctx.lineTo(cpx, 0);
+            this.ctx.lineTo(cpx, this.plotOriginY_px);
+            this.ctx.lineTo(zpx, this.plotOriginY_px);
+            this.ctx.lineTo(zpx, 0);
+            this.ctx.fill();
+        }
+    }
+
     getMarkerList(min, max){
         var range = max - min;
         var orderOfMag = Math.pow(10.0, Math.floor(Math.log10(range)));
@@ -157,6 +179,8 @@ export class FastChart {
         }
     }
 
+    ///////////////////////////////////
+    // Mouse-over cursor Handlers
     mouseoverHandler(e){
         if(this.mouseoverAtTimeCallback != null){
             var time = this.xPxToTime(e.x);
@@ -172,8 +196,63 @@ export class FastChart {
         if(this.mouseoverAtTimeCallback != null){
             this.mouseoverAtTimeCallback(null);
         }
+        
+        this.resetZoomRangeHandlers();
+
     }
 
+    ///////////////////////////////////
+    // Click-to-Zoom Handlers
+    mousedownHandler(e){
+        this.resetZoomRangeHandlers();
+
+        //Save off the time where the user clicked down 
+        var time = this.xPxToTime(e.x);
+        if(time > this.startTime && time < this.endTime){
+            this.zoomRangeDn = time;
+        } 
+    }
+
+    mouseupHandler(e){
+        //Save off the time where the user released
+        var time = this.xPxToTime(e.x);
+        if(time > this.startTime && time < this.endTime){
+            this.zoomRangeUp = time;
+        } else {
+            this.zoomRangeUp = null;
+        }
+
+        if(this.zoomRangeDn != null && this.zoomRangeUp != null && this.zoomRangeDn != this.zoomRangeUp){
+            //If this mouse-up produced a valid zoom range...
+            var newZoomTimeStart = 0;
+            var newZoomTimeEnd = 0;
+
+            //order the up/down click points properly to range start/end
+            if(this.zoomRangeDn < this.zoomRangeUp){
+                newZoomTimeEnd = this.zoomRangeUp;
+                newZoomTimeStart = this.zoomRangeDn;
+            } else {
+                newZoomTimeEnd = this.zoomRangeDn;
+                newZoomTimeStart = this.zoomRangeUp;
+            }
+
+            //Execute callback to update charts as needed.
+            if(this.zoomRangeUpdateCallback != null){
+                this.zoomRangeUpdateCallback(newZoomTimeStart, newZoomTimeEnd);
+            }
+        }
+        
+        this.resetZoomRangeHandlers();
+
+    }
+
+    resetZoomRangeHandlers(){
+        this.zoomRangeUp = null;
+        this.zoomRangeDn = null;
+    }
+
+    ///////////////////////////////////
+    // Pixel/time/value/units 
     xPxToTime(x_px_in){
         var frac = (x_px_in - this.plotOriginX_px)/(this.canvas.width- this.plotOriginX_px);
         return this.startTime + (this.endTime - this.startTime) * frac;

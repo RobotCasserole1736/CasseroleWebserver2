@@ -22,8 +22,6 @@ export class Plot {
         // and what actually needs drawn on the screen at any given time.
         this.drawStartTime = 0;
         this.drawEndTime = 0;
-        this.viewStartTime = 0;
-        this.viewEndTime = 0;
 
         this.cursorTime = null;
 
@@ -58,10 +56,11 @@ export class Plot {
     drawDataToChart(){
         this.chart.recalcDrawConstants();
         this.chart.clearDrawing();
+        this.chart.setTimeRange(this.drawStartTime, this.drawEndTime);
         this.chart.drawAxes();
-        this.chart.setTimeRange(this.viewStartTime, this.viewEndTime);
         this.chart.setCursorPos(this.cursorTime);
         this.chart.drawXMarkers();
+        this.chart.drawZoomBox();
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
             var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
@@ -105,11 +104,6 @@ export class Plot {
     setDrawRange(startTime, endTime){
         this.drawStartTime = startTime;
         this.drawEndTime = endTime;
-    }
-
-    setViewRange(startTime, endTime){
-        this.viewStartTime = startTime;
-        this.viewEndTime = endTime;
     }
 
     ////////////////////////////////////////////
