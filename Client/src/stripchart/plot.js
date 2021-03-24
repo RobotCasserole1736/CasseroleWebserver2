@@ -25,6 +25,8 @@ export class Plot {
         this.viewStartTime = 0;
         this.viewEndTime = 0;
 
+        this.cursorTime = null;
+
         //Each plot has has two side-by-side flex containers - one for highcharts (the actual plot window)
         // and one for the table of currently plotted signals.
         this.hcContainer = document.createElement('plotHighchartsContainer');
@@ -48,8 +50,9 @@ export class Plot {
 
     }
 
-    setCursorPos(xPos){
-        //TODO
+    setCursorPos(cursorTime_in){
+        this.cursorTime = cursorTime_in;
+
     }
 
     drawDataToChart(){
@@ -57,6 +60,7 @@ export class Plot {
         this.chart.clearDrawing();
         this.chart.drawAxes();
         this.chart.setTimeRange(this.viewStartTime, this.viewEndTime);
+        this.chart.setCursorPos(this.cursorTime);
         this.chart.drawXMarkers();
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
@@ -118,7 +122,11 @@ export class Plot {
 
     updateDisplayedValues(){
         this.plottedSignalsList.forEach(ps => {
-            ps.showValueAtTime(null); //latest
+            if(this.cursorTime == null){
+                ps.showValueAtTime(null); //latest
+            } else {
+                ps.showValueAtTime(this.cursorTime);
+            }
         })
     }
 

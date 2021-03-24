@@ -13,6 +13,8 @@ export class FastChart {
         
         this.cursorTime = null;
 
+        this.mouseoverAtTimeCallback = null;
+
         // Set up drawing canvas within provided div
         this.drawContainer = drawContainer_in;
         this.drawDiv = document.createElement('chartDrawDiv');
@@ -21,6 +23,9 @@ export class FastChart {
         this.canvas.id     = this.drawDiv.id + "_canvas";
         this.drawDiv.appendChild(this.canvas);
         this.ctx = this.canvas.getContext("2d");
+        this.canvas.addEventListener('mousemove', this.mouseoverHandler.bind(this), false);
+        this.canvas.addEventListener('mouseleave', this.mouseleaveHandler.bind(this), false);
+
     }
 
 
@@ -80,6 +85,10 @@ export class FastChart {
 
     drawYMarkers(yMin, yMax){
         //TODO
+    }
+
+    setCursorPos(newTime){
+        this.cursorTime = newTime;
     }
 
     drawCursor(){
@@ -146,6 +155,28 @@ export class FastChart {
             }
             this.ctx.stroke();
         }
+    }
+
+    mouseoverHandler(e){
+        if(this.mouseoverAtTimeCallback != null){
+            var time = this.xPxToTime(e.x);
+            if(time > this.startTime && time < this.endTime){
+                this.mouseoverAtTimeCallback(time);
+            } else {
+                this.mouseoverAtTimeCallback(null);
+            }
+        }
+    }
+
+    mouseleaveHandler(e){
+        if(this.mouseoverAtTimeCallback != null){
+            this.mouseoverAtTimeCallback(null);
+        }
+    }
+
+    xPxToTime(x_px_in){
+        var frac = (x_px_in - this.plotOriginX_px)/(this.canvas.width- this.plotOriginX_px);
+        return this.startTime + (this.endTime - this.startTime) * frac;
     }
 
     timeToX_px(time_in){

@@ -58,6 +58,7 @@ function addPlot(){
     plotsContainer.appendChild(newPlotContainer);
 
     var plotToAdd = new Plot(newPlotContainer, signalFromName);
+    plotToAdd.chart.mouseoverAtTimeCallback = onChartMouseOver; //Install our mouseover handler for cursor purposes
     plotList.push(plotToAdd); //Assume add to end
 
 }
@@ -172,6 +173,14 @@ function onNewSampleData(name, timestamp, units){
 function signalFromName(name_in){
     return allSignalsMap[name_in];
 }
+
+///////////////////////////
+// Mouse Events
+
+function onChartMouseOver(timeAtMouse){
+    plotList.forEach(plot=>plot.setCursorPos(timeAtMouse));
+}
+
 
 ///////////////////////////
 // Animation Loop
