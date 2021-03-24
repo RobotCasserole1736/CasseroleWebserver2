@@ -63,10 +63,12 @@ export class FastChart {
         this.xAxisLen_px = this.canvas.width - this.plotOriginX_px;
         this.yAxisLen_px = this.plotOriginY_px;
 
+        this.dataMarkerCircleRadius = this.canvas.height * 0.005;
+
     }
 
     drawXMarkers(){
-        this.getMarkerList(this.startTime, this.endTime, 5).forEach(markerTime => {
+        this.getTickMarkList(this.startTime, this.endTime, 5).forEach(markerTime => {
             var xPos = this.timeToX_px(markerTime);
             this.ctx.strokeStyle = "#555555";
             this.ctx.lineWidth = 1;
@@ -125,7 +127,7 @@ export class FastChart {
         }
     }
 
-    getMarkerList(min, max){
+    getTickMarkList(min, max){
         var range = max - min;
         var orderOfMag = Math.pow(10.0, Math.floor(Math.log10(range)));
         var markerSpacing = 1;
@@ -172,10 +174,24 @@ export class FastChart {
             this.ctx.moveTo(x_px, y_px);
             for(var sampIdx = 1; sampIdx < sampleList.length; sampIdx++){
                 x_px = this.timeToX_px(sampleList[sampIdx].time);
+                //this.ctx.lineTo(x_px, y_px); //uncomment to make a step-chart
                 y_px = this.valToY_px(sampleList[sampIdx].value, yMin, yMax);
                 this.ctx.lineTo(x_px, y_px);
             }
             this.ctx.stroke();
+
+            if(sampleList.length < 75 && Math.abs(sampleList[0].time - this.startTime) < 1.0){
+                //Draw individual data point markers
+                this.ctx.fillStyle = colorString_in;
+                for(var sampIdx = 0; sampIdx < sampleList.length; sampIdx++){
+                    x_px = this.timeToX_px(sampleList[sampIdx].time);
+                    y_px = this.valToY_px(sampleList[sampIdx].value, yMin, yMax);
+                    this.ctx.beginPath();
+                    this.ctx.arc(x_px, y_px, this.dataMarkerCircleRadius, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                }
+            }
+
         }
     }
 

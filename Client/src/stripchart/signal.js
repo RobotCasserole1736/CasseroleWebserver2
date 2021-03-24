@@ -88,8 +88,8 @@ export class Signal {
                             //Guessed too high, look backward in list
                             var guessTimeNext = this.sampleList[guessIdx-1].time;
                             if(guessTimeNext < time_in){
-                                //We found the right interval, return the lower bound.
-                                return guessIdx - 1;
+                                //We found the right interval, return the upper bound.
+                                return guessIdx;
                             } else {
                                 //Not in this interval, keep going.
                                 guessIdx = guessIdx - 1;
@@ -100,8 +100,8 @@ export class Signal {
                             //Guessed too low, move forward in list
                             var guessTimeNext = this.sampleList[guessIdx+1].time;
                             if(guessTimeNext > time_in){
-                                //We found the right interval, return the lower bound.
-                                return guessIdx;
+                                //We found the right interval, return the upper bound.
+                                return guessIdx + 1;
                             } else {
                                 //Not in this interval, keep going.
                                 guessIdx = guessIdx + 1;
