@@ -62,11 +62,12 @@ export class FastChart {
 
         //Drawing configurations
 
-        this.AXIS_MARGIN = 25;
-        this.VALUE_AXIS_WIDTH = 40;
+        this.AXIS_MARGIN = 10;
+        this.VALUE_AXIS_WIDTH = 30;
+        this.AXIS_Y_BOTTOM_MARGIN = 30;
 
         this.plotOriginX_px = Math.round(this.AXIS_MARGIN + this.VALUE_AXIS_WIDTH * numValueAxes);
-        this.plotOriginY_px = Math.round(this.canvas.height - this.AXIS_MARGIN);
+        this.plotOriginY_px = Math.round(this.canvas.height - this.AXIS_Y_BOTTOM_MARGIN);
 
         this.xAxisLen_px = this.canvas.width - this.plotOriginX_px;
         this.yAxisLen_px = this.plotOriginY_px;
@@ -78,7 +79,7 @@ export class FastChart {
     }
 
     drawXMarkers(){
-        this.getTickMarkList(this.startTime, this.endTime).forEach(markerTime => {
+        this.getTickMarkList(this.startTime, this.endTime, 1.0).forEach(markerTime => {
             var xPos = this.timeToX_px(markerTime);
             this.ctx.strokeStyle = "#555555";
             this.ctx.lineWidth = 1;
@@ -137,7 +138,7 @@ export class FastChart {
         }
     }
 
-    getTickMarkList(min, max){
+    getTickMarkList(min, max, decimationFactor){
         var range = max - min;
         var orderOfMag = Math.pow(10.0, Math.floor(Math.log10(range)));
         var markerSpacing = 1;
@@ -148,6 +149,8 @@ export class FastChart {
             markerSpacing = orderOfMag / 2.0;
         else
             markerSpacing = orderOfMag / 5.0;
+
+        markerSpacing *= decimationFactor;
 
         var markerStart = Math.ceil(min / markerSpacing) * markerSpacing;
         var markerCur = markerStart;
@@ -165,7 +168,7 @@ export class FastChart {
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         //X axis
-        this.ctx.moveTo(this.AXIS_MARGIN,this.plotOriginY_px);
+        this.ctx.moveTo(this.AXIS_MARGIN, this.plotOriginY_px);
         this.ctx.lineTo(this.canvas.width, this.plotOriginY_px);
         this.ctx.stroke();
 
@@ -174,25 +177,23 @@ export class FastChart {
         for(var vaIdx = 0; vaIdx < valueAxisList.length; vaIdx++){
             var xPos = this.plotOriginX_px - vaIdx * this.VALUE_AXIS_WIDTH;
             this.ctx.moveTo(xPos, 0);
-            this.ctx.lineTo(xPos, this.plotOriginY_px);
+            this.ctx.lineTo(xPos, this.canvas.height);
             this.ctx.stroke();
 
             var yMin = valueAxisList[vaIdx].minVal;
             var yMax = valueAxisList[vaIdx].maxVal;
 
-            var yPos = this.plotOriginY_px/2;
-            this.ctx.save();
-            this.ctx.translate(xPos - this.VALUE_AXIS_WIDTH/2, yPos);
-            this.ctx.rotate(-Math.PI/2);
-            this.ctx.font = "bold 18px monospace";
-            this.ctx.textBaseline = 'bottom';
+
+            this.ctx.font = "bold 16px monospace";
+            this.ctx.textBaseline = 'middle';
             this.ctx.textAlign = 'center';
             this.ctx.fillStyle = "#FFFFFF";
-            this.ctx.fillText(valueAxisList[vaIdx].units,0,0);
-            this.ctx.restore();
+            var labelXPos = xPos - this.VALUE_AXIS_WIDTH/2;
+            var labelYPos = (this.plotOriginY_px + this.canvas.height)/2;
+            this.ctx.fillText(valueAxisList[vaIdx].units,labelXPos,labelYPos);
 
 
-            this.getTickMarkList(yMin, yMax).forEach(markerVal => {
+            this.getTickMarkList(yMin, yMax, 2.0).forEach(markerVal => {
                 var yPos = this.valToY_px(markerVal, yMin, yMax);
                 this.ctx.strokeStyle = "#FFFFFF";
                 this.ctx.lineWidth = 1;

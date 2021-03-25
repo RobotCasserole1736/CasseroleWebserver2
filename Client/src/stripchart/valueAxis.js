@@ -28,7 +28,7 @@ export class ValueAxis {
             if(span == 0){
                 span = 1;
             }
-            var margin = span * 0.1;
+            var margin = span * 0.05;
             this.minVal = Math.min(sample.value - margin, this.minVal);
             this.maxVal = Math.max(sample.value + margin, this.maxVal);
         });
