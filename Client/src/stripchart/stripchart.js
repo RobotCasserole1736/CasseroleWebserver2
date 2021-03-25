@@ -216,6 +216,22 @@ function saveCurrentConfig(){
         });
 
         lsData["selSigList"] = ls_sel_signals;
+        lsData["plotCount"] = plotList.length;
+
+        var plottedSignalNameListList = [];
+
+        plotList.forEach(plot => {
+            var plottedSignalNameList = [];
+
+            plot.plottedSignalsList.forEach(ps => {
+                plottedSignalNameList.push(ps.signal.name);
+            })
+
+            plottedSignalNameListList.push(plottedSignalNameList);
+        });
+
+        lsData["plottedSignalNameListList"] = plottedSignalNameListList;
+
 
         localStorage.setItem(LOCAL_STORAGE_KEY_NAME, JSON.stringify(lsData));
     }
@@ -225,16 +241,43 @@ function saveCurrentConfig(){
 function restoreConfig(){
     var lsData = new Map();
     var ls_sel_signals = [];
+    var plotCount = null;
+    var plottedSignalNameListList = null;
     if(local_storage_available == true){
         lsData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_NAME))
 
-        var ls_sel_signals = []
         if(lsData != null){
-            var ls_sel_signals = lsData["selSigList"];
+            ls_sel_signals = lsData["selSigList"];
+            plotCount = lsData["plotCount"];
+            plottedSignalNameListList = lsData["plottedSignalNameListList"];
         }
+
+        ls_sel_signals.forEach(sigName => {
+            signalSelector.selectSignalByName(sigName);
+        });
+
+        if(plotCount != null){
+            while(plotList.length < plotCount){
+                addPlot();
+            }
+
+            if(plottedSignalNameListList != null){
+                var endIdx = Math.min(plottedSignalNameListList.length, plotCount);
+                for(var pltIdx = 0; pltIdx < endIdx; pltIdx++){
+                    var plottedSignalNameList = plottedSignalNameListList[pltIdx];
+                    plottedSignalNameList.forEach(psName => {
+                        var sig = signalFromName(psName);
+                        if(sig){
+                            plotList[pltIdx].addSignal(sig);
+                            signalSelector.selectSignalByName(psName);
+                        }
+                    });
+                }
+            }
+        }
+
+
     }
 
-    ls_sel_signals.forEach(sigName => {
-        signalSelector.selectSignalByName(sigName);
-    });
+
 }
