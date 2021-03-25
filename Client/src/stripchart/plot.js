@@ -61,11 +61,25 @@ export class Plot {
         this.chart.setCursorPos(this.cursorTime);
         this.chart.drawXMarkers();
         this.chart.drawZoomBox();
+
+        //Draw all non-selected signals
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
-            var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
-            this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr);
+            if(ps.selected == false){
+                var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
+                this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr, ps.selected);
+            }
         }
+
+        //Draw selected signals
+        for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
+            var ps = this.plottedSignalsList[sigIdx];
+            if(ps.selected == true){
+                var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
+                this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr, ps.selected);
+            }
+        }
+
         this.chart.drawCursor();
         
     }

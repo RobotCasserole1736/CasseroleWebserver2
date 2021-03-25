@@ -173,10 +173,10 @@ export class FastChart {
         this.ctx.stroke();
     }
 
-    drawSeries(sampleList, yMin, yMax, colorString_in){
+    drawSeries(sampleList, yMin, yMax, colorString_in, bold_in){
         if(sampleList.length > 2){
             this.ctx.strokeStyle = colorString_in;
-            this.ctx.lineWidth = 1;
+            this.ctx.lineWidth = bold_in ? 3 : 1;
             this.ctx.beginPath();
             var x_px = this.timeToX_px(sampleList[0].time);
             var y_px = this.valToY_px(sampleList[0].value, yMin, yMax);
@@ -196,7 +196,7 @@ export class FastChart {
                     x_px = this.timeToX_px(sampleList[sampIdx].time);
                     y_px = this.valToY_px(sampleList[sampIdx].value, yMin, yMax);
                     this.ctx.beginPath();
-                    this.ctx.arc(x_px, y_px, this.dataMarkerCircleRadius, 0, 2 * Math.PI);
+                    this.ctx.arc(x_px, y_px, this.dataMarkerCircleRadius * (bold_in ? 3.0 : 1.0), 0, 2 * Math.PI);
                     this.ctx.fill();
                 }
             }

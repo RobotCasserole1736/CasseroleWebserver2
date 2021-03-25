@@ -11,6 +11,8 @@ export class PlottedSignal {
         this.colorStr = initial_color; //Hex String
         this.drawDiv = drawDiv_in;
 
+        this.selected = false;
+
         // Min/Max for plot draw scaling purposes
         this.lowerPlotRange = 0;
         this.upperPlotRange = 0;
@@ -18,7 +20,8 @@ export class PlottedSignal {
         // Draw textual value display
         this.drawDiv.classList.add("plottedSignalInfo");
         this.drawDiv.setAttribute('draggable', true);
-        this.drawDiv.addEventListener( "dragstart", this.onDragStart );
+        this.drawDiv.addEventListener( "dragstart", this.onDragStart.bind(this) );
+        this.drawDiv.addEventListener( "mouseup", this.onMouseUp.bind(this) );
 
         var nameInfo = document.createElement("plottedSignalName");
         nameInfo.innerHTML = signal_in.name;
@@ -83,10 +86,20 @@ export class PlottedSignal {
         } else {
             this.valueInfo.innerHTML = "----";
         }
+
+        if(this.selected){
+            this.drawDiv.classList.add("selectedText");
+        } else {
+            this.drawDiv.classList.remove("selectedText");
+        }
     }
 
     onDragStart = e => {
         e.dataTransfer.setData('text/plain', this.signal.name);
+    }
+
+    onMouseUp = e => {
+        this.selected = !this.selected;
     }
 
 }
