@@ -57,7 +57,7 @@ function addPlot(){
 
     plotsContainer.appendChild(newPlotContainer);
 
-    var plotToAdd = new Plot(newPlotContainer, signalFromName);
+    var plotToAdd = new Plot(newPlotContainer, signalFromName, updateAllPlotValueAxisCount);
     plotToAdd.chart.mouseoverAtTimeCallback = onChartMouseOver; //Install our mouseover handler for cursor purposes
     plotToAdd.chart.zoomRangeUpdateCallback = onChartZoomAction; //Install our zoom handler for synced zoom purposes
     plotList.push(plotToAdd); //Assume add to end
@@ -170,8 +170,22 @@ function onNewSampleData(name, timestamp, units){
     recordingEndTime = timestamp;
 }
 
+//Plot callback supporting drag/drop events
+// allowing signals to be added to plots using only their name
 function signalFromName(name_in){
     return allSignalsMap[name_in];
+}
+
+// Plot callback supporting keeping the number of 
+// value axes aligned (in turn keeps the time vertically aligned across all plots).
+function updateAllPlotValueAxisCount(){
+    var maxNumAxes = 0;
+    plotList.forEach(plot => {
+        maxNumAxes = Math.max(maxNumAxes, plot.valueAxesList.length);
+    })
+    plotList.forEach(plot => {
+        plot.setNumValueAxes(maxNumAxes);
+    })
 }
 
 ///////////////////////////

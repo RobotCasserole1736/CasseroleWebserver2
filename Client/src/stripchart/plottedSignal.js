@@ -6,16 +6,14 @@
 
 export class PlottedSignal {
 
-    constructor(signal_in, initial_color, drawDiv_in) { 
+    constructor(signal_in, initial_color, valueAxis_in, drawDiv_in) { 
         this.signal = signal_in;
         this.colorStr = initial_color; //Hex String
         this.drawDiv = drawDiv_in;
 
         this.selected = false;
 
-        // Min/Max for plot draw scaling purposes
-        this.lowerPlotRange = 0;
-        this.upperPlotRange = 0;
+        this.valueAxis = valueAxis_in;
 
         // Draw textual value display
         this.drawDiv.classList.add("plottedSignalInfo");
@@ -38,33 +36,13 @@ export class PlottedSignal {
         this.drawDiv.style.color = this.colorStr;
     }
 
-    getSamplesWithPlotRangeUpdate(startTime, endTime){
+    autoScale(startTime, endTime){
         var sampleList = this.signal.getSamples(startTime, endTime);
+        this.valueAxis.autoScale(sampleList);
+    }
 
-        if(sampleList.length > 0){
-            this.lowerPlotRange = sampleList[0].value;
-            this.upperPlotRange = sampleList[0].value;
-
-            sampleList.forEach(sample => {
-                if(sample.value > this.upperPlotRange){
-                    this.upperPlotRange = sample.value;
-                }
-                if(sample.value < this.lowerPlotRange){
-                    this.lowerPlotRange  = sample.value;
-                }
-            });
-
-            //Apply small margin
-            var margin = (this.upperPlotRange - this.lowerPlotRange) * 0.03;
-            this.lowerPlotRange -= margin;
-            this.upperPlotRange += margin;
-
-        } else {
-            this.lowerPlotRange = -1.0;
-            this.upperPlotRange = 1.0;
-        }
-
-
+    getSamples(startTime, endTime){
+        var sampleList = this.signal.getSamples(startTime, endTime);
         return sampleList;
     }
 

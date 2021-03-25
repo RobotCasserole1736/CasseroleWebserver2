@@ -1,22 +1,25 @@
 /////////////////////////////////////////////////////////////////////////
-// Plot - collection of the highcharts object, plus the table which
-// shows signal names and values.
+// Plot - collection of the fastChart object, plus the table which
+// shows signal names and values, and a set of value axes.
 /////////////////////////////////////////////////////////////////////////
 
 
 import { FastChart } from './fastChart.js';
 import { PlottedSignal } from './plottedSignal.js';
+import { ValueAxis } from './valueAxis.js';
 
 
 export class Plot {
 
-    constructor(drawDiv_in, signalFromNameCallback_in) { 
+    constructor(drawDiv_in, signalFromNameCallback_in, numAxesUpdatedCallback_in) { 
 
         //Save off a reference to the relevant div
         this.drawDiv = drawDiv_in;
 
         // Init the plotted signals list to be empty
         this.plottedSignalsList = [];
+        this.valueAxesList = [];
+        this.numValueAxes = 0; //Note, this may be bigger than valueAxesList.length to align with other charts.
 
         // External ranges to synchronize all plots in terms of what they show 
         // and what actually needs drawn on the screen at any given time.
@@ -37,6 +40,7 @@ export class Plot {
 
         //Configure the whole plot div to support signals dropped onto them.
         this.signalFromNameCallback = signalFromNameCallback_in; //supporting drop operation requires getting the actual signal object using only the name, which would come from the next architectural layer up. Yucky, but functional.
+        this.numAxesUpdatedCallback = numAxesUpdatedCallback_in;
         this.drawDiv.addEventListener('dragenter', this.dragEnter)
         this.drawDiv.addEventListener('dragover', this.dragOver);
         this.drawDiv.addEventListener('dragleave', this.dragLeave);
@@ -53,21 +57,32 @@ export class Plot {
 
     }
 
+    setNumValueAxes(num_in){
+        this.numValueAxes = Math.max(this.valueAxesList.length, num_in);
+    }
+
     drawDataToChart(){
-        this.chart.recalcDrawConstants();
+        //Clear and reset plot
+        this.chart.recalcDrawConstants(this.numValueAxes);
         this.chart.clearDrawing();
+
+        //Calculate and set up min/max x and y ranges
         this.chart.setTimeRange(this.drawStartTime, this.drawEndTime);
-        this.chart.drawAxes();
+        this.valueAxesList.forEach(va => va.resetScale());
+        this.plottedSignalsList.forEach(ps => ps.autoScale(this.drawStartTime, this.drawEndTime));
+
+        //Draw chart elements. Z order: first = back, last = front.
+        this.chart.drawAxes(this.valueAxesList);
         this.chart.setCursorPos(this.cursorTime);
-        this.chart.drawXMarkers();
         this.chart.drawZoomBox();
+        this.chart.drawXMarkers();
 
         //Draw all non-selected signals
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
             if(ps.selected == false){
-                var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
-                this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr, ps.selected);
+                var samples = ps.getSamples(this.drawStartTime,this.drawEndTime);
+                this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorStr, ps.selected);
             }
         }
 
@@ -75,8 +90,8 @@ export class Plot {
         for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
             var ps = this.plottedSignalsList[sigIdx];
             if(ps.selected == true){
-                var samples = ps.getSamplesWithPlotRangeUpdate(this.drawStartTime,this.drawEndTime);
-                this.chart.drawSeries(samples, ps.lowerPlotRange, ps.upperPlotRange, ps.colorStr, ps.selected);
+                var samples = ps.getSamples(this.drawStartTime,this.drawEndTime);
+                this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorStr, ps.selected);
             }
         }
 
@@ -97,9 +112,25 @@ export class Plot {
         })
 
         if(!duplicate){
+
+            //Check if we already have an axis to put this on
+            var newValueAxis = null;
+            this.valueAxesList.forEach(va => {
+                if(va.units == signal_in.units){
+                    newValueAxis = va;
+                }
+            });
+
+            //If we didn't have an existing axis, make a new one
+            if(newValueAxis == null){
+                newValueAxis = new ValueAxis(signal_in.units);
+                this.valueAxesList.push(newValueAxis);
+                this.numAxesUpdatedCallback();
+            }
+
             var color = this.DFLT_COLORS[this.plottedSignalsList.length % this.DFLT_COLORS.length];
             var newPltSigDiv = document.createElement("plottedSignalInfo");
-            this.plottedSignalsList.push(new PlottedSignal(signal_in, color, newPltSigDiv));
+            this.plottedSignalsList.push(new PlottedSignal(signal_in, color, newValueAxis, newPltSigDiv));
             this.psContainer.appendChild(newPltSigDiv);
         }
 

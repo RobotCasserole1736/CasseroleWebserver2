@@ -56,15 +56,16 @@ export class FastChart {
     // Private, Helper methods
     //////////////////////////////////////
 
-    recalcDrawConstants(){
+    recalcDrawConstants(numValueAxes){
         this.canvas.width  = this.drawContainer.clientWidth;
         this.canvas.height = this.drawContainer.clientHeight;
 
         //Drawing configurations
 
         this.AXIS_MARGIN = 25;
+        this.VALUE_AXIS_WIDTH = 30;
 
-        this.plotOriginX_px = Math.round(this.AXIS_MARGIN);
+        this.plotOriginX_px = Math.round(this.AXIS_MARGIN + this.VALUE_AXIS_WIDTH * numValueAxes);
         this.plotOriginY_px = Math.round(this.canvas.height - this.AXIS_MARGIN);
 
         this.xAxisLen_px = this.canvas.width - this.plotOriginX_px;
@@ -159,18 +160,23 @@ export class FastChart {
         return markerList;
     }
 
-    drawAxes(){
+    drawAxes(valueAxisList){
         this.ctx.strokeStyle = "#FFFFFF";
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         //X axis
-        this.ctx.moveTo(this.plotOriginX_px,this.plotOriginY_px);
+        this.ctx.moveTo(this.AXIS_MARGIN,this.plotOriginY_px);
         this.ctx.lineTo(this.canvas.width, this.plotOriginY_px);
 
-        //Y axis
-        this.ctx.moveTo(this.plotOriginX_px, 0);
-        this.ctx.lineTo(this.plotOriginX_px, this.plotOriginY_px);
+        //Y axes
+        for(var vaIdx = 0; vaIdx < valueAxisList.length; vaIdx++){
+            var xPos = this.plotOriginX_px - vaIdx * this.VALUE_AXIS_WIDTH;
+            this.ctx.moveTo(xPos, 0);
+            this.ctx.lineTo(xPos, this.plotOriginY_px);
+        }
         this.ctx.stroke();
+
+
     }
 
     drawSeries(sampleList, yMin, yMax, colorString_in, bold_in){
