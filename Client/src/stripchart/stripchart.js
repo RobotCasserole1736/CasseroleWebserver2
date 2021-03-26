@@ -11,7 +11,7 @@ import { Plot } from './plot.js'
 import { SignalSelector } from './signalSelector.js';
 import { Signal } from './signal.js';
 import { Sample } from './sample.js';
-import { SignalDAQ } from '../signalDaq/signalDAQ.js';
+import { SignalDAQ } from '../interfaces/signalDAQ_NT4.js';
 
 var plotsContainer = document.getElementById("plotsContainer");
 var plotList = [];
