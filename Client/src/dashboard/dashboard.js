@@ -2,6 +2,7 @@ import { CircularGauge } from './circularGauge.js'
 import { Icon } from './icon.js'
 import { Camera } from './camera.js'
 import { LineGauge } from './lineGauge.js'
+import { Text } from './text.js'
 
 //////////////////////////////////////////////////
 // Logic to run on page load
@@ -17,6 +18,8 @@ var widget6 = new Icon('widget6', 'power',   "#2244FF", "#222222", 'icons/camera
 var widget7 = new Camera('widget7', "Vision Cam", 'http://photonvision.local:1192/stream.mjpg');
 var widget8 = new LineGauge('widget8', 'Another Test', 0,100,20,60);
 var widget9 = new LineGauge('widget9', 'Puppy', -1000,0,-9999,9999);
+var widget10 = new Text('widget10', 'Test1', -1000,0,-9999,9999);
+var widget11 = new Text('widget11', 'Test2', -1000,0,-9999,9999);
 
 
 // Start up rendering (never returns)
@@ -61,6 +64,9 @@ function mainRenderLoop(){
 
     widget8.setVal(testSinSlow)
     widget9.setVal(-10*testSinFast)
+
+    widget10.setVal("Hello World%@");
+    widget11.setVal(testSinSlow.toPrecision(4) + " Nm");
     
     widget1.render();
     widget2.render();
@@ -70,6 +76,8 @@ function mainRenderLoop(){
     widget6.render();
     widget8.render();
     widget9.render();
+    widget10.render();
+    widget11.render();
 
     requestAnimationFrame(mainRenderLoop);
 }
