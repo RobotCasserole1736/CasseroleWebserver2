@@ -40,8 +40,8 @@ export class Text {
     }
 
     // Call this whenever a new state for the widget is available.
-    setVal(textString) { 
-        this.text = textString;;
+    setVal(thingToDisplay) { 
+        this.text = thingToDisplay.toString(); //Best guess for now?
         this.hasData = true;
     }
 
