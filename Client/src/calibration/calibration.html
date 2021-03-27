@@ -4,19 +4,35 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="../common.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="tooltip.css">
+    <link rel="stylesheet" href="calibration.css">
     <title>Calibrations</title>
 </head>
 
 <body>
     <topLevelContainer>
-        <!-- main table area for logs -->
+
+        <!-- buttons and controls area-->
+        <buttonsContainer class="outlined">
+            <buttonGroup class="outline">
+                <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter"
+                onkeyup="filterChangeHandler(this.value)">
+            </buttonGroup>
+            <buttonGroup class="outlined"> 
+                <button id="reset_btn" type="button" onclick="resetAll()">Reset All</button>
+            </buttonGroup>
+
+        </buttonsContainer>
+
+
+        <!-- main table area for calibrations -->
+        <table class="calValueTable" id="calValueTable">
+
+        </table>
 
 
     </topLevelContainer>
 
-    <script type="module" src="./calibrations.js"></script>
+    <script type="module" src="./calibration.js"></script>
 
 </body>
 

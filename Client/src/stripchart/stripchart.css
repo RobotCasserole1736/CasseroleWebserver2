@@ -1,23 +1,3 @@
-topLevelContainer {
-    display: flex;
-    flex-direction: column;
-    width:100%;
-    height:100%;
-}
-
-
-
-buttonsContainer {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 0;
-}
-
-
-buttonGroup {
-    flex-grow: 1;
-}
-
 dataContainer{
     display: flex;
     flex-direction: row;
