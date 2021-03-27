@@ -19,30 +19,18 @@ export class Text {
         // State Variable Defaults
         this.reportNoData();
 
+        this.drawDiv = document.createElement("div");
+        this.drawDiv.style.width = "100%";
+        this.drawDiv.style.height = "100%";
+        this.drawDiv.style.display = "flex";
+        this.drawDiv.style.alignItems ="center";
+        this.drawDiv.style.justifyContent = "center";
+        this.updateFontSize();
+
         this.drawElem = document.getElementById(this.drawElemID);
         this.drawElem.setAttribute("data-tooltip", this.title);
+        this.drawElem.appendChild(this.drawDiv);
 
-        //SVG Trick to get text to expand to fill the div
-        // See https://css-tricks.com/fitting-text-to-a-container/#just-use-svg
-        this.textElem= document.createElement("text");
-        this.textElem.setAttribute("x", "0");
-        this.textElem.setAttribute("y", "15");
-        this.textElem.style.fontSize = "20px";
-
-
-        this.svgElem = document.createElement("svg") ;
-        this.svgElem.setAttribute("viewBox", "0 0 20 9");
-        this.svgElem.style.width = "100%";
-        this.svgElem.style.height = "100%";
-        this.svgElem.style.position = "absolute";
-
-        this.textHolderDiv = document.createElement("div");
-        this.textHolderDiv.style.width = "100%";
-        this.textHolderDiv.style.height = "100%";
-
-        this.svgElem.appendChild(this.textElem);
-        this.textHolderDiv.appendChild(this.svgElem);
-        this.drawElem.appendChild(this.textHolderDiv);
     }
 
     // Call this when NT is disconnected, or data is otherwise not available
@@ -59,11 +47,16 @@ export class Text {
 
     //Call once per render loop to update and redraw the text area
     render() {
-        this.textElem.innerHTML = this.text;
+        this.updateFontSize();
+        this.drawDiv.innerHTML = this.text;
     }
 
     //////////////////////////////////////
     // Private, Helper methods
     //////////////////////////////////////
+
+    updateFontSize(){
+        this.drawDiv.style.fontSize = (this.drawDiv.clientHeight * 0.4).toString() + "px";
+    }
 
   }
