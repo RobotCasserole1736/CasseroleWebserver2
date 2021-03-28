@@ -16,7 +16,7 @@ HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (includin
 
 ## Dashboard
 
-![Super cool dashboard demo](docs/dashboard.mp4)
+![Super cool dashboard demo](doc/dashboard.gif)
 
 * Driver-Focused - At-A-Glance robot state notification
 * Webcam Display
@@ -24,7 +24,7 @@ HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (includin
 
 ## Stripcharts
 
-![Super cool stripcharts demo](docs/stripcharts.mp4)
+![Super cool stripcharts demo](doc/stripcharts.gif)
 
  * Multi-Chart time-axis synchronized zoom & pan.
  * Flexible Capture/display lists
