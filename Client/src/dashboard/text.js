@@ -1,13 +1,6 @@
 
 export class Text {
 
-    static kOFF = 0;
-    static kON  = 1;
-    static kBLINK  = 2;
-
-    static blinkPeriodLoops = 60;
-    static blinkDC = 0.6;
-
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
@@ -20,16 +13,13 @@ export class Text {
         this.reportNoData();
 
         this.drawDiv = document.createElement("div");
-        this.drawDiv.style.width = "100%";
-        this.drawDiv.style.height = "100%";
-        this.drawDiv.style.display = "flex";
-        this.drawDiv.style.alignItems ="center";
-        this.drawDiv.style.justifyContent = "center";
-        this.updateFontSize();
+        this.drawDiv.classList.add("textWidgetBase");
 
         this.drawElem = document.getElementById(this.drawElemID);
         this.drawElem.setAttribute("data-tooltip", this.title);
         this.drawElem.appendChild(this.drawDiv);
+
+        this.updateFontSize();
 
     }
 
@@ -56,7 +46,7 @@ export class Text {
     //////////////////////////////////////
 
     updateFontSize(){
-        this.drawDiv.style.fontSize = (this.drawDiv.clientHeight * 0.4).toString() + "px";
+        this.drawDiv.style.fontSize = (this.drawElem.clientHeight * 0.4).toString() + "px";
     }
 
   }
