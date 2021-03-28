@@ -104,7 +104,7 @@ export class CircularGauge {
 
         this.ARC_START_ANGLE = 3/4 * Math.PI;
         this.ARC_END_ANGLE   = 9/4 * Math.PI;
-        this.ARC_MIN_RADIUS  = this.canvas.width * 0.20;
+        this.ARC_MIN_RADIUS  = this.canvas.width * 0.15;
         this.ARC_MAX_RADIUS  = this.canvas.width * 0.35;
 
     }

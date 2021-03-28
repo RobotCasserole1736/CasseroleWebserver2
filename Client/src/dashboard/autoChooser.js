@@ -52,6 +52,7 @@ export class AutoChooser {
         this.drawElem = document.getElementById(this.drawElemID);
         this.drawElem.setAttribute("data-tooltip", this.title);
         this.drawElem.appendChild(this.drawDiv);
+        
 
         this.updateFontSize();
 
