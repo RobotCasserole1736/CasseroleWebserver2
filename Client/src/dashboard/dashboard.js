@@ -4,6 +4,7 @@ import { Camera } from './camera.js'
 import { LineGauge } from './lineGauge.js'
 import { Text } from './text.js'
 import { AutoChooser } from './autoChooser.js'
+import { Sound } from './sound.js'
 
 //////////////////////////////////////////////////
 // Logic to run on page load
@@ -23,6 +24,7 @@ var widget10 = new Text('widget10', 'Test1', -1000,0,-9999,9999);
 var widget11 = new Text('widget11', 'Test2', -1000,0,-9999,9999);
 var widget12 = new AutoChooser('widget12', 'Auto Mode', ['Do Nothing', 'Drive Forward', 'spinny move', 'win match'],onAuto1NewSelectedValue);
 
+var soundWidget1 = new Sound("test1", "sfx/alarm2.mp3", true);
 
 // Start up rendering (never returns)
 mainRenderLoop();
@@ -69,6 +71,8 @@ function mainRenderLoop(){
 
     widget10.setVal("Hello World%@");
     widget11.setVal(testSinSlow.toPrecision(4) + " Nm");
+
+    soundWidget1.setVal((testSinSlow > 75));
     
     widget1.render();
     widget2.render();
@@ -81,6 +85,8 @@ function mainRenderLoop(){
     widget10.render();
     widget11.render();
     widget12.render();
+    soundWidget1.render();
+
 
     requestAnimationFrame(mainRenderLoop);
 }

@@ -10,6 +10,8 @@ This is a work in process.
 
 NT4 - coming soon!
 
+No web development required. Visual appearance & configuration done from Java user code.
+
 # Front-End
 
 HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (including tablets & mobile devices).
@@ -33,4 +35,8 @@ HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (includin
 
 ## Calibration
 
+Coming soon!
+
 ## Data Logs
+
+Coming soon!
