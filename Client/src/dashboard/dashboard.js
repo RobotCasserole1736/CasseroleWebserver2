@@ -22,7 +22,7 @@ var widget8 = new LineGauge('widget8', 'Another Test', 0,100,20,60);
 var widget9 = new LineGauge('widget9', 'Puppy', -1000,0,-9999,9999);
 var widget10 = new Text('widget10', 'Test1', -1000,0,-9999,9999);
 var widget11 = new Text('widget11', 'Test2', -1000,0,-9999,9999);
-var widget12 = new AutoChooser('widget12', 'Auto Mode', ['Do Nothing', 'Drive Forward', 'spinny move', 'win match'],onAuto1NewSelectedValue);
+var widget12 = new AutoChooser('widget12', 'Auto Mode', ['Do Nothing', 'Drive Forward', 'Win Match', 'Victory Spins'],onAuto1NewSelectedValue);
 
 var soundWidget1 = new Sound("test1", "sfx/alarm2.mp3", true);
 
@@ -72,7 +72,7 @@ function mainRenderLoop(){
     widget10.setVal("Hello World%@");
     widget11.setVal(testSinSlow.toPrecision(4) + " Nm");
 
-    soundWidget1.setVal((testSinSlow > 75));
+    //soundWidget1.setVal((testSinSlow > 75)); // zomg my earballs
     
     widget1.render();
     widget2.render();
