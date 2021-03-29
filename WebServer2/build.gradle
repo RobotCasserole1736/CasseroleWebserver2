@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2021.1.1-beta-4"
+    id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -53,6 +53,15 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
+
+    // Webserver2 requirements
+    implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '11.0.1'
+    implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '11.0.1'
+    implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.0-alpha1'
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging

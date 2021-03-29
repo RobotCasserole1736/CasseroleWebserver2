@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.lib.Webserver2.Webserver2;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,12 +18,13 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used
-   * for any initialization code.
-   */
+
+  Webserver2 testServer = new Webserver2();
+
   @Override
   public void robotInit() {
+
+    testServer.startServer();
   }
 
   @Override

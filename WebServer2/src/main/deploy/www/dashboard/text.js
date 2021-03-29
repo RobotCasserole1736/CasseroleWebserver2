@@ -4,9 +4,8 @@ export class Text {
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(draw_elem_id, title_in, color_in) { 
+    constructor(draw_elem_id, title_in) { 
         this.drawElemID = draw_elem_id;
-        this.color = color_in;
         this.title = title_in;
         
         // State Variable Defaults
