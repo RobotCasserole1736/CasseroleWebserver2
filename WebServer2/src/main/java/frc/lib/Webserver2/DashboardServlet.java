@@ -88,12 +88,19 @@ class DashboardServlet extends HttpServlet {
     String generateJS() {
         String fileContent = readFileToString(jsTemplateFile);
         
-        String jsReplacement = "";
+        String jsInstantiate = "";
+        String jsUpdate = "";
+        String jsCallback = "";
+
         for(WidgetConfig w : dCfg.widgetList){
-            jsReplacement += w.getJS();
-            jsReplacement += "\n";
+            jsInstantiate += w.getJS();
+            jsInstantiate += "\n";
         }
-        String filledOut = fileContent.replace("${WIDGETS_JS}", jsReplacement);
+
+        String filledOut = fileContent;
+        filledOut = filledOut.replace("${WIDGETS_INSTANTIATE}", jsInstantiate);
+        filledOut = filledOut.replace("${WIDGETS_UPDATE}", jsUpdate);
+        filledOut = filledOut.replace("${WIDGETS_CALLBACK}", jsCallback);
 
         return filledOut;    
     }
