@@ -11,12 +11,12 @@ export class Icon {
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(draw_div_id, title, color_on, color_off, icon) { 
+    constructor(draw_div_id, name, color_on, color_off, symbolPath) { 
         this.draw_div_id = draw_div_id;
-        this.title = title;
+        this.name = name;
         this.color_on = color_on;
         this.color_off = color_off;
-        this.icon = icon;
+        this.symbolPath = symbolPath;
         
         // State Variable Defaults
         this.hasData = false;
@@ -24,7 +24,7 @@ export class Icon {
         this.blinkCounter = 0;
 
         this.docElem = document.getElementById(draw_div_id);
-        this.docElem.setAttribute("data-tooltip", this.title);
+        this.docElem.setAttribute("data-tooltip", this.name);
     }
 
     // Call this when NT is disconnected, or data is otherwise not available
@@ -75,7 +75,7 @@ export class Icon {
             //Draw an icon with the specified color
             this.docElem.innerHTML = "<div style=\"filter: drop-shadow(0 0 0.2vw " + shadowDrawColor + "); width:100%; height:100%\">" + 
                                      "<div class=\"iconGraphic\" style=\"background-color:" + iconDrawColor + ";"+
-                                     "mask:url("+ this.icon +");-webkit-mask-image:url("+ this.icon +"); "+
+                                     "mask:url("+ this.symbolPath +");-webkit-mask-image:url("+ this.symbolPath +"); "+
                                      "-webkit-mask-size: cover;mask-size: cover;" +
                                      "\"></div></div>";
         } else {

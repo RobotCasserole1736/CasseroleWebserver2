@@ -25,6 +25,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import frc.lib.Webserver2.DashboardConfig.DashboardConfig;
 import frc.robot.Robot;
 
 

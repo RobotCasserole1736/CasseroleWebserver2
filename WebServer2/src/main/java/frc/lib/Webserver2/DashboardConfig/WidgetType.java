@@ -1,4 +1,4 @@
-package frc.lib.Webserver2;
+package frc.lib.Webserver2.DashboardConfig;
 
 public enum WidgetType {
     AUTO_CHOOSER("AutoChooser"), 

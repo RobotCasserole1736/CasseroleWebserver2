@@ -4,9 +4,9 @@ export class Text {
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(draw_elem_id, title_in) { 
+    constructor(draw_elem_id, name_in) { 
         this.drawElemID = draw_elem_id;
-        this.title = title_in;
+        this.name = name_in;
         
         // State Variable Defaults
         this.reportNoData();
@@ -15,7 +15,7 @@ export class Text {
         this.drawDiv.classList.add("textWidgetBase");
 
         this.drawElem = document.getElementById(this.drawElemID);
-        this.drawElem.setAttribute("data-tooltip", this.title);
+        this.drawElem.setAttribute("data-tooltip", this.name);
         this.drawElem.appendChild(this.drawDiv);
 
         this.updateFontSize();

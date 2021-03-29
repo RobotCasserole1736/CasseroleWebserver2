@@ -4,10 +4,10 @@ export class AutoChooser {
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(draw_elem_id, title_in, modeTitleList_in, valChangedCallback_in) { 
+    constructor(draw_elem_id, name_in, modeTitleList_in, valChangedCallback_in) { 
         this.drawElemID = draw_elem_id;
         this.modeTitleList = modeTitleList_in; //List of strings describing states. 
-        this.title = title_in;
+        this.name = name_in;
         this.valChangedCallback = valChangedCallback_in;
         
         // State Variable Defaults
@@ -50,7 +50,7 @@ export class AutoChooser {
 
         //Put the chooser into the specified div with tooltip
         this.drawElem = document.getElementById(this.drawElemID);
-        this.drawElem.setAttribute("data-tooltip", this.title);
+        this.drawElem.setAttribute("data-tooltip", this.name);
         this.drawElem.appendChild(this.drawDiv);
         
 

@@ -57,7 +57,6 @@ dependencies {
     // Webserver2 requirements
     implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '11.0.1'
     implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '11.0.1'
-    implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.0-alpha1'
     implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'

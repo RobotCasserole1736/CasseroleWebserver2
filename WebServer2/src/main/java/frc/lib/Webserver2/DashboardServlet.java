@@ -20,6 +20,13 @@ package frc.lib.Webserver2;
  */
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import frc.lib.Webserver2.DashboardConfig.DashboardConfig;
+import frc.lib.Webserver2.DashboardConfig.WidgetConfig;
+import frc.robot.Robot;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,19 +36,77 @@ class DashboardServlet extends HttpServlet {
 
     private static final long serialVersionUID = -654451291074753656L;
 
+    final String templatesBaseLocal = "./src/main/deploy/templates";
+    final String templatesBaseRIO = "/home/lvuser/deploy/templates";
+
+    String htmlTemplateFile;
+    String jsTemplateFile;
+
     DashboardConfig dCfg;
 
-    DashboardServlet(DashboardConfig cfg_in){
+    DashboardServlet(DashboardConfig cfg_in) {
         super();
         dCfg = cfg_in;
+
+        String templatesRootDir = Robot.isReal() ? templatesBaseRIO : templatesBaseLocal;
+        htmlTemplateFile = Path.of(templatesRootDir, "dashboard.html").toString();
+        jsTemplateFile = Path.of(templatesRootDir, "dashboard.js").toString();
     }
 
     @Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.getWriter().println("<h1>FRC1736 Robot Casserole 2016 </h1>");	//TODO - stream generated file into here
-		
-	}
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String outputText = "";
+        if (request.getRequestURL().toString().endsWith(".html")) {
+            outputText = generateHTML();
+            response.setContentType("text/html");
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else if (request.getRequestURL().toString().endsWith(".js")) {
+            outputText = generateJS();
+            response.setContentType("application/javascript");
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setContentType("text/plain");
+            response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
+        }
 
+        response.getWriter().println(outputText);
+    }
+
+    String generateHTML(){
+        String fileContent = readFileToString(htmlTemplateFile);
+        
+        String htmlReplacement = "";
+        for(WidgetConfig w : dCfg.widgetList){
+            htmlReplacement += w.getHTML();
+            htmlReplacement += "\n";
+        }
+        String filledOut = fileContent.replace("${WIDGETS_HTML}", htmlReplacement);
+
+        return filledOut;
+    }
+
+    String generateJS() {
+        String fileContent = readFileToString(jsTemplateFile);
+        
+        String jsReplacement = "";
+        for(WidgetConfig w : dCfg.widgetList){
+            jsReplacement += w.getJS();
+            jsReplacement += "\n";
+        }
+        String filledOut = fileContent.replace("${WIDGETS_JS}", jsReplacement);
+
+        return filledOut;    
+    }
+
+    private String readFileToString(String filePath) {
+        String content = "";
+
+        try {
+            content = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return content;
+    }
 }

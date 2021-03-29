@@ -3,9 +3,9 @@ export class LineGauge {
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(draw_div_id, title, min_range, max_range, min_acceptable, max_acceptable) { 
+    constructor(draw_div_id, name, min_range, max_range, min_acceptable, max_acceptable) { 
         this.draw_div_id = draw_div_id;
-        this.title = title;
+        this.name = name;
         this.min_range = min_range;
         this.max_range = max_range;
         this.min_acceptable = min_acceptable;
@@ -49,7 +49,7 @@ export class LineGauge {
         if(this.hasData){
             displayValueStr = Math.round(this.curVal).toString();
         }
-        var text = this.title + ":   " + displayValueStr;
+        var text = this.name + ":   " + displayValueStr;
         this.ctx.fillText(text, this.titleTextAnchorX, this.titleTextAnchorY);
 
         this.drawGauge();

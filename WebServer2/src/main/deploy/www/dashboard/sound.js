@@ -4,9 +4,9 @@ export class Sound {
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(title_in, file_in, looping_in) { 
-        this.file = file_in;
-        this.title = title_in;
+    constructor(name_in, filePath_in, looping_in) { 
+        this.filePath = filePath_in;
+        this.name = name_in;
         this.looping = looping_in; // True: Playback whenever active, looping. False: Single shot, full-file playback on rising edge.
         
         // State Variable Defaults
@@ -15,11 +15,11 @@ export class Sound {
 
 
         try{
-            this.audio = new Audio(this.file);
+            this.audio = new Audio(this.filePath);
             this.audio.load();
             this.audio.loop = this.looping;
         } catch(e){
-            console.error("Error while attempting to load audio file" + this.file + " for " + this.name);
+            console.error("Error while attempting to load audio file" + this.filePath + " for " + this.name);
             console.error(e);
         }
         
