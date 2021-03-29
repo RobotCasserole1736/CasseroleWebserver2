@@ -6,12 +6,7 @@ public class SoundConfig extends WidgetConfig {
     boolean looping = false;
 
     @Override
-    public String getHTML() {
-        return "";
-    }
-
-    @Override
-    public String getJS(){
+    public String getJSDeclaration(){
         return "";
     }
     

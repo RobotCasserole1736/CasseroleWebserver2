@@ -7,14 +7,13 @@ public class CircularGaugeConfig extends WidgetConfig {
     double minAcceptable;
     double maxAcceptable;
 
-    @Override
-    public String getHTML() {
-        return "";
-    }
+    final double nominalWidth  = 20;
+    final double nominalHeight = 20;
 
     @Override
-    public String getJS(){
-        return "";
+    public String getHTML(){
+        double width = nominalWidth * sizeScaleFactor;
+        double height = nominalHeight * sizeScaleFactor;
+        return genHtmlDeclaration(height, width);
     }
-    
 }

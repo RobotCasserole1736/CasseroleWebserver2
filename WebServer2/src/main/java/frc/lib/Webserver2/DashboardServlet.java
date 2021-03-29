@@ -93,8 +93,14 @@ class DashboardServlet extends HttpServlet {
         String jsCallback = "";
 
         for(WidgetConfig w : dCfg.widgetList){
-            jsInstantiate += w.getJS();
+            jsInstantiate += w.getJSDeclaration();
             jsInstantiate += "\n";
+
+            jsUpdate += w.getJSUpdate();
+            jsUpdate += "\n";
+
+            jsCallback += w.getJSCallback();
+            jsCallback += "\n";   
         }
 
         String filledOut = fileContent;

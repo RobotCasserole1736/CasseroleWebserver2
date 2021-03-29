@@ -24,6 +24,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    testServer.dashboard.addCamera("Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 10, 1.0);
+
     testServer.startServer();
   }
 
