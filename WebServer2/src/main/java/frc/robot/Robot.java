@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.lib.Webserver2.Webserver2;
 
@@ -24,7 +26,18 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    ArrayList<String> autoModes = new ArrayList<String>();
+    autoModes.add("Do Nothing");
+    autoModes.add("Drive Forward");
+    autoModes.add("Spin Left");
+
     testServer.dashboard.addCamera("Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 10, 1.0);
+    testServer.dashboard.addCircularGauge("Test Gauge", "Nm", 0, 100, 75, 90, 5, 5, 1.0);
+    testServer.dashboard.addAutoChooser("Auto Mode", autoModes, 30, 70, 1.0);
+    testServer.dashboard.addIcon("Test Icon", "#FF0000", "#222222", "icons/speed.svg", 5, 50, 1.0);
+    testServer.dashboard.addLineGauge("Speed", "RPM", -500, 500, -100, 100, 75, 10, 1.0);
+    testServer.dashboard.addSound("Evil Sound", "sfx/alarm1.mp3", false);
+    testServer.dashboard.addText("Blah", 75, 30, 1.0);
 
     testServer.startServer();
   }

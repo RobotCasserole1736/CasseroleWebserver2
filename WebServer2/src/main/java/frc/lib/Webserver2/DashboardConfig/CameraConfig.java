@@ -16,7 +16,7 @@ public class CameraConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration(){
-        return "var widget"+ Integer.toString(idx) +" = new Camera('widget"+ Integer.toString(idx) +"', \""+name+"\", '"+streamURL+"');";
+        return String.format("var widget%d = new Camera('widget%d', '%s', '%s');", idx, idx, name, streamURL);
     }
     
 }

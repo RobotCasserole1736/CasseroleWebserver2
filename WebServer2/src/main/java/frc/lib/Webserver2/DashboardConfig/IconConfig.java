@@ -19,7 +19,12 @@ public class IconConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration(){
-        return "";
+        return String.format("var widget%d = new Icon('widget%d', '%s', '%s', '%s', '%s');", idx, idx, name, colorOn, colorOff, symbolPath);
+    }
+
+    @Override
+    public String getJSUpdate() {
+        return String.format("widget%d.render();", idx);
     }
     
 }

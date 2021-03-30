@@ -11,6 +11,7 @@ public class DashboardConfig {
     //TODO on all - add Signal/NT references
     public void addAutoChooser(String name, List<String> modeNames, double xPos, double yPos, double sizeScaleFactor){ 
         var w = new AutoChooserConfig();
+        w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
         w.name = name;
@@ -22,6 +23,7 @@ public class DashboardConfig {
 
     public void addCamera(String name, String streamURL, double xPos, double yPos, double sizeScaleFactor){ //TODO add version for NT referenced URL
         var w = new CameraConfig();
+        w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
         w.name = name;
@@ -32,6 +34,7 @@ public class DashboardConfig {
 
     public void addCircularGauge(String name, String units, double minRange, double maxRange, double minAcceptable, double maxAcceptable, double xPos, double yPos, double sizeScaleFactor){
         var w = new CircularGaugeConfig();
+        w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
         w.name = name;
@@ -45,6 +48,7 @@ public class DashboardConfig {
 
     public void addIcon(String name, String colorOn, String colorOff, String symbolPath, double xPos, double yPos, double sizeScaleFactor){
         var w = new IconConfig();
+        w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
         w.name = name;
@@ -57,6 +61,7 @@ public class DashboardConfig {
 
     public void addLineGauge(String name, String units, double minRange, double maxRange, double minAcceptable, double maxAcceptable, double xPos, double yPos, double sizeScaleFactor){
         var w = new LineGaugeConfig();
+        w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
         w.name = name;
@@ -70,6 +75,7 @@ public class DashboardConfig {
 
     public void addSound(String name, String filePath, boolean looping){
         var w = new SoundConfig();
+        w.idx = widgetList.size();
         w.name = name;
         w.filePath = filePath;
         w.looping = looping;
@@ -78,6 +84,7 @@ public class DashboardConfig {
 
     public void addText(String name, double xPos, double yPos, double sizeScaleFactor){
         var w = new TextConfig();
+        w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
         w.name = name;

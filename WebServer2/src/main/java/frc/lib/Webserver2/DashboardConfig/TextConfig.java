@@ -14,7 +14,12 @@ public class TextConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration(){
-        return "";
+        return String.format("var widget%d = new Text('widget%d', '%s');", idx, idx, name);
+    }
+
+    @Override
+    public String getJSUpdate() {
+        return String.format("widget%d.render();", idx);
     }
     
 }

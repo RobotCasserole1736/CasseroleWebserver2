@@ -40,7 +40,8 @@ export class Sound {
 
     }
 
-    //Call once per render loop to update and redraw the text area
+    //Call once per render loop to update and redraw the...ummm...never mind, this makes a sound.
+    //Yes, "render" the sound into your ears. Yes.
     render() {
         var curCmd = this.playbackActiveCmd;
         var prevCmd = this.playbackActiveCmdPrev;

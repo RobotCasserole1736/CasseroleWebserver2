@@ -20,7 +20,12 @@ public class LineGaugeConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration(){
-        return "";
+        return String.format("var widget%d = new LineGauge('widget%d', '%s', %f,%f,%f,%f);", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
+    }
+
+    @Override
+    public String getJSUpdate() {
+        return String.format("widget%d.render();", idx);
     }
     
 }
