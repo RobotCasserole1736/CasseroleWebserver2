@@ -7,9 +7,9 @@ public class DashboardConfig {
 
     public LinkedList<WidgetConfig> widgetList = new LinkedList<WidgetConfig>();
 
-    //Factory Functions for user to make new widgets
-    //TODO on all - add Signal/NT references
-    public void addAutoChooser(String name, List<String> modeNames, double xPos, double yPos, double sizeScaleFactor){ 
+    // Factory Functions for user to make new widgets
+    // TODO on all - add Signal/NT references
+    public void addAutoChooser(String name, List<String> modeNames, double xPos, double yPos, double sizeScaleFactor) {
         var w = new AutoChooserConfig();
         w.idx = widgetList.size();
         w.xPos = xPos;
@@ -21,7 +21,9 @@ public class DashboardConfig {
 
     }
 
-    public void addCamera(String name, String streamURL, double xPos, double yPos, double sizeScaleFactor){ //TODO add version for NT referenced URL
+    // TODO - add alternate form for NT-referenced address (CameraServer)
+    public void addCamera(String name, String streamURL, double xPos, double yPos, double sizeScaleFactor) {
+
         var w = new CameraConfig();
         w.idx = widgetList.size();
         w.xPos = xPos;
@@ -32,7 +34,8 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
-    public void addCircularGauge(String name, String units, double minRange, double maxRange, double minAcceptable, double maxAcceptable, double xPos, double yPos, double sizeScaleFactor){
+    public void addCircularGauge(String name, String units, double minRange, double maxRange, double minAcceptable,
+            double maxAcceptable, double xPos, double yPos, double sizeScaleFactor) {
         var w = new CircularGaugeConfig();
         w.idx = widgetList.size();
         w.xPos = xPos;
@@ -46,7 +49,8 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
-    public void addIcon(String name, String colorOn, String colorOff, String symbolPath, double xPos, double yPos, double sizeScaleFactor){
+    public void addIcon(String name, String colorOn, String colorOff, String symbolPath, double xPos, double yPos,
+            double sizeScaleFactor) {
         var w = new IconConfig();
         w.idx = widgetList.size();
         w.xPos = xPos;
@@ -59,7 +63,8 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
-    public void addLineGauge(String name, String units, double minRange, double maxRange, double minAcceptable, double maxAcceptable, double xPos, double yPos, double sizeScaleFactor){
+    public void addLineGauge(String name, String units, double minRange, double maxRange, double minAcceptable,
+            double maxAcceptable, double xPos, double yPos, double sizeScaleFactor) {
         var w = new LineGaugeConfig();
         w.idx = widgetList.size();
         w.xPos = xPos;
@@ -73,7 +78,7 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
-    public void addSound(String name, String filePath, boolean looping){
+    public void addSound(String name, String filePath, boolean looping) {
         var w = new SoundConfig();
         w.idx = widgetList.size();
         w.name = name;
@@ -82,7 +87,7 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
-    public void addText(String name, double xPos, double yPos, double sizeScaleFactor){
+    public void addText(String name, double xPos, double yPos, double sizeScaleFactor) {
         var w = new TextConfig();
         w.idx = widgetList.size();
         w.xPos = xPos;

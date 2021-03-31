@@ -27,3 +27,11 @@
 
 * Update js to source data from signal DAQ
 * Java code to auto-generate the HTML/JS
+
+# Backend
+
+* Add Signals
+
+* Add calibration
+
+* Add signal logging

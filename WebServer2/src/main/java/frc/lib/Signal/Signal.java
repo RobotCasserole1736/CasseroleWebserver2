@@ -1,0 +1,63 @@
+package frc.lib.Signal;
+
+public class Signal {
+
+    String name;
+    String units;
+
+    /**
+     * Class which describes one line on a plot
+     * 
+     * @param name_in  String of what to call the signal (human readable)
+     * @param units_in units the signal is in.
+     */
+    public Signal(String name_in, String units_in) {
+        name = name_in;
+        units = units_in;
+
+        // TODO - stuff into NT4 or something
+
+        SignalWrangler.getInstance().register(this);
+    }
+
+    /**
+     * Adds a new sample to the signal queue. It is intended that the controls code
+     * would call this once per loop to add a new datapoint to the real-time graph.
+     * 
+     * The boolean version converts true to 1.0 and false to 0.0.
+     * 
+     * @param time_in
+     * @param value_in
+     */
+    public void addSample(double time_in_sec, boolean value_in) {
+        this.addSample(time_in_sec, value_in ? 1.0 : 0.0);
+    }
+
+    /**
+     * Adds a new sample to the signal queue. It is intended that the controls code
+     * would call this once per loop to add a new datapoint to the real-time graph.
+     * 
+     * @param time_in
+     * @param value_in
+     */
+    public void addSample(double time_in_sec, double value_in) {
+        // TODO - stuff the value into NT4
+
+        SignalWrangler.getInstance().logger.addSample(new DataSample(time_in_sec, value_in, this));
+    }
+
+    /**
+     * @return The User-friendly name of the signal
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return The name of the units the signal is measured in.
+     */
+    public String getUnits() {
+        return units;
+    }
+
+}

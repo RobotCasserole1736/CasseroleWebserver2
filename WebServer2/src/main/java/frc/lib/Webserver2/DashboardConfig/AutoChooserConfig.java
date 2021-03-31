@@ -3,25 +3,25 @@ package frc.lib.Webserver2.DashboardConfig;
 import java.util.List;
 
 public class AutoChooserConfig extends WidgetConfig {
-   
+
     List<String> modeNameList;
 
     final double nominalWidth = 40;
     final double nominalHeight = 5;
 
     @Override
-    public String getHTML(){
+    public String getHTML() {
         double width = nominalWidth * sizeScaleFactor;
         double height = nominalHeight * sizeScaleFactor;
         return genHtmlDeclaration(height, width);
     }
 
-    private String getJsModeNameListString(){
+    private String getJsModeNameListString() {
         String retVal = "";
         retVal += "[";
-        for(int idx = 0; idx < modeNameList.size(); idx++ ){
+        for (int idx = 0; idx < modeNameList.size(); idx++) {
             retVal += "'" + modeNameList.get(idx) + "'";
-            if(idx != (modeNameList.size() - 1)){
+            if (idx != (modeNameList.size() - 1)) {
                 retVal += ",";
             }
         }
@@ -30,8 +30,9 @@ public class AutoChooserConfig extends WidgetConfig {
     }
 
     @Override
-    public String getJSDeclaration(){
-        return String.format("var widget%d = new AutoChooser('widget%d', '%s', %s, onWidget%dValUpdated);", idx, idx, name, getJsModeNameListString(), idx);
+    public String getJSDeclaration() {
+        return String.format("var widget%d = new AutoChooser('widget%d', '%s', %s, onWidget%dValUpdated);", idx, idx,
+                name, getJsModeNameListString(), idx);
     }
 
     @Override
@@ -40,8 +41,7 @@ public class AutoChooserConfig extends WidgetConfig {
     }
 
     public String getJSCallback() {
-        return String.format("function onWidget%dValUpdated() {}", idx); //TODO - actual content
+        return String.format("function onWidget%dValUpdated() {}", idx); // TODO - actual content
     }
-    
-     
+
 }
