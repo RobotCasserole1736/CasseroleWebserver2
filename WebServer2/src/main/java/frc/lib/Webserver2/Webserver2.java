@@ -26,24 +26,23 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import frc.lib.Webserver2.DashboardConfig.DashboardConfig;
+import frc.lib.Webserver2.LogFiles.LogFileStreamerServlet;
 import frc.robot.Robot;
-
-
 
 public class Webserver2 {
 
     static Server server;
 
     /**
-     * Main dashboard configuration object. User should call methods 
-     * from this object to configure 
+     * Main dashboard configuration object. User should call methods from this
+     * object to configure
      */
     public final DashboardConfig dashboard = new DashboardConfig();
 
     final String resourceBaseLocal = "./src/main/deploy/www";
     final String resourceBaseRIO = "/home/lvuser/deploy/www";
 
-    String resourceBase = resourceBaseRIO; //default to roboRIO
+    String resourceBase = resourceBaseRIO; // default to roboRIO
 
     /**
      * Starts the web server in a new thread. Should be called at the end of robot
@@ -51,8 +50,8 @@ public class Webserver2 {
      */
     public void startServer() {
 
-        //Pick web resources path approprate to execution environment
-        if(Robot.isReal()){
+        // Pick web resources path approprate to execution environment
+        if (Robot.isReal()) {
             resourceBase = resourceBaseRIO;
         } else {
             resourceBase = resourceBaseLocal;
@@ -61,7 +60,7 @@ public class Webserver2 {
         // New server will be on the robot's address plus port 5805
         server = new Server(5805);
 
-        //By default - serve all files under the calculated resourceBase folder
+        // By default - serve all files under the calculated resourceBase folder
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
@@ -76,7 +75,12 @@ public class Webserver2 {
         ServletHolder dashboardSH = new ServletHolder("dashboard", new DashboardServlet(dashboard));
         context.addServlet(dashboardSH, "/dashboard/dashboard.html");
         context.addServlet(dashboardSH, "/dashboard/dashboard.js");
-        
+
+        // Log File JSON API
+        ServletHolder logDataHolder = new ServletHolder("logData", new LogFileStreamerServlet());
+        context.addServlet(logDataHolder, "/logData");
+
+
 
         // Kick off server in brand new, low-priority thread.
         Thread serverThread = new Thread(new Runnable() {

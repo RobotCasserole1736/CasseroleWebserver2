@@ -10,6 +10,9 @@ package frc.robot;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.lib.Logging.SignalFileLogger;
+import frc.lib.Signal.SignalWrangler;
+import frc.lib.Signal.Annotations.Signal;
 import frc.lib.Webserver2.Webserver2;
 
 /**
@@ -21,7 +24,11 @@ import frc.lib.Webserver2.Webserver2;
  */
 public class Robot extends TimedRobot {
 
+  @Signal(units = "count")
+  int loopCounter = 0;
+
   Webserver2 testServer = new Webserver2();
+  SignalFileLogger logger = new SignalFileLogger();
 
   @Override
   public void robotInit() {
@@ -39,15 +46,20 @@ public class Robot extends TimedRobot {
     testServer.dashboard.addSound("Evil Sound", "sfx/alarm1.mp3", false);
     testServer.dashboard.addText("Blah", 75, 30, 1.0);
 
+    SignalWrangler.getInstance().registerSignals(this);
+
     testServer.startServer();
   }
 
   @Override
   public void robotPeriodic() {
+    loopCounter++;
+    SignalWrangler.getInstance().sampleAllSignals();
   }
 
   @Override
   public void autonomousInit() {
+    logger.startLoggingAuto();
   }
 
   @Override
@@ -56,6 +68,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    logger.startLoggingTeleop();
   }
 
   @Override
@@ -64,6 +77,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+
+    logger.stopLogging();
   }
 
   @Override

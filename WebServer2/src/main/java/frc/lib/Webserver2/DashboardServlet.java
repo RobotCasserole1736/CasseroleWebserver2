@@ -24,13 +24,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import frc.lib.Webserver2.DashboardConfig.DashboardConfig;
 import frc.lib.Webserver2.DashboardConfig.WidgetConfig;
 import frc.robot.Robot;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 class DashboardServlet extends HttpServlet {
 

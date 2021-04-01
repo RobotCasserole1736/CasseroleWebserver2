@@ -2,9 +2,12 @@ package frc.lib.Signal;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.Logging.SignalFileLogger;
 
 public class SignalWrangler {
@@ -51,8 +54,8 @@ public class SignalWrangler {
         return null;
     }
 
-    public Signal[] getAllSignals() {
-        return (Signal[]) registeredSignals.toArray();
+    public List<Signal> getAllSignals() {
+        return registeredSignals;
     }
 
     /** Set of all auto-discovered signals from @Signal annotations */
@@ -79,7 +82,7 @@ public class SignalWrangler {
      * @param root
      * @param prefix
      */
-    public void findAllAnnotatedSignals(Object root, String prefix) {
+    void findAllAnnotatedSignals(Object root, String prefix) {
         Class rootClass = root.getClass();
         Package rootPkg = rootClass.getPackage();
 
@@ -122,6 +125,31 @@ public class SignalWrangler {
             } // End FOR
 
         } // else, rootPkg wasn't in frc.robot - stop recursion
+    }
+
+    /**
+     * Special thanks to oblarg and his oblog for help on impelmenting this.
+     * Entrypoint to set up required variable sets, and traverse rootContainer and
+     * its children to find all @Signal-annottated fields, and add a new signal for each of them.
+     * Call this in robotInit(), and after all classes which contain @Signals have been instantiated.
+     * @param rootContainer Object to start the traversal on. Usually just "this" for when called in Robot.java. 
+     */
+    public void registerSignals(Object rootContainer) {
+        autoSig = new HashSet<>();
+        checkedObjects = new HashSet<>();
+        findAllAnnotatedSignals(rootContainer, "");
+        System.out.println("[Data Server]: Registered " + Integer.toString(autoSig.size()) + " signals from annotations");
+    }
+
+    /**
+     * Periodic call function to sample a single value from all annotation-created Signals
+     * Should be called at the end of each periodic function.
+     */
+    public void sampleAllSignals(){
+        double sampleTime = Timer.getFPGATimestamp() * 1000;
+        for(AutoDiscoveredSignal sig : autoSig){
+            sig.addSample(sampleTime);
+        }
     }
 
 }

@@ -12,7 +12,22 @@
     <topLevelContainer>
         <!-- main table area for logs -->
 
+        <!-- buttons and controls area-->
+        <buttonsContainer class="outlined">
+            <buttonGroup class="outline">
+                <div id="statusDiv"> </div>
+            </buttonGroup>
+            <buttonGroup class="outlined"> 
+                <button id="delete_all_btn" type="button" onclick="deleteAll()">Delete All</button>
+            </buttonGroup>
 
+        </buttonsContainer>
+
+
+        <!-- main table area for calibrations -->
+        <table class="logListingTable" id="logListingTable">
+
+        </table>
     </topLevelContainer>
 
     <script type="module" src="./logs.js"></script>

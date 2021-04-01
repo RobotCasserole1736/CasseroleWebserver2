@@ -2,10 +2,12 @@ package frc.lib.Logging;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -69,7 +71,7 @@ import java.io.File;
 
 public class SignalFileLogger {
 
-    String log_name = null;
+    Path curLogFile = null;
 
     // Handle to the actual file being logged to
     BufferedWriter log_file = null;
@@ -224,8 +226,8 @@ public class SignalFileLogger {
     private int init(String logPrefix) {
 
         // Sample the current set of signals from the DataServer
-        Signal[] allSigs = SignalWrangler.getInstance().getAllSignals();
-        int numSigs = allSigs.length;
+        List<Signal> allSigs = SignalWrangler.getInstance().getAllSignals();
+        int numSigs = allSigs.size();
         logIdxLookup = new Hashtable<Signal, Integer>(numSigs * 2);
 
         // Set up local lists of data names and units
@@ -233,9 +235,9 @@ public class SignalFileLogger {
         String[] units_fields = new String[numSigs];
 
         for (int sigIter = 0; sigIter < numSigs; sigIter++) {
-            data_fields[sigIter] = allSigs[sigIter].getName();
-            units_fields[sigIter] = allSigs[sigIter].getUnits();
-            logIdxLookup.put(allSigs[sigIter], sigIter);
+            data_fields[sigIter] = allSigs.get(sigIter).getName();
+            units_fields[sigIter] = allSigs.get(sigIter).getUnits();
+            logIdxLookup.put(allSigs.get(sigIter), sigIter);
         }
 
         logLine = new String[numSigs];
@@ -246,21 +248,25 @@ public class SignalFileLogger {
         try {
 
             String folderName = LogFileWrangler.getInstance().logFilePath.toString();
+            String filename = "";
             // Determine a unique file name
             if (Robot.isReal()) {
-                log_name = folderName + "log_" + DriverStation.getInstance().getEventName() + "_"
+                filename = "log_" + DriverStation.getInstance().getEventName() + "_"
                         + DriverStation.getInstance().getMatchType() + "_"
                         + Integer.toString(DriverStation.getInstance().getMatchNumber()) + "_" + getDateTimeString()
                         + "_" + logPrefix + ".csv";
             } else {
-                log_name = folderName + "log_" + getDateTimeString() + "_" + logPrefix + ".csv";
+                filename = "log_" + getDateTimeString() + "_" + logPrefix + ".csv";
             }
 
             File dir = new File(folderName);
             if (!dir.exists())
                 dir.mkdirs();
 
-            System.out.println("Initalizing Log file " + log_name);
+            curLogFile = Path.of(folderName, filename);
+            
+
+            System.out.println("Initalizing Log file " + curLogFile.toAbsolutePath().toString());
 
             // Confirm file not already opened
             if (log_file != null) {
@@ -269,7 +275,7 @@ public class SignalFileLogger {
             }
 
             // Open File
-            FileWriter fstream = new FileWriter(log_name, true);
+            FileWriter fstream = new FileWriter(curLogFile.toFile(), true);
             log_file = new BufferedWriter(fstream);
 
             // First column is always time
