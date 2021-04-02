@@ -25,6 +25,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import frc.lib.Logging.LogFileWrangler;
 import frc.lib.Webserver2.DashboardConfig.DashboardConfig;
 import frc.lib.Webserver2.LogFiles.LogFileStreamerServlet;
 import frc.robot.Robot;
@@ -65,11 +66,17 @@ public class Webserver2 {
         context.setContextPath("/");
         server.setHandler(context);
 
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[] { "index.html" });
-        resource_handler.setResourceBase(resourceBase);
-        server.insertHandler(resource_handler);
+        ResourceHandler log_files_rh = new ResourceHandler();
+        log_files_rh.setDirectoriesListed(true);
+        log_files_rh.setResourceBase(LogFileWrangler.getInstance().logFilePath.toString());
+        server.insertHandler(log_files_rh);
+
+        ResourceHandler main_web_files_rh = new ResourceHandler();
+        main_web_files_rh.setDirectoriesListed(true);
+        main_web_files_rh.setWelcomeFiles(new String[] { "index.html" });
+        main_web_files_rh.setResourceBase(resourceBase);
+        server.insertHandler(main_web_files_rh);
+
 
         // Separately - Dashboard html/js is auto-generated from templates
         ServletHolder dashboardSH = new ServletHolder("dashboard", new DashboardServlet(dashboard));

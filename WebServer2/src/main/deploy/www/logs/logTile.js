@@ -1,11 +1,12 @@
 export class LogTile {
 
-    constructor(drawDiv_in, name_in, size_in, path_in) { 
+    constructor(drawDiv_in, name_in, size_in, path_in, issueCommandCallback_in) { 
 
         this.name = name_in;
         this.size = size_in;
-        this.path = path_in;
+        this.absolutePath = path_in;
         this.drawDiv = drawDiv_in;
+        this.issueCommandCallback = issueCommandCallback_in;
 
         this._addColumn(this.name);
         this._addColumn(this.size);
@@ -21,11 +22,19 @@ export class LogTile {
     }
 
     downloadCallback(){
-        //TODO
+        window.open("http://" + window.location.hostname + ":" + window.location.port + "/" + this.name);
+        //downloads.download({
+        //    url : ,
+        //    conflictAction : 'overwrite'
+        //  });
     }
 
     deleteCallback(){
-        //TODO
+        var cmdMap = {
+            cmd:"delete",
+            file: this.absolutePath,
+        };
+        this.issueCommandCallback(cmdMap);    
     }
 
     _addColumn(text_in){

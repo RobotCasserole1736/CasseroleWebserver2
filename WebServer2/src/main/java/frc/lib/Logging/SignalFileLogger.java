@@ -82,7 +82,7 @@ public class SignalFileLogger {
     String[] logLine;
 
     Lock fileLoggerStateLock;
-    boolean loggingActive = false;
+    volatile boolean loggingActive = false;
 
     BlockingQueue<DataSample> sampleQueue;
 
@@ -171,7 +171,7 @@ public class SignalFileLogger {
         }
     }
 
-    // But this method may be called from any thread
+    // This method may be called from any thread
     public void addSample(DataSample samp_in) {
         if (loggingActive) {
             sampleQueue.add(samp_in);

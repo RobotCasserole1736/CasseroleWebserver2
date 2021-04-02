@@ -27,11 +27,12 @@ public class Robot extends TimedRobot {
   @Signal(units = "count")
   int loopCounter = 0;
 
-  Webserver2 testServer = new Webserver2();
-  SignalFileLogger logger = new SignalFileLogger();
+  Webserver2 testServer;
 
   @Override
   public void robotInit() {
+
+    testServer = new Webserver2();
 
     ArrayList<String> autoModes = new ArrayList<String>();
     autoModes.add("Do Nothing");
@@ -59,7 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    logger.startLoggingAuto();
+    SignalWrangler.getInstance().logger.startLoggingAuto();
   }
 
   @Override
@@ -68,7 +69,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    logger.startLoggingTeleop();
+    SignalWrangler.getInstance().logger.startLoggingTeleop();
   }
 
   @Override
@@ -78,7 +79,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
 
-    logger.stopLogging();
+    SignalWrangler.getInstance().logger.stopLogging();
   }
 
   @Override

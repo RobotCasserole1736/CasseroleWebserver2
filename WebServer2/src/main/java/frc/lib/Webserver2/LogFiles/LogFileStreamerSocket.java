@@ -21,6 +21,7 @@ package frc.lib.Webserver2.LogFiles;
  */
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -53,21 +54,33 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
                 System.out.println("Malformed jSON - no cmd");
             }
 
-            if(cmd == "deleteAll"){
+            if(cmd.equals("deleteAll")){
                 System.out.println("Deleting All Log Files");
                 LogFileWrangler.getInstance().deleteAllLogs();
+
+            } else if(cmd.equals("delete")) {
+                String fileName = msg.get("file").toString();
+                Path fileToDelete = Path.of(fileName);
+                System.out.println("Deleting Log File");
+                LogFileWrangler.getInstance().deleteLog(fileToDelete);
+
+            } else if(cmd.equals("downloadAll")) {
+                System.out.println("Zipping up log files...");
+                Path zipPath = LogFileWrangler.getInstance().createZip();
+                reportZipAvailable(zipPath);
+
             } else {
                 System.out.println("Malformed jSON - cmd \"" + cmd + "\" unrecognized.");
             }
 
-            broadcastData();
+            sendCurrentLogFileList();
         }
     }
 
     @Override
     public void onWebSocketConnect(Session sess) {
         super.onWebSocketConnect(sess);
-        broadcastData();
+        sendCurrentLogFileList();
     }
 
     @Override
@@ -78,9 +91,8 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
     /**
      * Send current list of files and data to client
      */
-    public void broadcastData() {
+    public void sendCurrentLogFileList() {
         if (isConnected()) {
-
             try {
                 JSONObject full_obj = new JSONObject();
                 JSONArray data_array = new JSONArray();
@@ -100,4 +112,19 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
         }
     }
 
+    /**
+     * Send current list of files and data to client
+     */
+    public void reportZipAvailable(Path zipPath) {
+        if (isConnected()) {
+            try {
+                JSONObject full_obj = new JSONObject();
+                full_obj.put("type", "zip_ready");
+                full_obj.put("path", LogFileWrangler.getInstance().logFilePath.relativize(zipPath));
+                getRemote().sendString(full_obj.toString());
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+        }
+    }
 }

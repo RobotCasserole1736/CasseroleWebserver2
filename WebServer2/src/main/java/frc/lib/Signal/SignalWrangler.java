@@ -26,7 +26,7 @@ public class SignalWrangler {
     public ArrayList<Signal> registeredSignals = new ArrayList<Signal>(0);
 
     // File logger for signals
-    SignalFileLogger logger;
+    public SignalFileLogger logger;
 
     private SignalWrangler() {
         logger = new SignalFileLogger();

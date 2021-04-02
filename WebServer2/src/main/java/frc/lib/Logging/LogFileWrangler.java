@@ -1,9 +1,14 @@
 package frc.lib.Logging;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import frc.robot.Robot;
 
@@ -16,7 +21,7 @@ public class LogFileWrangler {
     final String OUTPUT_DIR_LOCAL = "./sim_data_captures/"; // local directory for log files in sim.
 
     // path where we expect all our log files to live at.
-    Path logFilePath;
+    public Path logFilePath;
 
     /* Singleton infrastructure */
     private static LogFileWrangler instance;
@@ -61,15 +66,25 @@ public class LogFileWrangler {
     }
 
     /**
-     * TODO - prepare a zip file of all log files stored in the log directory and...
-     * idk do something with it
+     * prepare a zip file of all log files stored in the log directory
      */
-    public void createZip() {
+    public Path createZip() {
+        Path zipFolder = Path.of(logFilePath.toString(), "archive");
+        Path zipPath = Path.of(zipFolder.toString(), "logs.zip");
 
+        File dir = zipFolder.toFile();
+        if (!dir.exists())
+            dir.mkdirs();
+
+        ZipUtils zip = new ZipUtils(logFilePath.toString());
+        zip.generateFileList(logFilePath.toFile());
+        zip.zipIt(zipPath.toString());
+
+        return zipPath; 
     }
 
-    public void deleteLog(LogFile fileToDelete) {
-        fileToDelete.filePath.toFile().delete();
+    public void deleteLog(Path fileToDelete) {
+        fileToDelete.toFile().delete();
     }
 
     public void deleteAllLogs() {
