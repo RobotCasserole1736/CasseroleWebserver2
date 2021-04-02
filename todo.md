@@ -17,16 +17,18 @@
 
 # Data Logs
 
-* Start it
+* Make UI look pretty
+
+* Report current logging status (idle, logging a file, etc.) - auto update hte web UI on new log available.
 
 # Calibration
 
-* Start it
+* Make web UI look pretty
 
 # Driver Dashboard
 
-* Update js to source data from signal DAQ
-* Java code to auto-generate the HTML/JS
+* Update js to source data from NT4 thingy
+* Update java auto-gen to do this as well
 
 # Backend
 
