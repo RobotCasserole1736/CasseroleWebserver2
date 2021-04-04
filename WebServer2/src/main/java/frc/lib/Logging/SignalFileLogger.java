@@ -71,7 +71,7 @@ import java.io.File;
 
 public class SignalFileLogger {
 
-    Path curLogFile = null;
+    public Path curLogFile = null;
 
     // Handle to the actual file being logged to
     BufferedWriter log_file = null;
@@ -82,7 +82,7 @@ public class SignalFileLogger {
     String[] logLine;
 
     Lock fileLoggerStateLock;
-    volatile boolean loggingActive = false;
+    public boolean loggingActive = false;
 
     BlockingQueue<DataSample> sampleQueue;
 

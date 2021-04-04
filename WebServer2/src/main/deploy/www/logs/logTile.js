@@ -23,10 +23,6 @@ export class LogTile {
 
     downloadCallback(){
         window.open("http://" + window.location.hostname + ":" + window.location.port + "/" + this.name);
-        //downloads.download({
-        //    url : ,
-        //    conflictAction : 'overwrite'
-        //  });
     }
 
     deleteCallback(){
@@ -40,6 +36,7 @@ export class LogTile {
     _addColumn(text_in){
         var new_td = document.createElement("td");
         new_td.innerHTML = text_in;
+        new_td.classList.add("tableText");
         this.drawDiv.appendChild(new_td);
         return new_td;
     }

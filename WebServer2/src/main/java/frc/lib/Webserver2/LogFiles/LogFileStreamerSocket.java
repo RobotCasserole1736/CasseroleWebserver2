@@ -23,6 +23,8 @@ package frc.lib.Webserver2.LogFiles;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.TimerTask;
+import java.util.Timer;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -32,6 +34,8 @@ import org.json.JSONObject;
 
 import frc.lib.Logging.LogFile;
 import frc.lib.Logging.LogFileWrangler;
+import frc.lib.Logging.SignalFileLogger;
+import frc.lib.Signal.SignalWrangler;
 
 /**
  * DESCRIPTION: <br>
@@ -41,6 +45,9 @@ import frc.lib.Logging.LogFileWrangler;
  */
 
 public class LogFileStreamerSocket extends WebSocketAdapter {
+
+    private Timer updater = null;
+
 
     @Override
     public void onWebSocketText(String messageStr) {
@@ -81,10 +88,14 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
     public void onWebSocketConnect(Session sess) {
         super.onWebSocketConnect(sess);
         sendCurrentLogFileList();
+
+        updater = new java.util.Timer("Log File Streamer Periodic Update for " + sess.getRemoteAddress().toString());
+        updater.scheduleAtFixedRate(new PeriodicUpdateTask(), 0, 500);
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
+        updater.cancel();
         super.onWebSocketClose(statusCode, reason);
     }
 
@@ -102,8 +113,8 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
                     logFileJsonObjs.add(lf.getJSON());
                 }
                 data_array.putAll(logFileJsonObjs);
-                full_obj.put("type", "log_files");
-                full_obj.put("log_files", data_array);
+                full_obj.put("type", "new_log_file_list");
+                full_obj.put("files", data_array);
                 getRemote().sendString(full_obj.toString());
 
             } catch (IOException e) {
@@ -113,7 +124,7 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
     }
 
     /**
-     * Send current list of files and data to client
+     * Reports the zipping of all files is complete, and the client should attempt to download it.
      */
     public void reportZipAvailable(Path zipPath) {
         if (isConnected()) {
@@ -126,5 +137,45 @@ public class LogFileStreamerSocket extends WebSocketAdapter {
                 e.printStackTrace(System.err);
             }
         }
+    }
+
+    /**
+     * Send a new status string about current logger state.
+     */
+    public void sendStatusString(String status) {
+        if (isConnected()) {
+            try {
+                JSONObject full_obj = new JSONObject();
+                full_obj.put("type", "status");
+                full_obj.put("string", status);
+                getRemote().sendString(full_obj.toString());
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            }
+        }
+    }
+
+
+    private class PeriodicUpdateTask extends TimerTask {
+
+        boolean wasLogging = false;
+
+        @Override
+        public void run() {
+            String curStatus = "Idle";
+            SignalFileLogger logger = SignalWrangler.getInstance().logger;
+            Path curLogFile = logger.curLogFile;
+            if(curLogFile != null && logger.loggingActive){
+                curStatus = "Writing to " + curLogFile.getFileName().toString();
+                wasLogging = true;
+            } else {
+                if(wasLogging){
+                    sendCurrentLogFileList();
+                    wasLogging = false;
+                }
+            }
+            sendStatusString(curStatus);
+        }
+        
     }
 }

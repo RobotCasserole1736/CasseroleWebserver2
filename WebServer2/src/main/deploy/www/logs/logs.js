@@ -9,6 +9,7 @@ var ws = null;
 
 var logTilesMap = new Map();
 var mainTable = document.getElementById("logListingTable");
+var connectionStatusDiv = document.getElementById("connectionStatusDiv");
 var statusDiv = document.getElementById("statusDiv");
 
 
@@ -20,6 +21,7 @@ connect();
 //////////////////////////////////////////////////
 function clearDisplayedLogs() {
     var newMainTable = document.createElement('table');
+    newMainTable.classList.add("outlined");
     var parent = mainTable.parentNode;
     if(parent != null){
         mainTable.parentNode.replaceChild(newMainTable, mainTable); //Stackoverflow says this is how to clear a table easily.
@@ -32,18 +34,21 @@ function connect() {
     ws = new WebSocket("ws://" + hostname + "/logData");
     ws.onopen = function () {
         clearDisplayedLogs();
-        statusDiv.innerHTML = "Connected";
+        connectionStatusDiv.innerHTML = "Connected";
+        connectionStatusDiv.classList.remove("disconnected");
+        connectionStatusDiv.classList.add("connected");
+        statusDiv.innerHTML = "";
     };
 
     ws.onmessage = function (e) {
-        console.log('Message:', e.data);
 
         var msg = JSON.parse(e.data);
 
-        if (msg["type"] == "log_files") {
+        if (msg["type"] == "new_log_file_list") {
             clearDisplayedLogs();
-            msg["log_files"].forEach(lf => {
+            msg["files"].forEach(lf => {
                 var new_tr = document.createElement("tr");
+                new_tr.classList.add("logFileRow");
                 logTilesMap[lf["shortName"]] = new LogTile(new_tr, lf["shortName"], lf["size_bytes"], lf["filePath"], sendCmd);
                 mainTable.appendChild(new_tr);
             });
@@ -51,12 +56,18 @@ function connect() {
             var cleanedPath = msg["path"].replace(/^[\.\/\\]+/, '').replace(/\\/g, "/");
             var zipLocation = "http://" + hostname + "/" +cleanedPath;
             window.open(zipLocation);
+        } else if (msg["type"] == "status") {
+            statusDiv.innerHTML = msg["string"];
         }
     };
 
     ws.onclose = function (e) {
         ws = null;
-        statusDiv.innerHTML = "Disconnected...";
+        connectionStatusDiv.innerHTML = "Disconnected...";
+        connectionStatusDiv.classList.remove("connected");
+        connectionStatusDiv.classList.add("disconnected");
+        statusDiv.innerHTML = "";
+        clearDisplayedLogs();
         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         setTimeout(function () {
             connect();
@@ -77,7 +88,9 @@ function sendCmd(cmd_in){
 
 window.deleteAll=deleteAll;
 function deleteAll(){
-    sendCmd({cmd:"deleteAll"});
+    if(confirm("This will delete ALL log files, are you sure?")){
+        sendCmd({cmd:"deleteAll"});
+    }
 }
 
 window.downloadAll=downloadAll;
