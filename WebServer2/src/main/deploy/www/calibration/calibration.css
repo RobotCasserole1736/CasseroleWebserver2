@@ -1,1 +1,17 @@
+td.calText {
+    padding-left: 1em;
+    font-family: monospace;
+}
 
+tr.calRow {
+    margin: 1em;
+    background-color: #333333;
+}
+
+table {
+    padding: 1em;
+}
+
+.hidden {
+    display: none;
+}

@@ -42,7 +42,8 @@ function filterChangeHandler(filterSpec_in){
 
 function onCalAnnounce(name_in, units_in, min_in, max_in, default_in){
     var new_tr = document.createElement("tr");
-    calTilesMap[name_in] = new CalTile(new_tr, name_in, units_in, min_in, max_in, default_in);
+    new_tr.classList.add("calRow");
+    calTilesMap.set(name_in, new CalTile(new_tr, name_in, units_in, min_in, max_in, default_in));
     mainTable.appendChild(new_tr);
 
 }

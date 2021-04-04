@@ -21,11 +21,11 @@ export class CalTile {
     }
 
     show(){
-        this.drawDiv.style.display = "block";
+        this.drawDiv.classList.remove("hidden");
     }
 
     hide(){
-        this.drawDiv.style.display = "none";
+        this.drawDiv.classList.add("hidden");
     }
 
     reset(){
@@ -47,6 +47,7 @@ export class CalTile {
 
     _addColumn(text_in){
         var new_td = document.createElement("td");
+        new_td.classList.add("calText");
         new_td.innerHTML = text_in;
         this.drawDiv.appendChild(new_td);
         return new_td;
