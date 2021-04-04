@@ -181,7 +181,7 @@ function signalFromName(name_in){
 function updateAllPlotValueAxisCount(){
     var maxNumAxes = 0;
     plotList.forEach(plot => {
-        maxNumAxes = Math.max(maxNumAxes, plot.valueAxesList.length);
+        maxNumAxes = Math.max(maxNumAxes, plot.valueAxesMap.size);
     })
     plotList.forEach(plot => {
         plot.setNumValueAxes(maxNumAxes);
@@ -237,7 +237,7 @@ function saveCurrentConfig(){
         plotList.forEach(plot => {
             var plottedSignalNameList = [];
 
-            plot.plottedSignalsList.forEach(ps => {
+            plot.plottedSignalsMap.forEach(ps => {
                 plottedSignalNameList.push(ps.signal.name);
             })
 

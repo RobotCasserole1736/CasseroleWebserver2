@@ -17,9 +17,9 @@ export class Plot {
         this.drawDiv = drawDiv_in;
 
         // Init the plotted signals list to be empty
-        this.plottedSignalsList = [];
-        this.valueAxesList = [];
-        this.numValueAxes = 0; //Note, this may be bigger than valueAxesList.length to align with other charts.
+        this.plottedSignalsMap = new Map();
+        this.valueAxesMap = new Map();
+        this.numValueAxes = 0; //Note, this may be bigger than valueAxesMap.size to align with other charts.
 
         // External ranges to synchronize all plots in terms of what they show 
         // and what actually needs drawn on the screen at any given time.
@@ -49,6 +49,9 @@ export class Plot {
         this.chart = new FastChart(this.hcContainer);
 
         this.DFLT_COLORS = ["#DD0000", "#00DD00", "#4444FF", "#DDDD00", "#DD00DD", "#00DDDD"];
+        this.colorCounter = 0;
+
+        this.numAxesUpdatedCallback();
 
     }
 
@@ -58,7 +61,7 @@ export class Plot {
     }
 
     setNumValueAxes(num_in){
-        this.numValueAxes = Math.max(this.valueAxesList.length, num_in);
+        this.numValueAxes = Math.max(this.valueAxesMap.size, num_in);
     }
 
     drawDataToChart(){
@@ -68,32 +71,30 @@ export class Plot {
 
         //Calculate and set up min/max x and y ranges
         this.chart.setTimeRange(this.drawStartTime, this.drawEndTime);
-        this.valueAxesList.forEach(va => va.resetScale());
-        this.plottedSignalsList.forEach(ps => ps.autoScale(this.drawStartTime, this.drawEndTime));
+        this.valueAxesMap.forEach(va => va.resetScale());
+        this.plottedSignalsMap.forEach(ps => ps.autoScale(this.drawStartTime, this.drawEndTime));
 
         //Draw chart elements. Z order: first = back, last = front.
-        this.chart.drawAxes(this.valueAxesList);
+        this.chart.drawAxes(this.valueAxesMap);
         this.chart.setCursorPos(this.cursorTime);
         this.chart.drawZoomBox();
         this.chart.drawXMarkers();
 
         //Draw all non-selected signals
-        for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
-            var ps = this.plottedSignalsList[sigIdx];
+        this.plottedSignalsMap.forEach(ps => {
             if(ps.selected == false){
                 var samples = ps.getSamples(this.drawStartTime,this.drawEndTime);
                 this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorStr, ps.selected);
             }
-        }
+        });
 
         //Draw selected signals
-        for(var sigIdx = 0; sigIdx < this.plottedSignalsList.length; sigIdx++){
-            var ps = this.plottedSignalsList[sigIdx];
+        this.plottedSignalsMap.forEach(ps => {
             if(ps.selected == true){
                 var samples = ps.getSamples(this.drawStartTime,this.drawEndTime);
                 this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorStr, ps.selected);
             }
-        }
+        });
 
         this.chart.drawCursor();
         
@@ -102,20 +103,10 @@ export class Plot {
 
 
     addSignal(signal_in){
-
-        //Reject duplicate adds
-        var duplicate = false;
-        this.plottedSignalsList.forEach(ps => {
-            if(signal_in == ps.signal){
-                duplicate = true;
-            }
-        })
-
-        if(!duplicate){
-
+        if(!this.plottedSignalsMap.has(signal_in.name)){
             //Check if we already have an axis to put this on
             var newValueAxis = null;
-            this.valueAxesList.forEach(va => {
+            this.valueAxesMap.forEach(va => {
                 if(va.units == signal_in.units){
                     newValueAxis = va;
                 }
@@ -124,25 +115,46 @@ export class Plot {
             //If we didn't have an existing axis, make a new one
             if(newValueAxis == null){
                 newValueAxis = new ValueAxis(signal_in.units);
-                this.valueAxesList.push(newValueAxis);
+                this.valueAxesMap.set(signal_in.units, newValueAxis);
                 this.numAxesUpdatedCallback();
             }
 
-            var color = this.DFLT_COLORS[this.plottedSignalsList.length % this.DFLT_COLORS.length];
+            var color = this.DFLT_COLORS[this.colorCounter % this.DFLT_COLORS.length];
+            this.colorCounter++;
             var newPltSigDiv = document.createElement("plottedSignalInfo");
-            this.plottedSignalsList.push(new PlottedSignal(signal_in, color, newValueAxis, newPltSigDiv));
+            var newPS = new PlottedSignal(signal_in, color, newValueAxis, newPltSigDiv);
+            newPltSigDiv.addEventListener("mouseup", this.mouseup.bind(this));
+            newPltSigDiv.addEventListener("contextmenu", this.contextmenu.bind(this));
+            newPltSigDiv.setAttribute("data:sigName", signal_in.name);
+            this.plottedSignalsMap.set(signal_in.name, newPS);
             this.psContainer.appendChild(newPltSigDiv);
         }
-
     }
 
     removeSignal(signal_in){
-        //TODO...maybe here... remove signal from both the highcharts and table?
+        if(this.plottedSignalsMap.has(signal_in.name)){
 
-        for(var idx = 0; idx < this.plottedSignalsList.length; idx++){
-            if(signal_in == this.plottedSignalsList[idx].signal){
-                this.plottedSignalsList.splice(idx, 1); //remove that signal and splice the list back together so we don't have null entries the middle
+            // Remove plotted signal tile
+            var ps = this.plottedSignalsMap.get(signal_in.name);
+            this.psContainer.removeChild(ps.drawDiv);
+
+            // Remove reference to plotted signal object
+            this.plottedSignalsMap.delete(signal_in.name);
+
+            // Check if any other signal was using the same axis.
+            var axisOrphaned = true;
+            this.plottedSignalsMap.forEach(ps => {
+                if(ps.valueAxis.units == signal_in.units){
+                    axisOrphaned = false;
+                }
+            });
+
+            // Remove the axis if no one else is using it.
+            if(axisOrphaned){
+                this.valueAxesMap.delete(signal_in.units);
+                this.numAxesUpdatedCallback();
             }
+
         }
     }
 
@@ -160,7 +172,7 @@ export class Plot {
      }
 
     updateDisplayedValues(){
-        this.plottedSignalsList.forEach(ps => {
+        this.plottedSignalsMap.forEach(ps => {
             if(this.cursorTime == null){
                 ps.showValueAtTime(null); //latest
             } else {
@@ -191,6 +203,33 @@ export class Plot {
         const signalName = e.dataTransfer.getData('text/plain');
         this.addSignal(this.signalFromNameCallback(signalName));
         this.drawDiv.classList.remove('drag-over');
+    }
+
+    ////////////////////////////////////////////
+    // Signal mouse handlers
+
+    mouseup = e => {
+
+        var sigName = e.currentTarget.getAttribute("data:sigName");
+        var sig = this.signalFromNameCallback(sigName);
+
+        if(sig != null){
+            if(e.which == 1){
+                console.log("left click" + sig.name);
+                this.plottedSignalsMap.get(sig.name).selected ^= true; //toggle
+            } else if(e.which == 2){
+                this.removeSignal(sig);
+            } else if(e.which == 3) {
+                console.log("right click");
+            }
+        }
+        
+        e.preventDefault();
+    }
+
+    contextmenu = e => {
+        //do nothing, action handled in mouseup
+        e.preventDefault();
     }
 
 }

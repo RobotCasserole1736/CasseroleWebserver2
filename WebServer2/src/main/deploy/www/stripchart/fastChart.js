@@ -163,7 +163,7 @@ export class FastChart {
         return markerList;
     }
 
-    drawAxes(valueAxisList){
+    drawAxes(valueAxisMap){
         this.ctx.strokeStyle = "#FFFFFF";
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
@@ -174,14 +174,15 @@ export class FastChart {
 
 
         //Y axes
-        for(var vaIdx = 0; vaIdx < valueAxisList.length; vaIdx++){
+        var vaIdx = 0;
+        valueAxisMap.forEach( va => {
             var xPos = this.plotOriginX_px - vaIdx * this.VALUE_AXIS_WIDTH;
             this.ctx.moveTo(xPos, 0);
             this.ctx.lineTo(xPos, this.canvas.height);
             this.ctx.stroke();
 
-            var yMin = valueAxisList[vaIdx].minVal;
-            var yMax = valueAxisList[vaIdx].maxVal;
+            var yMin = va.minVal;
+            var yMax = va.maxVal;
 
 
             this.ctx.font = "bold 16px monospace";
@@ -190,7 +191,7 @@ export class FastChart {
             this.ctx.fillStyle = "#FFFFFF";
             var labelXPos = xPos - this.VALUE_AXIS_WIDTH/2;
             var labelYPos = (this.plotOriginY_px + this.canvas.height)/2;
-            this.ctx.fillText(valueAxisList[vaIdx].units,labelXPos,labelYPos);
+            this.ctx.fillText(va.units,labelXPos,labelYPos);
 
 
             this.getTickMarkList(yMin, yMax, 2.0).forEach(markerVal => {
@@ -213,8 +214,9 @@ export class FastChart {
                 this.ctx.restore();
 
             });
+            vaIdx++;
 
-        }
+        });
 
 
     }

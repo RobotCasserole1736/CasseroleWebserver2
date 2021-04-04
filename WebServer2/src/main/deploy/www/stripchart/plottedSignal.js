@@ -19,7 +19,6 @@ export class PlottedSignal {
         this.drawDiv.classList.add("plottedSignalInfo");
         this.drawDiv.setAttribute('draggable', true);
         this.drawDiv.addEventListener( "dragstart", this.onDragStart.bind(this) );
-        this.drawDiv.addEventListener( "mouseup", this.onMouseUp.bind(this) );
 
         var nameInfo = document.createElement("plottedSignalName");
         nameInfo.innerHTML = signal_in.name;
@@ -77,7 +76,16 @@ export class PlottedSignal {
     }
 
     onMouseUp = e => {
-        this.selected = !this.selected;
+        if(e.which == 1){
+            this.selected = !this.selected;
+        } else if (e.which == 2){
+            this.dele
+        }
+    }
+
+    onRightClick = e => {
+        e.preventDefault();
+        alert();
     }
 
 }
