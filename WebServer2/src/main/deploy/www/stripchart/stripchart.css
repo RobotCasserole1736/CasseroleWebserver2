@@ -109,3 +109,17 @@ input.filterTextInput{
     font-weight:bolder;
     border: 1px solid #FFFF00;
 }
+
+
+
+div.jsColorChooser{
+    position: absolute;
+    width: 14em;
+    height: 3em;
+    z-index: 9999; /*always on top*/
+    background-color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    margin: 0.5em;
+}

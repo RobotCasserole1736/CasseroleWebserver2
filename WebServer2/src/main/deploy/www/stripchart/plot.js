@@ -48,7 +48,11 @@ export class Plot {
 
         this.chart = new FastChart(this.hcContainer);
 
-        this.DFLT_COLORS = ["#DD0000", "#00DD00", "#4444FF", "#DDDD00", "#DD00DD", "#00DDDD"];
+        //Create a list of default hues to use for coloring signals
+        this.defaultHueList = [];
+        for(var i = 0; i < 10; i++){
+            this.defaultHueList.push((107 * i) % 360);
+        }
         this.colorCounter = 0;
 
         this.numAxesUpdatedCallback();
@@ -84,7 +88,7 @@ export class Plot {
         this.plottedSignalsMap.forEach(ps => {
             if(ps.selected == false){
                 var samples = ps.getSamples(this.drawStartTime,this.drawEndTime);
-                this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorStr, ps.selected);
+                this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorChooser.getCurColor(), ps.selected);
             }
         });
 
@@ -92,7 +96,7 @@ export class Plot {
         this.plottedSignalsMap.forEach(ps => {
             if(ps.selected == true){
                 var samples = ps.getSamples(this.drawStartTime,this.drawEndTime);
-                this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorStr, ps.selected);
+                this.chart.drawSeries(samples, ps.valueAxis.minVal, ps.valueAxis.maxVal, ps.colorChooser.getCurColor(), ps.selected);
             }
         });
 
@@ -119,10 +123,10 @@ export class Plot {
                 this.numAxesUpdatedCallback();
             }
 
-            var color = this.DFLT_COLORS[this.colorCounter % this.DFLT_COLORS.length];
+            var initialHue = this.defaultHueList[this.colorCounter % this.defaultHueList.length];
             this.colorCounter++;
             var newPltSigDiv = document.createElement("plottedSignalInfo");
-            var newPS = new PlottedSignal(signal_in, color, newValueAxis, newPltSigDiv);
+            var newPS = new PlottedSignal(signal_in, initialHue, newValueAxis, newPltSigDiv);
             newPltSigDiv.addEventListener("mouseup", this.mouseup.bind(this));
             newPltSigDiv.addEventListener("contextmenu", this.contextmenu.bind(this));
             newPltSigDiv.setAttribute("data:sigName", signal_in.name);
@@ -213,14 +217,19 @@ export class Plot {
         var sigName = e.currentTarget.getAttribute("data:sigName");
         var sig = this.signalFromNameCallback(sigName);
 
+        this.plottedSignalsMap.forEach(ps => { ps.colorChooser.hide()}); //always close out all color choosers on click.
+
         if(sig != null){
+
             if(e.which == 1){
-                console.log("left click" + sig.name);
+                //left click toggles selected
                 this.plottedSignalsMap.get(sig.name).selected ^= true; //toggle
             } else if(e.which == 2){
+                //Middle click removes
                 this.removeSignal(sig);
             } else if(e.which == 3) {
-                console.log("right click");
+                //Right click shows color chooser
+                this.plottedSignalsMap.get(sig.name).colorChooser.show(e.pageX, e.pageY);
             }
         }
         

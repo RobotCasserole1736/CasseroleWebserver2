@@ -11,10 +11,6 @@ table {
     padding: 1em;
 }
 
-.hidden {
-    display: none;
-}
-
 div.filterDiv{
     display: flex;
     align-items: center;

@@ -4,12 +4,15 @@
 // table-like thing.
 /////////////////////////////////////////////////////////////////////////
 
+import { ColorChooser } from "./colorChooser.js";
+
 export class PlottedSignal {
 
-    constructor(signal_in, initial_color, valueAxis_in, drawDiv_in) { 
+    constructor(signal_in, initialHue_in, valueAxis_in, drawDiv_in) { 
         this.signal = signal_in;
-        this.colorStr = initial_color; //Hex String
         this.drawDiv = drawDiv_in;
+
+        this.colorChooser = new ColorChooser(this.drawDiv, initialHue_in);
 
         this.selected = false;
 
@@ -32,7 +35,8 @@ export class PlottedSignal {
         this.valueInfo.innerHTML = "----";
         this.drawDiv.appendChild(this.valueInfo);
 
-        this.drawDiv.style.color = this.colorStr;
+        this.updateColor();
+
     }
 
     autoScale(startTime, endTime){
@@ -43,6 +47,10 @@ export class PlottedSignal {
     getSamples(startTime, endTime){
         var sampleList = this.signal.getSamples(startTime, endTime);
         return sampleList;
+    }
+
+    updateColor(){
+        this.drawDiv.style.color = this.colorChooser.getCurColor();
     }
 
     showValueAtTime(time_in){
@@ -69,6 +77,8 @@ export class PlottedSignal {
         } else {
             this.drawDiv.classList.remove("selectedText");
         }
+
+        this.updateColor();
     }
 
     onDragStart = e => {
