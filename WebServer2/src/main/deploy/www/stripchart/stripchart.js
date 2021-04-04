@@ -148,19 +148,19 @@ function onDisconnect(){
 
 function onSignalAnnounce(name, units){
     var newSignal = new Signal(name, units);
-    allSignalsMap[name] = newSignal;
+    allSignalsMap.set(name, newSignal);
     signalSelector.addSignal(newSignal);
     restoreConfig(); 
 }
 
 function onSignalUnAnnounce(name){
-    var sigToRemove = allSignalsMap[name];
+    var sigToRemove = allSignalsMap.get(name);
     signalSelector.removeSignal(sigToRemove);
     allSignalsMap.delete(name);
 }
 
 function onNewSampleData(name, timestamp, units){
-    allSignalsMap[name].addSample(new Sample(timestamp, units));
+    allSignalsMap.get(name).addSample(new Sample(timestamp, units));
 
     //Save off incoming sample timing stats
     //TODO - does NT4 expose a better way to do this?
@@ -173,7 +173,7 @@ function onNewSampleData(name, timestamp, units){
 //Plot callback supporting drag/drop events
 // allowing signals to be added to plots using only their name
 function signalFromName(name_in){
-    return allSignalsMap[name_in];
+    return allSignalsMap.get(name_in);
 }
 
 // Plot callback supporting keeping the number of 
