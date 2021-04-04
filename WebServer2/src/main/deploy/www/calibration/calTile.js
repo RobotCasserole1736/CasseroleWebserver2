@@ -2,7 +2,7 @@ import { SpinBox } from "./spinbox/SpinBox.js";
 
 export class CalTile {
 
-    constructor(drawDiv_in, name_in, units_in, min_in, max_in, default_in) { 
+    constructor(drawDiv_in, name_in, units_in, min_in, max_in, default_in, valueSetCallback_in) { 
 
         this.name = name_in;
         this.units = units_in;
@@ -10,6 +10,7 @@ export class CalTile {
         this.max = max_in;
         this.default = default_in;
         this.drawDiv = drawDiv_in;
+        this.valueSetCallback = valueSetCallback_in;
 
         this.curValue = default_in;
 
@@ -33,20 +34,33 @@ export class CalTile {
     }
 
     reset(){
-        this.setVal(this.default);
+        this.setCalValue(this.default);
     }
 
     apply(){
-        //TODO
+        this.setCalValue(this.spinbox.getValue());
     }
 
-    setVal(newVal){
+    setCalValue(value){
+        this.valueSetCallback(this.name, value);
+    }
+
+    // Updates the displayed "current value" of the calibration
+    // Should be called whenever the server reports a new 
+    // calibration value is available.
+    updateCurValue(newVal){
         this.curValue = newVal;
         this._updateDisplayedValue();
     }
 
     _updateDisplayedValue(){
         this.curValDiv.innerHTML = this.curValue.toString();
+
+        if(this.curValue != this.default){
+            this.curValDiv.classList.add("changed");
+        } else {
+            this.curValDiv.classList.remove("changed");  
+        }
     }
 
     _addColumn(text_in){

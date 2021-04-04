@@ -14,16 +14,13 @@
 * Test/flesh-out signal unannounce behavior
   * signal should have an "is-announced" state which gets set to false on unannounce, but the object isn't removed (and all things that display the signal go to error state?)
 * continue line drawing off end of chart (support very-high zoom levels).
+* Synchronize y-origin location (support charts with different numbers of Y axes)
 
 # Data Logs
 
-* Make UI look pretty
-
-* Report current logging status (idle, logging a file, etc.) - auto update hte web UI on new log available.
-
 # Calibration
 
-* Make web UI look pretty
+* Add cal save/load to file
 
 # Driver Dashboard
 
@@ -32,8 +29,5 @@
 
 # Backend
 
-* Add Signals
+* Annotation-based calibrations
 
-* Add calibration
-
-* Add signal logging

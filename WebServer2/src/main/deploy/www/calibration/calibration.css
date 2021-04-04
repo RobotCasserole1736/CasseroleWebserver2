@@ -27,12 +27,14 @@ div.filterDiv{
 input.filterTextInput{
     min-width: 30em;
     font-family: monospace;
-
 }
 
 div.spinBoxContainer{
     margin-left: 1em;
     margin-right: 1em;
     font-family: monospace;
+}
 
+.changed {
+    background-color: rgb(122, 80, 0);
 }

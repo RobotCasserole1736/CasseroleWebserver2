@@ -43,7 +43,7 @@ function filterChangeHandler(filterSpec_in){
 function onCalAnnounce(name_in, units_in, min_in, max_in, default_in){
     var new_tr = document.createElement("tr");
     new_tr.classList.add("calRow");
-    calTilesMap.set(name_in, new CalTile(new_tr, name_in, units_in, min_in, max_in, default_in));
+    calTilesMap.set(name_in, new CalTile(new_tr, name_in, units_in, min_in, max_in, default_in, calInf.setCalibrationValue.bind(calInf)));
     mainTable.appendChild(new_tr);
 
 }
@@ -56,7 +56,7 @@ function onCalUnAnnounce(name_in){
 }
 
 function onCalValueChange(name_in, value_in){
-    mainTable[name_in].setVal(value_in);
+    calTilesMap.get(name_in).updateCurValue(value_in);
 }
 
 function onConnect(){
