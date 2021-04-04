@@ -1,3 +1,5 @@
+import { SpinBox } from "./spinbox/SpinBox.js";
+
 export class CalTile {
 
     constructor(drawDiv_in, name_in, units_in, min_in, max_in, default_in) { 
@@ -11,13 +13,15 @@ export class CalTile {
 
         this.curValue = default_in;
 
+        this.spinbox = null;
+
         this._addColumn(this.name);
         this._addColumn(this.units);
         this._addColumn(this.min);
         this._addColumn(this.max);
         this._addColumn(this.default);
         this.curValDiv = this._addColumn(this.curValue);
-        this._addButtons(this.apply.bind(this), this.reset.bind(this));
+        this._addControls(this.apply.bind(this), this.reset.bind(this));
     }
 
     show(){
@@ -53,22 +57,29 @@ export class CalTile {
         return new_td;
     }
 
-    _addButtons(applyCallback, resetCallback){
+    _addControls(applyCallback, resetCallback){
+
+        var buttonDiv = document.createElement("div");
+ 
+        var spinBoxContainer = document.createElement("div");
+        spinBoxContainer.classList.add("spinBoxContainer");
+        this.spinbox = new SpinBox(spinBoxContainer);
+        buttonDiv.appendChild(spinBoxContainer);
+
         var applyButton = document.createElement("button");
         applyButton.setAttribute("type", "button");
         applyButton.onclick = applyCallback;
         applyButton.innerHTML = "Apply";
+        buttonDiv.appendChild(applyButton);
+
 
         var resetButton = document.createElement("button");
         resetButton.setAttribute("type", "button");
         resetButton.onclick = resetCallback;
         resetButton.innerHTML = "Reset";
-
-        var buttonDiv = document.createElement("div");
-        var new_td = document.createElement("td");
-
-        buttonDiv.appendChild(applyButton);
         buttonDiv.appendChild(resetButton);
+
+        var new_td = document.createElement("td");
         new_td.appendChild(buttonDiv);
         this.drawDiv.appendChild(new_td);
         return new_td;

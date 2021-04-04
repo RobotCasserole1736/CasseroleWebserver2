@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="calibration.css">
+    <link rel="stylesheet" href="spinbox/spinboxStylesheet.css">
     <title>Calibrations</title>
 </head>
 
@@ -14,8 +15,10 @@
         <!-- buttons and controls area-->
         <buttonsContainer class="outlined">
             <buttonGroup class="outline">
-                <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter"
-                onkeyup="filterChangeHandler(this.value)">
+                <div id="filterControls" class="filterDiv"> 
+                    <input class="filterTextInput" id="filterTextInput" type="text" placeholder="Filter"
+                    onkeyup="filterChangeHandler(this.value)">
+                </div>
             </buttonGroup>
             <buttonGroup class="outlined"> 
                 <button id="reset_btn" type="button" onclick="resetAll()">Reset All</button>

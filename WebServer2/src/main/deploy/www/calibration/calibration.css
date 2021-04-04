@@ -1,10 +1,9 @@
 td.calText {
-    padding-left: 1em;
+    padding: 1em;
     font-family: monospace;
 }
 
 tr.calRow {
-    margin: 1em;
     background-color: #333333;
 }
 
@@ -14,4 +13,26 @@ table {
 
 .hidden {
     display: none;
+}
+
+div.filterDiv{
+    display: flex;
+    align-items: center;
+    height:100%;
+    font-family: monospace;
+    flex-grow: 1;
+    padding-left: 1em;
+}
+
+input.filterTextInput{
+    min-width: 30em;
+    font-family: monospace;
+
+}
+
+div.spinBoxContainer{
+    margin-left: 1em;
+    margin-right: 1em;
+    font-family: monospace;
+
 }
