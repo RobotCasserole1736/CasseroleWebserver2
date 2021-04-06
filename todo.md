@@ -7,7 +7,6 @@
 
 # Stripcharts
 
-* color chooser support on plottedSignals
 * save signal data to file
 * better color coding & synchronization of "has data"/"selected"/"no-data" states between plottedSignal and selectableSignal.
   * Add state to the signal itself?

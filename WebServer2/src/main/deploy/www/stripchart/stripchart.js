@@ -159,8 +159,8 @@ function onSignalUnAnnounce(name){
     allSignalsMap.delete(name);
 }
 
-function onNewSampleData(name, timestamp, units){
-    allSignalsMap.get(name).addSample(new Sample(timestamp, units));
+function onNewSampleData(name, timestamp, value){
+    allSignalsMap.get(name).addSample(new Sample(timestamp, value));
 
     //Save off incoming sample timing stats
     //TODO - does NT4 expose a better way to do this?

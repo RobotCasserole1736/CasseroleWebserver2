@@ -51,7 +51,7 @@ export class Plot {
         //Create a list of default hues to use for coloring signals
         this.defaultHueList = [];
         for(var i = 0; i < 10; i++){
-            this.defaultHueList.push((107 * i) % 360);
+            this.defaultHueList.push((107 * i) % 360); //made up numbers to make some spread out colors or whatevs
         }
         this.colorCounter = 0;
 
