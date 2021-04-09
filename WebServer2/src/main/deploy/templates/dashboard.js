@@ -5,10 +5,19 @@ import { LineGauge } from './lineGauge.js'
 import { Text } from './text.js'
 import { AutoChooser } from './autoChooser.js'
 import { Sound } from './sound.js'
+import { NT4_Client } from "../interfaces/dummy_NT4.js";
 
 //////////////////////////////////////////////////
 // Logic to run on page load
 //////////////////////////////////////////////////
+
+var nt4Client = new NT4_Client("todo server addr", 
+                    doNothing,
+                    doNothing,
+                    handleNewData,
+                    doNothing,
+                    onDisconnect
+                    );
 
 // Instantiate all widgets
 ${WIDGETS_INSTANTIATE}
@@ -16,10 +25,20 @@ ${WIDGETS_INSTANTIATE}
 // Start up rendering (never returns)
 mainRenderLoop();
 
-
 //////////////////////////////////////////////////
 // Render & Animation Loop Functions
 //////////////////////////////////////////////////
+
+function doNothing(){}
+
+
+function handleNewData(name, timestamp, value){
+    ${WIDGETS_SET_VALUE}
+}
+
+function onDisconnect(){
+    ${WIDGETS_SET_NO_DATA}
+}
 
 function mainRenderLoop(){
 

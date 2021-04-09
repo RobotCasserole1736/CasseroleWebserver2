@@ -92,6 +92,8 @@ class DashboardServlet extends HttpServlet {
         String jsInstantiate = "";
         String jsUpdate = "";
         String jsCallback = "";
+        String jsSetData = "";
+        String jsSetNoData = "";
 
         for(WidgetConfig w : dCfg.widgetList){
             jsInstantiate += w.getJSDeclaration();
@@ -100,6 +102,12 @@ class DashboardServlet extends HttpServlet {
             jsUpdate += w.getJSUpdate();
             jsUpdate += "\n";
 
+            jsSetData += w.getJSSetData();
+            jsSetData += "\n";
+
+            jsSetNoData += w.getJSSetNoData();
+            jsSetNoData += "\n";
+
             jsCallback += w.getJSCallback();
             jsCallback += "\n";   
         }
@@ -107,6 +115,8 @@ class DashboardServlet extends HttpServlet {
         String filledOut = fileContent;
         filledOut = filledOut.replace("${WIDGETS_INSTANTIATE}", jsInstantiate);
         filledOut = filledOut.replace("${WIDGETS_UPDATE}", jsUpdate);
+        filledOut = filledOut.replace("${WIDGETS_SET_VALUE}", jsSetData);
+        filledOut = filledOut.replace("${WIDGETS_SET_NO_DATA}", jsSetNoData);
         filledOut = filledOut.replace("${WIDGETS_CALLBACK}", jsCallback);
 
         return filledOut;    

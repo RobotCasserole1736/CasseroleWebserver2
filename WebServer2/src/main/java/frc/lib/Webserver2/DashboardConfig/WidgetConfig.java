@@ -8,6 +8,8 @@ public abstract class WidgetConfig {
     public double sizeScaleFactor = 1.0;
     public int idx = 0;
 
+    String nt4Topic = "";
+
     public String getHTML(){
         return "";
     }
@@ -17,6 +19,14 @@ public abstract class WidgetConfig {
     }
 
     public String getJSUpdate() {
+        return "";
+    }
+
+    public String getJSSetData() {
+        return "";
+    }
+
+    public String getJSSetNoData() {
         return "";
     }
 

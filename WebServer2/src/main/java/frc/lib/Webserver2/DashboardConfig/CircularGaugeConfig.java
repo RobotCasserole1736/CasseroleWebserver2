@@ -23,6 +23,15 @@ public class CircularGaugeConfig extends WidgetConfig {
     }
 
     @Override
+    public String getJSSetData(){
+        String retStr = "";
+        retStr += "if(name == \"" + nt4Topic + "\"){ ";
+        retStr += String.format("    widget%d.setVal(value);", idx);
+        retStr += "}";
+        return retStr;
+    }
+
+    @Override
     public String getJSUpdate() {
         return String.format("widget%d.render();", idx);
     }
