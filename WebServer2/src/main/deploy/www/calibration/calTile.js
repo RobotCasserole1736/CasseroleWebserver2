@@ -77,7 +77,7 @@ export class CalTile {
  
         var spinBoxContainer = document.createElement("div");
         spinBoxContainer.classList.add("spinBoxContainer");
-        this.spinbox = new SpinBox(spinBoxContainer);
+        this.spinbox = new SpinBox(spinBoxContainer, {'minimum' : this.min, 'maximum' : this.max, 'decimals' : 1});
         buttonDiv.appendChild(spinBoxContainer);
 
         var applyButton = document.createElement("button");

@@ -59,6 +59,12 @@ export class NT4_Client {
         }
     }
 
+    //Gets a timestamp in the NT4 time scaling & domain
+    // I have no idea ift his will be useful going forward but..
+    getCurTimestamp(){
+        return new Date().getTime();
+    }
+
 
     // TEST ONLY - this is a periodic loop which simulates
     // a NT server with signals and data in it
