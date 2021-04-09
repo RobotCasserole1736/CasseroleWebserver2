@@ -19,7 +19,10 @@ public class CircularGaugeConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration(){
-        return String.format("var widget%d = new CircularGauge('widget%d', '%s', %f,%f,%f,%f);", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
+        String retStr = "";
+        retStr += String.format("var widget%d = new CircularGauge('widget%d', '%s', %f,%f,%f,%f);\n", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
+        retStr += String.format("nt4Client.subscribe(%s);", nt4Topic);
+        return retStr;
     }
 
     @Override
