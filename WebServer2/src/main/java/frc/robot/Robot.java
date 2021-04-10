@@ -50,9 +50,9 @@ public class Robot extends TimedRobot {
     testServer.dashboard.addText("Autonomous/curValDelay", "Blah", 5, 82.5, 1.0);
 
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "#222222", "icons/speed.svg", 30, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "#222222", "icons/climb.svg", 38, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "#222222", "icons/doublegear.svg", 48.5, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "#222222", "icons/power.svg", 57, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "#222222", "icons/battery.svg", 38, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "#222222", "icons/upperLimit.svg", 48.5, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "#222222", "icons/lowerLimit.svg", 57, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF00FF", "#222222", "icons/intake.svg", 65, 5, 1.0);
     testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 17, 1.0);
     testServer.dashboard.addAutoChooser("Autonomous/curVal", "Autonomous/desVal", "Auto Mode", autoModes, 30, 75, 1.0);
