@@ -7,7 +7,7 @@
 
 import { NT4_Client } from "./dummy_NT4.js";
 
-export class SignalDAQ {
+export class SignalDAQNT4 {
 
 
     constructor(onSignalAnnounce_in,   //Gets called when server announces enough topics to form a new signal
@@ -20,8 +20,6 @@ export class SignalDAQ {
         this.onNewSampleData = onNewSampleData_in;
         this.onConnect = onConnect_in;
         this.onDisconnect = onDisconnect_in;
-
-        this.announcedSignalsList = new Set();
 
         this.signalList = new Set(); //start assuming no signals.
 

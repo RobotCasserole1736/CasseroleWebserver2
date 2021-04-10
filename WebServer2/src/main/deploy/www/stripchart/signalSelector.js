@@ -32,6 +32,9 @@ export class SignalSelector {
     }
 
     clearSignalList(){
+        for(var idx = 0; idx < this.selectableSignalsList.length; idx++){
+            this.drawDiv.removeChild(this.selectableSignalsList[idx].drawDiv);
+        }    
         this.selectableSignalsList = [];
     }
 

@@ -71,7 +71,9 @@ buttonsContainer {
 }
 
 buttonGroup {
-    flex-grow: 1;
+    display: flex;
+    flex-grow: 0;
+    flex-direction: row;
 }
 
 .hidden {

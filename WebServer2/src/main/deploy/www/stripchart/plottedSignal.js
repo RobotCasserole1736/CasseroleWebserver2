@@ -85,17 +85,4 @@ export class PlottedSignal {
         e.dataTransfer.setData('text/plain', this.signal.name);
     }
 
-    onMouseUp = e => {
-        if(e.which == 1){
-            this.selected = !this.selected;
-        } else if (e.which == 2){
-            this.dele
-        }
-    }
-
-    onRightClick = e => {
-        e.preventDefault();
-        alert();
-    }
-
 }

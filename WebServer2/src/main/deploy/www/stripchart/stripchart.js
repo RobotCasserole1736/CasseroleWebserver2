@@ -11,7 +11,8 @@ import { Plot } from './plot.js'
 import { SignalSelector } from './signalSelector.js';
 import { Signal } from './signal.js';
 import { Sample } from './sample.js';
-import { SignalDAQ } from '../interfaces/signalDAQ_NT4.js';
+import { SignalDAQNT4 } from '../interfaces/signalDAQ_NT4.js';
+import { SignalDAQLocalFile } from '../interfaces/signalDAQ_localFile.js';
 
 var plotsContainer = document.getElementById("plotsContainer");
 var plotList = [];
@@ -27,16 +28,13 @@ if (typeof(Storage) !== "undefined") {
 var allSignalsMap = new Map();
 var signalSelector = new SignalSelector(document.getElementById("selectableSignalContainer"))
 
-var mainDAQ = new SignalDAQ(onSignalAnnounce,
-                            onSignalUnAnnounce,
-                            onNewSampleData,
-                            onConnect,
-                            onDisconnect
-                            );
-
+var mainDAQ = null;
 var recordingStartTime = null;
 var recordingEndTime = null;
 var recordingRunning = false;
+
+//Default to showing live data
+goLive();
 
 //Add our first plot
 addPlot();
@@ -87,7 +85,9 @@ function startRecording(){
 }
 
 function stopRecording(){
-    mainDAQ.stopDAQ();
+    if(mainDAQ != null){
+        mainDAQ.stopDAQ();
+    }
     recordingRunning = false;
     signalSelector.enableUserInteraction();
     plotList.forEach(plot=>plot.setDrawRange(recordingStartTime, recordingEndTime));
@@ -134,6 +134,60 @@ function filterChangeHandler(filterSpec_in){
     signalSelector.setFilterSpec(filterSpec_in);
 }
 
+window.handleModeChange = handleModeChange;
+function handleModeChange(){
+    var checkbox = document.getElementById("modeCheckbox");
+    if(checkbox.checked){
+        goFiles();
+    } else {
+        goLive();
+    }
+}
+
+window.handleFileSelect = handleFileSelect;
+function handleFileSelect(files_in){
+    var fileobj = files_in[0];
+    if(mainDAQ != null){
+        mainDAQ.load(fileobj);
+    }
+}
+
+/////////////////////////////////////////////////////////////
+// DAQ Source Change Handlers
+
+function goLive(){
+    document.getElementById("modeCheckbox").checked = false;
+    document.getElementById("start_btn").classList.remove("hidden");
+    document.getElementById("stop_btn").classList.remove("hidden");
+    document.getElementById("fileSelector").classList.add("hidden");
+    stopRecording();
+    allSignalsMap.clear();
+    signalSelector.clearSignalList();
+
+    mainDAQ = new SignalDAQNT4(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect);
+
+    recordingStartTime = null;
+    recordingEndTime = null;
+    recordingRunning = false;
+}
+
+function goFiles(){
+    document.getElementById("modeCheckbox").checked = true;
+    document.getElementById("start_btn").classList.add("hidden");
+    document.getElementById("stop_btn").classList.add("hidden");
+    document.getElementById("fileSelector").classList.remove("hidden");
+    stopRecording();
+    allSignalsMap.clear();
+    signalSelector.clearSignalList();
+
+    mainDAQ = new SignalDAQLocalFile(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect);
+
+
+    recordingStartTime = null;
+    recordingEndTime = null;
+    recordingRunning = false;
+}
+
 /////////////////////////////////////////////////////////////
 //Data Event Handlers
 
@@ -151,6 +205,7 @@ function onSignalAnnounce(name, units){
     allSignalsMap.set(name, newSignal);
     signalSelector.addSignal(newSignal);
     restoreConfig(); 
+    plotList.forEach(plt => plt.rectifySignalReferencesByName());
 }
 
 function onSignalUnAnnounce(name){

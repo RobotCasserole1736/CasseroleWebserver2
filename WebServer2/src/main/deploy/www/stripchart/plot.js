@@ -135,31 +135,43 @@ export class Plot {
         }
     }
 
-    removeSignal(signal_in){
-        if(this.plottedSignalsMap.has(signal_in.name)){
+    removePlottedSignal(psName_in){
 
-            // Remove plotted signal tile
-            var ps = this.plottedSignalsMap.get(signal_in.name);
-            this.psContainer.removeChild(ps.drawDiv);
+        var ps_in = this.plottedSignalsMap.get(psName_in);
+        var oldUnits = ps_in.valueAxis.units;
 
-            // Remove reference to plotted signal object
-            this.plottedSignalsMap.delete(signal_in.name);
+        // Remove plotted signal tile
+        this.psContainer.removeChild(ps_in.drawDiv);
 
-            // Check if any other signal was using the same axis.
-            var axisOrphaned = true;
-            this.plottedSignalsMap.forEach(ps => {
-                if(ps.valueAxis.units == signal_in.units){
-                    axisOrphaned = false;
-                }
-            });
+        // Remove plotted signal object by value (not by key)
+        this.plottedSignalsMap.delete(psName_in);
 
-            // Remove the axis if no one else is using it.
-            if(axisOrphaned){
-                this.valueAxesMap.delete(signal_in.units);
-                this.numAxesUpdatedCallback();
+        // Check if any other signal was using the same axis.
+        var axisOrphaned = true;
+        this.plottedSignalsMap.forEach(ps => {
+            if(ps.valueAxis.units == oldUnits){
+                axisOrphaned = false;
             }
+        });
 
+        // Remove the axis if no one else is using it.
+        if(axisOrphaned){
+            this.valueAxesMap.delete(oldUnits);
+            this.numAxesUpdatedCallback();
         }
+    }
+
+    //When a DAQ changes out, there signals that disappear and get 
+    // recreated. Technically they're not the same as previous. However,
+    // sometimes it makes sense to re-attach plotted signals to underlying 
+    // signal objects by using the referenced name.
+    rectifySignalReferencesByName(){
+        this.plottedSignalsMap.forEach((ps, sigName) => {
+            var newSig = this.signalFromNameCallback(sigName);
+            if(newSig != null){
+                ps.signal = newSig;
+            }
+        });
     }
 
     setDrawRange(startTime, endTime){
@@ -215,24 +227,21 @@ export class Plot {
     mouseup = e => {
 
         var sigName = e.currentTarget.getAttribute("data:sigName");
-        var sig = this.signalFromNameCallback(sigName);
+        var ps = this.plottedSignalsMap.get(sigName);
 
         this.plottedSignalsMap.forEach(ps => { ps.colorChooser.hide()}); //always close out all color choosers on click.
 
-        if(sig != null){
-
-            if(e.which == 1){
-                //left click toggles selected
-                this.plottedSignalsMap.get(sig.name).selected ^= true; //toggle
-            } else if(e.which == 2){
-                //Middle click removes
-                this.removeSignal(sig);
-            } else if(e.which == 3) {
-                //Right click shows color chooser
-                this.plottedSignalsMap.get(sig.name).colorChooser.show(e.pageX, e.pageY);
-            }
+        if(e.which == 1){
+            //left click toggles selected
+            ps.selected ^= true; //toggle
+        } else if(e.which == 2){
+            //Middle click removes
+            this.removePlottedSignal(sigName);
+        } else if(e.which == 3) {
+            //Right click shows color chooser
+            ps.colorChooser.show(e.pageX, e.pageY);
         }
-        
+
         e.preventDefault();
     }
 

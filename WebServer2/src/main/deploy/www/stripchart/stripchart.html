@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="toggleSw/toggleSw.css">
     <link rel="stylesheet" href="stripchart.css">
     <title>Stripchart</title>
 </head>
@@ -14,10 +15,6 @@
 
         <!-- buttons area-->
         <buttonsContainer class="outlined">
-            <buttonGroup class="outlined"> 
-                <button id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
-                <button id="stop_btn" type="button" onclick="handleStopBtnClick()">Stop</button>
-            </buttonGroup>
             <buttonGroup class="outlined">
                 <button id="add_chart_btn" type="button" onclick="handleAddChartBtnClick()">Add Chart</button>
                 <button id="rm_chart_btn" type="button" onclick="handleRmChartBtnClick()">Remove Chart</button>
@@ -27,6 +24,25 @@
             </buttonGroup>
             <buttonGroup class="outlined">
                 <button id="unselect_all_btn" type="button" onclick="unselectAllBtnClick()">Unselect All</button>
+            </buttonGroup>
+            <buttonGroup class="outlined"> 
+                <div class="sliderParts">Live</div>
+                
+                <div class="sliderParts">
+                    <label class="switch">
+                        <input id="modeCheckbox" type="checkbox" onclick="handleModeChange()">
+                        <div class="slider"></div>
+                    </label>
+                </div>
+
+                <div class="sliderParts">File</div>
+            </buttonGroup>
+            <buttonGroup class="outlined">
+                <button  id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
+                <button  id="stop_btn"  type="button" onclick="handleStopBtnClick()">Stop</button>
+                <div id="fileSelector" class="hidden">
+                    File: <input class="button" type="file" id="files" value="../logFileSnagger/downloaded_logs" onchange="handleFileSelect(this.files)" accept=".csv" autofocus="autofocus" />
+                </div>
             </buttonGroup>
         </buttonsContainer>
 
