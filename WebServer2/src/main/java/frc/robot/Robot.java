@@ -39,13 +39,34 @@ public class Robot extends TimedRobot {
     autoModes.add("Drive Forward");
     autoModes.add("Spin Left");
 
-    testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 10, 1.0);
-    testServer.dashboard.addCircularGauge("Signals/TestSlowSin/Value", "Test Gauge", "Nm", 0, 100, 75, 90, 5, 5, 1.0);
-    testServer.dashboard.addAutoChooser("Signals/TestSlowSin/Value", "Auto Mode", autoModes, 30, 70, 1.0);
-    testServer.dashboard.addIcon("Signals/TestSlowSin/Value", "Test Icon", "#FF0000", "#222222", "icons/speed.svg", 5, 50, 1.0);
-    testServer.dashboard.addLineGauge("Signals/TestSlowSin/Value", "Speed", "RPM", -500, 500, -100, 100, 75, 10, 1.0);
-    testServer.dashboard.addSound("Signals/TestSlowSin/Value", "Evil Sound", "sfx/alarm1.mp3", false);
-    testServer.dashboard.addText("Signals/TestSlowSin/Value", "Blah", 75, 30, 1.0);
+    ArrayList<String> delayModes = new ArrayList<String>();
+    delayModes.add("0 sec");
+    delayModes.add("3 sec");
+    delayModes.add("6 sec");
+    delayModes.add("9 sec");
+
+    testServer.dashboard.addCircularGauge("Signals/TestSlowSin/Value",  "Left DT Torque", "Nm", 0, 100, 75, 90, 5, 5, 1.0);
+    testServer.dashboard.addCircularGauge("Signals/TestFastSin1/Value", "Right DT Torque", "Nm", 0, 100, 25, 99, 5, 45, 1.0);
+    testServer.dashboard.addText("Autonomous/curValDelay", "Blah", 5, 82.5, 1.0);
+
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "#222222", "icons/speed.svg", 30, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "#222222", "icons/climb.svg", 38, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "#222222", "icons/doublegear.svg", 48.5, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "#222222", "icons/power.svg", 57, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF00FF", "#222222", "icons/intake.svg", 65, 5, 1.0);
+    testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 17, 1.0);
+    testServer.dashboard.addAutoChooser("Autonomous/curVal", "Autonomous/desVal", "Auto Mode", autoModes, 30, 75, 1.0);
+    testServer.dashboard.addAutoChooser("Autonomous/curValDelay", "Autonomous/desValDelay", "Auto Delay", delayModes, 30, 87, 1.0);
+
+    testServer.dashboard.addLineGauge("Signals/TestFastSin2/Value", "Speed", "RPM", -30, 30, -20, 5, 75, 5, 1.0);
+    testServer.dashboard.addLineGauge("Autonomous/curVal", "Auto Idx", "RPM", -1, 5, -100, 100, 75, 20, 1.0);
+    testServer.dashboard.addLineGauge("Autonomous/curValDelay", "Delay Idx", "RPM", -1, 5, -100, 100, 75, 35, 1.0);
+    testServer.dashboard.addText("testText", "Blah", 75, 50, 1.0);
+    testServer.dashboard.addLineGauge("Signals/AnotherTestSquare/Value", "Turret Mode", "RPM", -30, 30, -20, 5, 75, 65, 1.0);
+
+
+    //testServer.dashboard.addSound("Signals/TestSquare/Value", "Evil Sound", "sfx/alarm1.mp3", false);
+
 
     SignalWrangler.getInstance().registerSignals(this);
 

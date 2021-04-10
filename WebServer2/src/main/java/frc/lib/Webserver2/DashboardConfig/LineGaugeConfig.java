@@ -20,12 +20,23 @@ public class LineGaugeConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration(){
-        return String.format("var widget%d = new LineGauge('widget%d', '%s', %f,%f,%f,%f);", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
+        String retStr = String.format("var widget%d = new LineGauge('widget%d', '%s', %f,%f,%f,%f);\n", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
+        retStr += String.format("nt4Client.subscribe(\"%s\");", nt4TopicCurVal);
+        return retStr;
+    }
+
+    @Override
+    public String getJSSetData(){
+        String retStr = "";
+        retStr += "if(name == \"" + nt4TopicCurVal + "\"){ ";
+        retStr += String.format("    widget%d.setVal(value);", idx);
+        retStr += "}";
+        return retStr;
     }
 
     @Override
     public String getJSUpdate() {
-        return String.format("widget%d.render();", idx);
+        return String.format("    widget%d.render();", idx);
     }
     
 }

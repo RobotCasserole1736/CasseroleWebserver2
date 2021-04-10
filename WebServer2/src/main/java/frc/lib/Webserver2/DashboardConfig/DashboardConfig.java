@@ -8,10 +8,10 @@ public class DashboardConfig {
     public LinkedList<WidgetConfig> widgetList = new LinkedList<WidgetConfig>();
 
     // Factory Functions for user to make new widgets
-    // TODO on all - add Signal/NT references
-    public void addAutoChooser(String nt4Topic_in, String name, List<String> modeNames, double xPos, double yPos, double sizeScaleFactor) {
+    public void addAutoChooser(String nt4TopicCur_in, String nt4TopicDes_in, String name, List<String> modeNames, double xPos, double yPos, double sizeScaleFactor) {
         var w = new AutoChooserConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4TopicCur_in;
+        w.nt4TopicDesVal = nt4TopicDes_in;
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
@@ -26,7 +26,7 @@ public class DashboardConfig {
     public void addCamera(String nt4Topic_in, String name, String streamURL, double xPos, double yPos, double sizeScaleFactor) {
 
         var w = new CameraConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4Topic_in;
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
@@ -39,7 +39,7 @@ public class DashboardConfig {
     public void addCircularGauge(String nt4Topic_in, String name, String units, double minRange, double maxRange, double minAcceptable,
             double maxAcceptable, double xPos, double yPos, double sizeScaleFactor) {
         var w = new CircularGaugeConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4Topic_in;
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
@@ -55,7 +55,7 @@ public class DashboardConfig {
     public void addIcon(String nt4Topic_in, String name, String colorOn, String colorOff, String symbolPath, double xPos, double yPos,
             double sizeScaleFactor) {
         var w = new IconConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4Topic_in;
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
@@ -70,7 +70,7 @@ public class DashboardConfig {
     public void addLineGauge(String nt4Topic_in, String name, String units, double minRange, double maxRange, double minAcceptable,
             double maxAcceptable, double xPos, double yPos, double sizeScaleFactor) {
         var w = new LineGaugeConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4Topic_in;
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
@@ -85,7 +85,7 @@ public class DashboardConfig {
 
     public void addSound(String nt4Topic_in, String name, String filePath, boolean looping) {
         var w = new SoundConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4Topic_in;
         w.idx = widgetList.size();
         w.name = name;
         w.filePath = filePath;
@@ -95,7 +95,7 @@ public class DashboardConfig {
 
     public void addText(String nt4Topic_in, String name, double xPos, double yPos, double sizeScaleFactor) {
         var w = new TextConfig();
-        w.nt4Topic = nt4Topic_in;
+        w.nt4TopicCurVal = nt4Topic_in;
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;

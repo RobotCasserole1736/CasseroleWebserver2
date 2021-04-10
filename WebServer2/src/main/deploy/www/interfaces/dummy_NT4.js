@@ -79,17 +79,21 @@ export class NT4_Client {
             var testFastSin1 = 50+30*Math.sin( curTimeSec* 2 * Math.PI * 1.0);
             var testFastSin2 = 20*Math.sin( (curTimeSec + 0.2 )* 2 * Math.PI * 1.0);
             var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500) ? 1.0 : 0.0;
-            var testSquare2 = (Math.round(curTimeSec*743) % 1000 > 200) ? 2.0 : 1.0;
+            var testSquare2 = (Math.round(curTimeSec*200) % 1000 > 500) ? 2.0 : 1.0;
             
             this.testPublishNewTopicData("Signals/TestFastSin1/Value", curTimeSec, testFastSin1);
             this.testPublishNewTopicData("Signals/TestFastSin2/Value", curTimeSec, testFastSin2);
             this.testPublishNewTopicData("Signals/TestSlowSin/Value", curTimeSec, testSlowSin1);
             this.testPublishNewTopicData("Signals/TestSquare/Value", curTimeSec, testSquare1);
             this.testPublishNewTopicData("Signals/AnotherTestSquare/Value", curTimeSec, testSquare2);
-
+            this.testPublishNewTopicData("testText", curTimeSec, testSlowSin1.toPrecision(3).toString() + " PSI");
             this.loopCount++;
             curTimeSec = this.loopCount * 0.020;
         }
+
+        this.testPublishNewTopicData("Autonomous/curVal", curTimeSec, this.testTopicsMap.get("Autonomous/desVal"));
+        this.testPublishNewTopicData("Autonomous/curValDelay", curTimeSec, this.testTopicsMap.get("Autonomous/desValDelay"));
+
 
     }
 
@@ -128,8 +132,13 @@ export class NT4_Client {
         this.testTopicsMap.set("Calibrations/ShooterSetpoint/Min", 500);
         this.testTopicsMap.set("Calibrations/ShooterSetpoint/Max", 2500);
         this.testTopicsMap.set("Calibrations/ShooterSetpoint/Default", 1000);
+        this.testTopicsMap.set("testText", "");
+        this.testTopicsMap.set("Autonomous/curVal", 0);
+        this.testTopicsMap.set("Autonomous/desVal", 0);
+        this.testTopicsMap.set("Autonomous/curValDelay", 0);
+        this.testTopicsMap.set("Autonomous/desValDelay", 0);
 
-        setInterval(this.testDataSourceLoop.bind(this), 50);
+        setInterval(this.testDataSourceLoop.bind(this), 20);
 
         this.onConnect();
     }

@@ -8,7 +8,7 @@ public abstract class WidgetConfig {
     public double sizeScaleFactor = 1.0;
     public int idx = 0;
 
-    String nt4Topic = "";
+    String nt4TopicCurVal = "";
 
     public String getHTML(){
         return "";

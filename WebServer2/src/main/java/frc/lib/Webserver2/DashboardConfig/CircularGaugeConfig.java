@@ -21,14 +21,14 @@ public class CircularGaugeConfig extends WidgetConfig {
     public String getJSDeclaration(){
         String retStr = "";
         retStr += String.format("var widget%d = new CircularGauge('widget%d', '%s', %f,%f,%f,%f);\n", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
-        retStr += String.format("nt4Client.subscribe(%s);", nt4Topic);
+        retStr += String.format("nt4Client.subscribe(\"%s\");", nt4TopicCurVal);
         return retStr;
     }
 
     @Override
     public String getJSSetData(){
         String retStr = "";
-        retStr += "if(name == \"" + nt4Topic + "\"){ ";
+        retStr += "if(name == \"" + nt4TopicCurVal + "\"){ ";
         retStr += String.format("    widget%d.setVal(value);", idx);
         retStr += "}";
         return retStr;
@@ -36,6 +36,6 @@ public class CircularGaugeConfig extends WidgetConfig {
 
     @Override
     public String getJSUpdate() {
-        return String.format("widget%d.render();", idx);
+        return String.format("    widget%d.render();", idx);
     }
 }

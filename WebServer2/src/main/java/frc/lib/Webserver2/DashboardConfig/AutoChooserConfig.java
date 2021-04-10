@@ -6,6 +6,8 @@ public class AutoChooserConfig extends WidgetConfig {
 
     List<String> modeNameList;
 
+    String nt4TopicDesVal = "";
+
     final double nominalWidth = 40;
     final double nominalHeight = 5;
 
@@ -31,17 +33,32 @@ public class AutoChooserConfig extends WidgetConfig {
 
     @Override
     public String getJSDeclaration() {
-        return String.format("var widget%d = new AutoChooser('widget%d', '%s', %s, onWidget%dValUpdated);", idx, idx,
+        String retStr = String.format("var widget%d = new AutoChooser('widget%d', '%s', %s, onWidget%dValUpdated);\n", idx, idx,
                 name, getJsModeNameListString(), idx);
+        retStr += String.format("nt4Client.subscribe(\"%s\");", nt4TopicCurVal);
+        return retStr;
+    }
+
+    @Override
+    public String getJSSetData(){
+        String retStr = "";
+        retStr += "if(name == \"" + nt4TopicCurVal + "\"){ ";
+        retStr += String.format("    widget%d.setActualState(value);", idx);
+        retStr += "}";
+        return retStr;
     }
 
     @Override
     public String getJSUpdate() {
-        return String.format("widget%d.render();", idx);
+        return String.format("    widget%d.render();", idx);
     }
 
     public String getJSCallback() {
-        return String.format("function onWidget%dValUpdated() {}", idx); // TODO - actual content
+        String retStr = String.format("function onWidget%dValUpdated(value) {\n", idx);
+        retStr +=  String.format("    nt4Client.sendDataValue(\"%s\", nt4Client.getCurTimestamp(), value);\n", nt4TopicDesVal);
+        retStr += "}";
+        return retStr;
+
     }
 
 }
