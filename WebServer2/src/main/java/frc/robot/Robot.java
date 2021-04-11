@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
 
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "icons/warning.svg", 30, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "icons/gear.svg", 38, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "icons/doubleGear.svg", 48.5, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "icons/cameraFault.svg", 48.5, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "icons/vision.svg", 57, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF00FF", "icons/camera.svg", 65, 5, 1.0);
     testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 17, 1.0);
