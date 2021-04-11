@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     testServer.dashboard.addCircularGauge("Signals/TestFastSin1/Value", "Right DT Torque", "Nm", 0, 100, 25, 99, 5, 45, 1.0);
     testServer.dashboard.addText("Autonomous/curValDelay", "Blah", 5, 82.5, 1.0);
 
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "icons/cycle.svg", 30, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "icons/alert.svg", 30, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "icons/autoAlign.svg", 38, 5, 1.0);
     testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "icons/cameraFault.svg", 48.5, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "icons/fast.svg", 57, 5, 1.0);
