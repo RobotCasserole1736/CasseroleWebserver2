@@ -50,8 +50,8 @@ class DashboardServlet extends HttpServlet {
         dCfg = cfg_in;
 
         String templatesRootDir = Robot.isReal() ? templatesBaseRIO : templatesBaseLocal;
-        htmlTemplateFile = Path.of(templatesRootDir, "dashboard.html").toString();
-        jsTemplateFile = Path.of(templatesRootDir, "dashboard.js").toString();
+        htmlTemplateFile = Path.of(templatesRootDir, "dashboard.html_tmplt").toString();
+        jsTemplateFile = Path.of(templatesRootDir, "dashboard.js_tmplt").toString();
     }
 
     @Override

@@ -32,6 +32,11 @@ div.iconGraphic {
     top:2%;
     left:2%;
 
+    -webkit-transition:background-color 1s ease;
+    -moz-transition:background-color 1s ease;
+    -o-transition:background-color 1s ease;
+    transition:background-color 1s ease;
+
 }
 
 div.textWidgetBase {

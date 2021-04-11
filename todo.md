@@ -21,9 +21,6 @@
 
 # Driver Dashboard
 
-* Add animatino to keep updates smooth, even if data comes in slow.
-* Redraw Icon files
-
 # Backend
 
 * Annotation-based calibrations

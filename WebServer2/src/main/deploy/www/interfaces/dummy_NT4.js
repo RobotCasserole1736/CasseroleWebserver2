@@ -138,7 +138,7 @@ export class NT4_Client {
         this.testTopicsMap.set("Autonomous/curValDelay", 0);
         this.testTopicsMap.set("Autonomous/desValDelay", 0);
 
-        setInterval(this.testDataSourceLoop.bind(this), 20);
+        setInterval(this.testDataSourceLoop.bind(this), 75);
 
         this.onConnect();
     }

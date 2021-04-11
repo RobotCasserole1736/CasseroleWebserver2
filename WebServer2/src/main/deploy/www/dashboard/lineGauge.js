@@ -15,6 +15,11 @@ export class LineGauge {
         this.hasData = false;
         this.curVal = 0;
 
+        // Animation - intermedeate drawn fill percentage
+        // to keep stuff feeling smooth and high quality
+        this.animatedCurValue = 0;
+        this.prevTime = performance.now();
+
         // Set up drawing canvas within provided div
         this.canvas = document.createElement('canvas');
         this.docElem = document.getElementById(this.draw_div_id );
@@ -37,6 +42,9 @@ export class LineGauge {
 
     //Call once per render loop to redraw the gauge
     render() {
+        var curTime = performance.now();
+        var deltaTime = curTime - this.prevTime;
+
         this.recalcDrawConstants();
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -55,6 +63,10 @@ export class LineGauge {
         this.drawGauge();
 
         if(this.hasData){
+            //Animate the arc position smoothly
+            var error = this.curVal - this.animatedCurValue ;
+            this.animatedCurValue += 10.0 * error * (deltaTime/1000.0);
+
             //Draw marker on gauge
             if(this.curVal > this.max_acceptable || this.curVal < this.min_acceptable){
                 this.ctx.fillStyle = "#FF2222";
@@ -63,6 +75,8 @@ export class LineGauge {
             }
             this.drawMarker()
         }
+
+        this.prevTime = curTime;
 
     }
 
@@ -108,7 +122,7 @@ export class LineGauge {
     }
 
     drawMarker(){
-        var adjVal = this.curVal;
+        var adjVal = this.animatedCurValue;
         adjVal = Math.min(adjVal, this.max_range);
         adjVal = Math.max(adjVal, this.min_range);
         var cX = this.valToXPos(adjVal);

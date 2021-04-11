@@ -15,6 +15,11 @@ export class CircularGauge {
         this.hasData = false;
         this.curVal = 0;
 
+        // Animation - intermedeate drawn fill percentage
+        // to keep stuff feeling smooth and high quality
+        this.animatedCurValue = 0;
+        this.prevTime = performance.now();
+
         // Set up drawing canvas within provided div
         this.canvas = document.createElement('canvas');
         this.docElem = document.getElementById(this.draw_div_id );
@@ -37,6 +42,10 @@ export class CircularGauge {
 
     //Call once per render loop to redraw the gauge
     render() {
+
+        var curTime = performance.now();
+        var deltaTime = curTime - this.prevTime;
+
         this.recalcDrawConstants();
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -54,29 +63,37 @@ export class CircularGauge {
         // Draw Value Text
         this.ctx.font = (this.valueTextSize) + "px localMichroma";
         this.ctx.fillStyle = "#FFFFFF";
-        var displayValueStr = "****"
+        var displayValueStr = "****";
         if(this.hasData){
-            displayValueStr = this.getValAsFixedLenStr()
+            displayValueStr = this.getValAsFixedLenStr();
         }
         this.renderTextFixedSpacing(displayValueStr, this.valueTextAnchorX, this.valueTextAnchorY);
 
         if(this.hasData){
-            //Draw filled portion of gauge
+            
+            // Calculate filled portion color
             if(this.curVal > this.max_acceptable || this.curVal < this.min_acceptable){
                 this.ctx.fillStyle = "#FF2222";
             } else {
                 this.ctx.fillStyle = "#22DD22";
             }
 
+            //Animate the arc position smoothly
+            var error = this.curVal - this.animatedCurValue ;
+            this.animatedCurValue += 10.0 * error * (deltaTime/1000.0);
+
             //Calculate the end angle to fill the gauge to
-            var gaugeFillFrac = (this.curVal - this.min_range)/(this.max_range - this.min_range);
+            var gaugeFillFrac = (this.animatedCurValue - this.min_range)/(this.max_range - this.min_range);
             gaugeFillFrac = Math.max(gaugeFillFrac, 0);
             gaugeFillFrac = Math.min(gaugeFillFrac, 1);
 
             var gaugeEndAngle = (this.ARC_END_ANGLE - this.ARC_START_ANGLE) * gaugeFillFrac + this.ARC_START_ANGLE;
 
+            //Draw filled portion of gauge
             this.drawGauge(gaugeEndAngle, true);
         }
+
+        this.prevTime = curTime;
 
     }
 
