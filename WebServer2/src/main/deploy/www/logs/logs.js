@@ -28,6 +28,16 @@ function clearDisplayedLogs() {
         logTilesMap.clear();
     }
     mainTable = newMainTable;
+
+    //Add headers
+    var new_tr = document.createElement("tr");
+    var new_th = document.createElement("th");
+    new_th.innerHTML = "File";
+    new_tr.appendChild(new_th);
+    var new_th = document.createElement("th");
+    new_th.innerHTML = "Size (B)";
+    new_tr.appendChild(new_th);
+    mainTable.appendChild(new_tr);
 }
 
 function connect() {

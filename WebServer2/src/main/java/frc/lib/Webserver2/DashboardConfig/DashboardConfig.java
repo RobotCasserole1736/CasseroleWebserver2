@@ -52,7 +52,7 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
-    public void addIcon(String nt4Topic_in, String name, String colorOn, String colorOff, String symbolPath, double xPos, double yPos,
+    public void addIcon(String nt4Topic_in, String name, String colorOn, String symbolPath, double xPos, double yPos,
             double sizeScaleFactor) {
         var w = new IconConfig();
         w.nt4TopicCurVal = nt4Topic_in;
@@ -62,7 +62,6 @@ public class DashboardConfig {
         w.name = name;
         w.sizeScaleFactor = sizeScaleFactor;
         w.colorOn = colorOn;
-        w.colorOff = colorOff;
         w.symbolPath = symbolPath;
         widgetList.add(w);
     }

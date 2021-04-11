@@ -3,19 +3,20 @@ export class Icon {
 
     static kOFF = 0;
     static kON  = 1;
-    static kBLINK  = 2;
+    static kBLINK_FAST  = 2;
+    static kBLINK_SLOW  = 3;
 
-    static blinkPeriodLoops = 60;
+    static blinkSlowPeriodLoops = 60;
+    static blinkFastPeriodLoops = 32;
     static blinkDC = 0.6;
 
     //////////////////////////////////////
     // Public Class methods
     //////////////////////////////////////
-    constructor(draw_div_id, name, color_on, color_off, symbolPath) { 
+    constructor(draw_div_id, name, color_on, symbolPath) { 
         this.draw_div_id = draw_div_id;
         this.name = name;
         this.color_on = color_on;
-        this.color_off = color_off;
         this.symbolPath = symbolPath;
         
         // State Variable Defaults
@@ -53,14 +54,26 @@ export class Icon {
         // Pick the color based on the current state of the icon.
         var desBrigness = 0;
   
-        if(this.curState == Icon.kBLINK){
+        if(this.curState == Icon.kBLINK_SLOW){
             //Pick on state for high enough counter values
-            if(this.blinkCounter > (Icon.blinkPeriodLoops * (1.0-Icon.blinkDC))){
+            if(this.blinkCounter > (Icon.blinkSlowPeriodLoops * (1.0-Icon.blinkDC))){
                 desBrigness = 1.0;
             } 
 
             //Reset counter at period
-            if(this.blinkCounter > Icon.blinkPeriodLoops){
+            if(this.blinkCounter > Icon.blinkSlowPeriodLoops){
+                this.blinkCounter = 0;
+            } else {
+                this.blinkCounter++;
+            }
+        } else if(this.curState == Icon.kBLINK_FAST){
+            //Pick on state for high enough counter values
+            if(this.blinkCounter > (Icon.blinkFastPeriodLoops * (1.0-Icon.blinkDC))){
+                desBrigness = 1.0;
+            } 
+
+            //Reset counter at period
+            if(this.blinkCounter > Icon.blinkFastPeriodLoops){
                 this.blinkCounter = 0;
             } else {
                 this.blinkCounter++;
@@ -76,7 +89,7 @@ export class Icon {
 
         //Animate the color smoothly
         var error = desBrigness - this.animatedBrightnessVal ;
-        this.animatedBrightnessVal += 20.0 * error * (deltaTime/1000.0);
+        this.animatedBrightnessVal += 30.0 * error * (deltaTime/1000.0);
         this.animatedBrightnessVal = Math.min(this.animatedBrightnessVal, 1.0);
         this.animatedBrightnessVal = Math.max(this.animatedBrightnessVal, 0.0);
 

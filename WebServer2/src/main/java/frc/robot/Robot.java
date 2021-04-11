@@ -10,7 +10,6 @@ package frc.robot;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.lib.Logging.SignalFileLogger;
 import frc.lib.Signal.SignalWrangler;
 import frc.lib.Signal.Annotations.Signal;
 import frc.lib.Webserver2.Webserver2;
@@ -37,23 +36,26 @@ public class Robot extends TimedRobot {
     ArrayList<String> autoModes = new ArrayList<String>();
     autoModes.add("Do Nothing");
     autoModes.add("Drive Forward");
+    autoModes.add("Drive Backward");
     autoModes.add("Spin Left");
+    autoModes.add("Win Match");
 
     ArrayList<String> delayModes = new ArrayList<String>();
     delayModes.add("0 sec");
     delayModes.add("3 sec");
     delayModes.add("6 sec");
     delayModes.add("9 sec");
+    delayModes.add("12 sec");
 
     testServer.dashboard.addCircularGauge("Signals/TestSlowSin/Value",  "Left DT Torque", "Nm", 0, 100, 75, 90, 5, 5, 1.0);
     testServer.dashboard.addCircularGauge("Signals/TestFastSin1/Value", "Right DT Torque", "Nm", 0, 100, 25, 99, 5, 45, 1.0);
     testServer.dashboard.addText("Autonomous/curValDelay", "Blah", 5, 82.5, 1.0);
 
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "#222222", "icons/warning.svg", 30, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "#222222", "icons/gear.svg", 38, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "#222222", "icons/doubleGear.svg", 48.5, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "#222222", "icons/vision.svg", 57, 5, 1.0);
-    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF00FF", "#222222", "icons/camera.svg", 65, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF0000", "icons/warning.svg", 30, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#00FF00", "icons/gear.svg", 38, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "icons/doubleGear.svg", 48.5, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "icons/vision.svg", 57, 5, 1.0);
+    testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF00FF", "icons/camera.svg", 65, 5, 1.0);
     testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 17, 1.0);
     testServer.dashboard.addAutoChooser("Autonomous/curVal", "Autonomous/desVal", "Auto Mode", autoModes, 30, 75, 1.0);
     testServer.dashboard.addAutoChooser("Autonomous/curValDelay", "Autonomous/desValDelay", "Auto Delay", delayModes, 30, 87, 1.0);

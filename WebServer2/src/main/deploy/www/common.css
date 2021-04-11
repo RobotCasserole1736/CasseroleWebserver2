@@ -76,6 +76,10 @@ buttonGroup {
     flex-direction: row;
 }
 
+.flexGrow {
+    flex-grow: 1;
+}
+
 .hidden {
     display: none;
 }
