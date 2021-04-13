@@ -92,5 +92,6 @@ The Calibration is tied to a specific object in java code, with a `.get()` metho
 
 Coming Soon: 
 
--- User code may choose when to consume a new calibration value (EX: prohibit changing PID values while not in disabled). Whether the calibration value update has been consumed or not will be reported in the UI.
--- Annotation-based calibration support.
+ * User code may choose when to consume a new calibration value (EX: prohibit changing PID values while not in disabled).
+    *  Whether the calibration value update has been consumed or not will be reported in the UI.
+ * Annotation-based calibration support.
