@@ -14,14 +14,16 @@ No web development required. Visual appearance & configuration done from Java us
 
 # Front-End
 
-HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (including tablets & mobile devices).
+HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (including tablets & mobile devices). Interfaces automatically scale to available view area.
 
 ## Dashboard
 
 ![Super cool dashboard demo](doc/dashboard.gif)
 
 * Driver-Focused - At-A-Glance robot state notification
-* Webcam Display
+* ISO-like iconography
+* Animation to keep visualization smooth even at slow data rates.
+* Webcam Display, including fullscreen
 * Autonomous chooser
 
 ## Stripcharts
@@ -32,11 +34,26 @@ HTML5/JS, served from the roboRIO. No tools to install. Cross-platform (includin
  * Flexible Capture/display lists
  * Saves current configuration to local storage for easy recall on page reload
  * Same-units plotted on same-y-axis
+ * Load data from file or view live from RIO.
 
 ## Calibration
 
-Coming soon!
+![Super cool calibrations demo](doc/calibrations.gif)
+
+ * Configurable min/max/default constraints
+ * Coming soon: Save/Load reporting
 
 ## Data Logs
 
-Coming soon!
+![Super cool log files demo](doc/logfiles.png)
+
+ * View log files present on RIO
+ * Download & Delete operations
+ * View current logging status (actively creating new log, idle, etc.)
+
+## Build Info
+
+![Super cool build info demo](doc/buildinfo.png)
+
+* View gradle & git generated info at build time
+* Helps uniquely identify the software version running on the RIO
