@@ -103,4 +103,18 @@ public class DashboardConfig {
         widgetList.add(w);
     }
 
+    public void addSwerveState(SwerveStateTopicSet[] topics_in, String name, double xPos, double yPos, double sizeScaleFactor) {
+        var w = new SwerveStateConfig();
+        w.idx = widgetList.size();
+        w.xPos = xPos;
+        w.yPos = yPos;
+        w.name = name;
+        w.sizeScaleFactor = sizeScaleFactor;
+        w.FLTopics = topics_in[0];
+        w.FRTopics = topics_in[1];
+        w.BLTopics = topics_in[2];
+        w.BRTopics = topics_in[3];
+        widgetList.add(w);
+    }
+
 }

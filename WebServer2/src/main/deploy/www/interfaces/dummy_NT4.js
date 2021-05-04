@@ -80,6 +80,8 @@ export class NT4_Client {
             var testFastSin2 = 20*Math.sin( (curTimeSec + 0.2 )* 2 * Math.PI * 1.0);
             var testSquare1 = (Math.round(curTimeSec*1000) % 1000 > 500) ? 1.0 : 0.0;
             var testSquare2 = (Math.round(curTimeSec*200) % 1000 > 500) ? 2.0 : 1.0;
+            var testAzmth = 180*Math.sin( curTimeSec * 2 * Math.PI * 0.1);
+            var testSpeed = Math.sin( curTimeSec * 2 * Math.PI * 0.2);
             
             this.testPublishNewTopicData("Signals/TestFastSin1/Value", curTimeSec, testFastSin1);
             this.testPublishNewTopicData("Signals/TestFastSin2/Value", curTimeSec, testFastSin2);
@@ -87,6 +89,24 @@ export class NT4_Client {
             this.testPublishNewTopicData("Signals/TestSquare/Value", curTimeSec, testSquare1);
             this.testPublishNewTopicData("Signals/AnotherTestSquare/Value", curTimeSec, testSquare2);
             this.testPublishNewTopicData("testText", curTimeSec, testSlowSin1.toPrecision(3).toString() + " PSI");
+
+            this.testPublishNewTopicData("modFL_azmthDes", curTimeSec, testAzmth*-1.0);
+            this.testPublishNewTopicData("modFL_azmthAct", curTimeSec, testAzmth);
+            this.testPublishNewTopicData("modFL_speedDes", curTimeSec, testSpeed*-1.0);
+            this.testPublishNewTopicData("modFL_speedAct", curTimeSec, testSpeed);
+            this.testPublishNewTopicData("modFR_azmthDes", curTimeSec, testAzmth);
+            this.testPublishNewTopicData("modFR_azmthAct", curTimeSec, testAzmth);
+            this.testPublishNewTopicData("modFR_speedDes", curTimeSec, testSpeed);
+            this.testPublishNewTopicData("modFR_speedAct", curTimeSec, testSpeed);
+            this.testPublishNewTopicData("modBL_azmthDes", curTimeSec, testAzmth*-0.2);
+            this.testPublishNewTopicData("modBL_azmthAct", curTimeSec, testAzmth);
+            this.testPublishNewTopicData("modBL_speedDes", curTimeSec, testSpeed);
+            this.testPublishNewTopicData("modBL_speedAct", curTimeSec, testSpeed);
+            this.testPublishNewTopicData("modBR_azmthDes", curTimeSec, testAzmth*0.8);
+            this.testPublishNewTopicData("modBR_azmthAct", curTimeSec, testAzmth);
+            this.testPublishNewTopicData("modBR_speedDes", curTimeSec, testSpeed);
+            this.testPublishNewTopicData("modBR_speedAct", curTimeSec, testSpeed);
+
             this.loopCount++;
             curTimeSec = this.loopCount * 0.020;
         }
@@ -137,6 +157,22 @@ export class NT4_Client {
         this.testTopicsMap.set("Autonomous/desVal", 0);
         this.testTopicsMap.set("Autonomous/curValDelay", 0);
         this.testTopicsMap.set("Autonomous/desValDelay", 0);
+        this.testTopicsMap.set("modFL_azmthDes",0);
+        this.testTopicsMap.set("modFL_azmthAct",0);
+        this.testTopicsMap.set("modFL_speedDes",0);
+        this.testTopicsMap.set("modFL_speedAct",0);
+        this.testTopicsMap.set("modFR_azmthDes",0);
+        this.testTopicsMap.set("modFR_azmthAct",0);
+        this.testTopicsMap.set("modFR_speedDes",0);
+        this.testTopicsMap.set("modFR_speedAct",0);
+        this.testTopicsMap.set("modBL_azmthDes",0);
+        this.testTopicsMap.set("modBL_azmthAct",0);
+        this.testTopicsMap.set("modBL_speedDes",0);
+        this.testTopicsMap.set("modBL_speedAct",0);
+        this.testTopicsMap.set("modBR_azmthDes",0);
+        this.testTopicsMap.set("modBR_azmthAct",0);
+        this.testTopicsMap.set("modBR_speedDes",0);
+        this.testTopicsMap.set("modBR_speedAct",0);
 
         setInterval(this.testDataSourceLoop.bind(this), 75);
 

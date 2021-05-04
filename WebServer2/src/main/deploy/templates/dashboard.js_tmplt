@@ -4,6 +4,7 @@ import { Camera } from './camera.js'
 import { LineGauge } from './lineGauge.js'
 import { Text } from './text.js'
 import { AutoChooser } from './autoChooser.js'
+import { SwerveState } from './swerveState.js'
 import { Sound } from './sound.js'
 import { NT4_Client } from "../interfaces/dummy_NT4.js";
 

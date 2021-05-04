@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.lib.Signal.SignalWrangler;
 import frc.lib.Signal.Annotations.Signal;
 import frc.lib.Webserver2.Webserver2;
+import frc.lib.Webserver2.DashboardConfig.SwerveStateTopicSet;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -56,7 +57,6 @@ public class Robot extends TimedRobot {
     testServer.dashboard.addIcon("Signals/AnotherTestSquare/Value", "Test Icon", "#BBBB00", "icons/cameraFault.svg", 48.5, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#4444FF", "icons/fast.svg", 57, 5, 1.0);
     testServer.dashboard.addIcon("Signals/TestSquare/Value", "Test Icon", "#FF00FF", "icons/slow.svg", 65, 5, 1.0);
-    testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 17, 1.0);
     testServer.dashboard.addAutoChooser("Autonomous/curVal", "Autonomous/desVal", "Auto Mode", autoModes, 30, 75, 1.0);
     testServer.dashboard.addAutoChooser("Autonomous/curValDelay", "Autonomous/desValDelay", "Auto Delay", delayModes, 30, 87, 1.0);
 
@@ -66,6 +66,14 @@ public class Robot extends TimedRobot {
     testServer.dashboard.addText("testText", "Blah", 75, 50, 1.0);
     testServer.dashboard.addLineGauge("Signals/AnotherTestSquare/Value", "Turret Mode", "RPM", -30, 30, -20, 5, 75, 65, 1.0);
 
+    //testServer.dashboard.addCamera("Signals/TestSlowSin/Value", "Main Driver Camera", "http://photonvision.local:1192/stream.mjpg", 30, 17, 1.0);
+
+    SwerveStateTopicSet[] topicList = new SwerveStateTopicSet[4];
+    topicList[0] = new SwerveStateTopicSet("modFL",0);
+    topicList[1] = new SwerveStateTopicSet("modFR",1);
+    topicList[2] = new SwerveStateTopicSet("modBL",2);
+    topicList[3] = new SwerveStateTopicSet("modBR",3);
+    testServer.dashboard.addSwerveState(topicList, "SwerveState Test", 35, 17, 1.0);
 
     //testServer.dashboard.addSound("Signals/TestSquare/Value", "Evil Sound", "sfx/alarm1.mp3", false);
 
