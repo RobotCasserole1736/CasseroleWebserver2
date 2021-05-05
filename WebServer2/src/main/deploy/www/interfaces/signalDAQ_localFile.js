@@ -12,12 +12,16 @@ export class SignalDAQLocalFile {
                 onSignalUnAnnounce_in, //Gets called when a signal is no longer avaialble.
                 onNewSampleData_in,    //Gets called when any new piece of data is read from file
                 onConnect_in,          //Gets called once a file is loaded into RAM
-                onDisconnect_in) {     //Gets called once a file is unloaded.
+                onDisconnect_in,       //Gets called once a file is unloaded.
+                statusTextCallback_in) {
         this.onSignalAnnounce = onSignalAnnounce_in;
         this.onSignalUnAnnounce = onSignalUnAnnounce_in;
         this.onNewSampleData = onNewSampleData_in;
         this.onConnect = onConnect_in;
         this.onDisconnect = onDisconnect_in;
+        this.statusTextCallback = statusTextCallback_in;
+
+        this.stripTrailingCommaMode = false;
 
         this.signalNameList = []; //start assuming no signals.
 
@@ -26,17 +30,22 @@ export class SignalDAQLocalFile {
     load(fileobj){
         var reader = new FileReader();
         reader.readAsText(fileobj);
-        reader.onload = this.parseFileContents.bind(this);
+        reader.onload = this.localFileLoadHandler.bind(this);
     }
 
-    parseFileContents(evt){
-        var all_lines = evt.target.result + '';
-        var lines = all_lines.split('\n');
+    localFileLoadHandler(evt){
+        var all_lines = evt.target.result
+        this.parseFileContents(all_lines);
+    }
+
+    parseFileContents(all_lines){
+        var lines = (all_lines + '').split('\n');
 
         if(lines.length > 3){
             this.parseHeaders(lines[0], lines[1]);
             for(var lineIdx = 2; lineIdx < lines.length; lineIdx++){
-                this.parseData(lines[lineIdx]);
+                setTimeout(this.parseData.bind(this, lines[lineIdx]), 0);
+                setTimeout(this.statusTextCallback.bind(this,"Parsing " + lineIdx.toString() + "/" + lines.length.toString()), 0);
             }
         } else {
             throw("Could not parse file! Not enough lines of content.");
@@ -44,6 +53,17 @@ export class SignalDAQLocalFile {
     }
 
     parseHeaders(nameRow, unitsRow){
+
+        //Check whether we do indeed need to strip off a trailing comma for this file
+        this.stripTrailingCommaMode = nameRow.endsWith(",");
+
+        if(this.stripTrailingCommaMode){
+            //Strip trailing commas
+            nameRow = nameRow.replace(/,$/, "");
+            unitsRow = unitsRow.replace(/,$/, "");
+        }
+
+        //Parse rows as CSV.
         var nameList = nameRow.split(',');
         var unitsList = unitsRow.split(',');
 
@@ -58,7 +78,20 @@ export class SignalDAQLocalFile {
     }
 
     parseData(row){
+
+        // Skip empty rows
+        if(row.length == 0){
+            return;
+        }
+
+        if(this.stripTrailingCommaMode){
+            //Strip trailing commas
+            row = row.replace(/,$/, "");
+        }
+
+        //Parse row as CSV
         var dataValuesList = row.split(',');
+
         if(dataValuesList.length == (this.signalNameList.length + 1)){
             var timestamp = eval(dataValuesList[0]);
             for(var sigIdx = 0; sigIdx < this.signalNameList.length; sigIdx++){

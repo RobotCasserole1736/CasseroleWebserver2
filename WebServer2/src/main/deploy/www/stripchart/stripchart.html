@@ -41,9 +41,17 @@
                 <button  id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
                 <button  id="stop_btn"  type="button" onclick="handleStopBtnClick()">Stop</button>
                 <div id="fileSelector" class="hidden">
-                    File: <input class="button" type="file" id="files" value="../logFileSnagger/downloaded_logs" onchange="handleFileSelect(this.files)" accept=".csv" autofocus="autofocus" />
+                    File:
+                    <button onclick="document.getElementById('filePickerCtrl').click();">Open</button>
+                    <input id="filePickerCtrl" type="file" name="name" style="display: none;" onchange="handleFileSelect(this.files)" accept=".csv" autofocus="autofocus" />
+                    <div id="filePickerStatus"> </div>
                 </div>
             </buttonGroup>
+            <buttonGroup class="outlined">
+                <div id="daqStatus">
+                </div>
+            </buttonGroup>
+
         </buttonsContainer>
 
 

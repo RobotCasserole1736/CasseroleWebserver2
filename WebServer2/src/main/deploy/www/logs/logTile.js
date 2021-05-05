@@ -10,7 +10,7 @@ export class LogTile {
 
         this._addColumn(this.name);
         this._addColumn(this.size);
-        this._addButtons(this.deleteCallback.bind(this), this.downloadCallback.bind(this));
+        this._addButtons(this.deleteCallback.bind(this), this.downloadCallback.bind(this), this.stripchartCallback.bind(this));
     }
 
     show(){
@@ -23,6 +23,10 @@ export class LogTile {
 
     downloadCallback(){
         window.open("http://" + window.location.hostname + ":" + window.location.port + "/" + this.name);
+    }
+
+    stripchartCallback(){
+        window.open("http://" + window.location.hostname + ":" + window.location.port + "/stripchart/stripchart.html?fname=" + this.name);
     }
 
     deleteCallback(){
@@ -41,7 +45,7 @@ export class LogTile {
         return new_td;
     }
 
-    _addButtons(deleteCallback, downloadCallback){
+    _addButtons(deleteCallback, downloadCallback, stripchartCallback){
         var deleteButton = document.createElement("button");
         deleteButton.setAttribute("type", "button");
         deleteButton.onclick = deleteCallback;
@@ -52,11 +56,17 @@ export class LogTile {
         downloadButton.onclick = downloadCallback;
         downloadButton.innerHTML = "Download";
 
+        var stripchartButton = document.createElement("button");
+        stripchartButton.setAttribute("type", "button");
+        stripchartButton.onclick = stripchartCallback;
+        stripchartButton.innerHTML = "Open";
+
         var buttonDiv = document.createElement("div");
         var new_td = document.createElement("td");
 
         buttonDiv.appendChild(deleteButton);
         buttonDiv.appendChild(downloadButton);
+        buttonDiv.appendChild(stripchartButton);
         new_td.appendChild(buttonDiv);
         this.drawDiv.appendChild(new_td);
         return new_td;

@@ -14,12 +14,14 @@ export class SignalDAQNT4 {
                 onSignalUnAnnounce_in, //Gets called when server unannounces any part of a signal
                 onNewSampleData_in,    //Gets called when any new data is available
                 onConnect_in,          //Gets called once client completes initial handshake with server
-                onDisconnect_in) {     //Gets called once client detects server has disconnected
+                onDisconnect_in,        //Gets called once client detects server has disconnected
+                statusTextCallback_in) {
         this.onSignalAnnounce = onSignalAnnounce_in;
         this.onSignalUnAnnounce = onSignalUnAnnounce_in;
         this.onNewSampleData = onNewSampleData_in;
         this.onConnect = onConnect_in;
         this.onDisconnect = onDisconnect_in;
+        this.statusTextCallback = statusTextCallback_in;
 
         this.signalList = new Set(); //start assuming no signals.
 

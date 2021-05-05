@@ -33,8 +33,34 @@ var recordingStartTime = null;
 var recordingEndTime = null;
 var recordingRunning = false;
 
-//Default to showing live data
-goLive();
+var vars = getUrlVars();
+if("fname" in vars){
+    var fname = vars["fname"]
+    //User specified the file argument in the URL, so load it in.
+    goFiles();
+    setFileStatusText("Retrieving file...");
+    var url = "http://" + window.location.hostname + ":" + window.location.port + "/" + fname;
+
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.send(null);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            var type = request.getResponseHeader('Content-Type');
+            if (type.indexOf("text") !== 1) {
+                setFileStatusText("Parsing file...");
+                mainDAQ.parseFileContents(request.responseText);
+                handleZoomFullBtnClick();
+                setFileStatusText(fname);
+            }
+        }
+    }
+
+} else {
+    //Default to showing live data
+    goLive();
+}
+
 
 //Add our first plot
 addPlot();
@@ -147,9 +173,10 @@ function handleModeChange(){
 window.handleFileSelect = handleFileSelect;
 function handleFileSelect(files_in){
     var fileobj = files_in[0];
-    if(mainDAQ != null){
-        mainDAQ.load(fileobj);
-    }
+    goFiles();
+    mainDAQ.load(fileobj);
+    setFileStatusText(fileobj.name);
+    
 }
 
 /////////////////////////////////////////////////////////////
@@ -164,7 +191,8 @@ function goLive(){
     allSignalsMap.clear();
     signalSelector.clearSignalList();
 
-    mainDAQ = new SignalDAQNT4(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect);
+    setDAQStatusText("");
+    mainDAQ = new SignalDAQNT4(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect, setDAQStatusText);
 
     recordingStartTime = null;
     recordingEndTime = null;
@@ -180,8 +208,9 @@ function goFiles(){
     allSignalsMap.clear();
     signalSelector.clearSignalList();
 
-    mainDAQ = new SignalDAQLocalFile(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect);
-
+    setDAQStatusText("");
+    mainDAQ = new SignalDAQLocalFile(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect,setDAQStatusText);
+    setFileStatusText("No File Loaded");
 
     recordingStartTime = null;
     recordingEndTime = null;
@@ -261,6 +290,13 @@ function onChartZoomAction(startTime, endTime){
     } 
 }
 
+function setFileStatusText(in_text){
+    document.getElementById("filePickerStatus").innerHTML = in_text;
+}
+
+function setDAQStatusText(in_text){
+    document.getElementById("daqStatus").innerHTML = in_text;
+}
 
 ///////////////////////////
 // Animation Loop
@@ -349,4 +385,14 @@ function restoreConfig(){
     }
 
 
+}
+
+/////////////////////////////////////////////////////////////
+// Other Utilities
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
 }
