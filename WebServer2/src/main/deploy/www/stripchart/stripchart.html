@@ -41,14 +41,18 @@
                 <button  id="start_btn" type="button" onclick="handleStartBtnClick()">Start</button>
                 <button  id="stop_btn"  type="button" onclick="handleStopBtnClick()">Stop</button>
                 <div id="fileSelector" class="hidden">
-                    File:
-                    <button onclick="document.getElementById('filePickerCtrl').click();">Open</button>
-                    <input id="filePickerCtrl" type="file" name="name" style="display: none;" onchange="handleFileSelect(this.files)" accept=".csv" autofocus="autofocus" />
-                    <div id="filePickerStatus"> </div>
+                    <div class="filePickerGroup">
+                        <div class="filePickerElem">
+                            <button onclick="document.getElementById('filePickerCtrl').click();">Open</button>
+                            <input id="filePickerCtrl" type="file" name="name" style="display: none;" onchange="handleFileSelect(this.files)" accept=".csv" autofocus="autofocus" />
+                        </div>
+                        <div id="filePickerStatus" class="statusDisp filePickerElem"> </div>
+                    </div>
+                    
                 </div>
             </buttonGroup>
             <buttonGroup class="outlined">
-                <div id="daqStatus">
+                <div id="daqStatus" class="statusDisp">
                 </div>
             </buttonGroup>
 

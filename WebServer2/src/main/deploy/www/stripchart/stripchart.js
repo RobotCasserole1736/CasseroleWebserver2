@@ -38,7 +38,6 @@ if("fname" in vars){
     var fname = vars["fname"]
     //User specified the file argument in the URL, so load it in.
     goFiles();
-    setFileStatusText("Retrieving file...");
     var url = "http://" + window.location.hostname + ":" + window.location.port + "/" + fname;
 
     var request = new XMLHttpRequest();
@@ -48,7 +47,6 @@ if("fname" in vars){
         if (request.readyState === 4 && request.status === 200) {
             var type = request.getResponseHeader('Content-Type');
             if (type.indexOf("text") !== 1) {
-                setFileStatusText("Parsing file...");
                 mainDAQ.parseFileContents(request.responseText);
                 handleZoomFullBtnClick();
                 setFileStatusText(fname);
@@ -191,6 +189,7 @@ function goLive(){
     allSignalsMap.clear();
     signalSelector.clearSignalList();
 
+    setFileStatusText("No File Loaded");
     setDAQStatusText("");
     mainDAQ = new SignalDAQNT4(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect, setDAQStatusText);
 
@@ -208,9 +207,9 @@ function goFiles(){
     allSignalsMap.clear();
     signalSelector.clearSignalList();
 
+    setFileStatusText("No File Loaded");
     setDAQStatusText("");
     mainDAQ = new SignalDAQLocalFile(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect,setDAQStatusText);
-    setFileStatusText("No File Loaded");
 
     recordingStartTime = null;
     recordingEndTime = null;
@@ -289,6 +288,9 @@ function onChartZoomAction(startTime, endTime){
         plotList.forEach(plot=>plot.setDrawRange(startTime, endTime));
     } 
 }
+
+///////////////////////////
+// Status Display Updaters
 
 function setFileStatusText(in_text){
     document.getElementById("filePickerStatus").innerHTML = in_text;

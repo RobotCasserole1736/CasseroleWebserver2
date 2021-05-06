@@ -15,6 +15,8 @@ signalListContainer{
     flex-direction: column;
     flex-grow: 0;  
     width:250px;
+    max-height:92vh;
+    overflow-y: scroll;
 }
 
 selectableSignalContainer{
@@ -22,6 +24,22 @@ selectableSignalContainer{
     flex-direction: column;
     flex-grow: 1;  
     width:100%;
+}
+
+div.filePickerGroup{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;  
+    align-items: center;
+    justify-content: center;
+}
+
+div.filePickerElem{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;  
+    align-items: center;
+    justify-content: center;
 }
 
 .selectableSignal{
@@ -61,7 +79,7 @@ plottedSignalInfo {
     display: flex;
     flex-direction: row;
     flex-grow:0;
-    height:25px;
+    height:auto;
 }
 
 plottedSignalName {
@@ -73,6 +91,7 @@ plottedSignalUnits {
     flex-direction: column;
     flex-grow:0;
     width: 50px;
+    padding: 3;
 }
 
 plottedSignalValue {
@@ -80,12 +99,24 @@ plottedSignalValue {
     flex-grow:0;
     width: 75px;
     margin: 1px;
+    padding: 3;
 }
 
 chartDrawDiv {
     position:absolute;
     width:1;
     height:1;
+}
+
+div.statusDisp {
+    text-align: center;
+    font-family: monospace;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;  
+    align-items: center;
+    justify-content: center;
 }
 
 

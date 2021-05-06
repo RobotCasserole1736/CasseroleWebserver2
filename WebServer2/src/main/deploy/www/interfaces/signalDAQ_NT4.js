@@ -27,6 +27,8 @@ export class SignalDAQNT4 {
 
         this.daqRunning = false;
 
+        this.rxCount = 0;
+
         this.nt4Client = new NT4_Client("todo server addr", 
                                         this.topicAnnounceHandler.bind(this), 
                                         this.topicUnannounceHandler.bind(this),
@@ -34,6 +36,7 @@ export class SignalDAQNT4 {
                                         this.onConnect.bind(this),
                                         this.onDisconnect.bind(this)
                                         );
+        this.statusTextCallback("NT4 Connected.");
     }
 
     topicAnnounceHandler(name, defaultValue){
@@ -52,7 +55,9 @@ export class SignalDAQNT4 {
 
     valueUpdateHandler(name, timestamp, value){
         var sigName = this.valueTopicToSigName(name);
-        this.onNewSampleData(sigName, timestamp, value)
+        this.onNewSampleData(sigName, timestamp, value);
+        this.rxCount++;
+        this.statusTextCallback("DAQ Running. RX Count: " + this.rxCount.toString());
     }
 
     //Request a signal get added to the DAQ
@@ -75,12 +80,16 @@ export class SignalDAQNT4 {
         this.signalList.forEach(sigName => {
             this.nt4Client.subscribe(this.sigNameToValueTopic(sigName));
         });
+        this.statusTextCallback("DAQ Running.");
+        this.rxCount = 0;
     }
 
     //Request RIO stop sending periodic updates
     stopDAQ(){
         this.nt4Client.clearAllSubscriptions();
         this.daqRunning = false;
+        this.statusTextCallback("DAQ Stopped.");
+
     }
 
     sigNameToValueTopic(name){

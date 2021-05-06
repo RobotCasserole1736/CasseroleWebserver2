@@ -25,6 +25,10 @@ export class SignalDAQLocalFile {
 
         this.signalNameList = []; //start assuming no signals.
 
+        this.statusTextCallback("No File Loaded");
+
+        this.lineCount = 0;
+
     }
 
     load(fileobj){
@@ -40,14 +44,16 @@ export class SignalDAQLocalFile {
 
     parseFileContents(all_lines){
         var lines = (all_lines + '').split('\n');
+        this.lineCount = 0;
 
         if(lines.length > 3){
             this.parseHeaders(lines[0], lines[1]);
             for(var lineIdx = 2; lineIdx < lines.length; lineIdx++){
-                setTimeout(this.parseData.bind(this, lines[lineIdx]), 0);
-                setTimeout(this.statusTextCallback.bind(this,"Parsing " + lineIdx.toString() + "/" + lines.length.toString()), 0);
+                this.parseData(lines[lineIdx]);
             }
+            this.statusTextCallback("Parsed " + this.lineCount.toString() + " lines.")
         } else {
+            this.statusTextCallback("File Parse Error!");
             throw("Could not parse file! Not enough lines of content.");
         }
     }
@@ -63,6 +69,8 @@ export class SignalDAQLocalFile {
             unitsRow = unitsRow.replace(/,$/, "");
         }
 
+        this.signalNameList = []
+
         //Parse rows as CSV.
         var nameList = nameRow.split(',');
         var unitsList = unitsRow.split(',');
@@ -73,6 +81,7 @@ export class SignalDAQLocalFile {
                 this.onSignalAnnounce(nameList[sigIdx], unitsList[sigIdx]); 
             }
         } else {
+            this.statusTextCallback("File Header Parse Error!");
             throw("Could not parse file! Number of signal names and units is not the same.");
         }
     }
@@ -93,17 +102,18 @@ export class SignalDAQLocalFile {
         var dataValuesList = row.split(',');
 
         if(dataValuesList.length == (this.signalNameList.length + 1)){
-            var timestamp = eval(dataValuesList[0]);
+            var timestamp = parseFloat(dataValuesList[0]);
             for(var sigIdx = 0; sigIdx < this.signalNameList.length; sigIdx++){
                 var dataValStr = dataValuesList[sigIdx + 1].trim();
                 if(dataValStr.length > 0){
                     //Some data elements may be empty
-                    this.onNewSampleData(this.signalNameList[sigIdx], timestamp, eval(dataValStr));
+                    var val = parseFloat(dataValStr); //TODO - support things other than doubles?
+                    this.onNewSampleData(this.signalNameList[sigIdx], timestamp, val);
                 }
             }
-
+            this.lineCount++;
         } else {
-            throw("Could not parse file! Number of data element in row does not match headers!");
+            console.log("Warning: Skipping line. Number of data element in row does not match headers!");
         }
     }
 
