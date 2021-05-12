@@ -189,7 +189,7 @@ function goLive(){
     allSignalsMap.clear();
     signalSelector.clearSignalList();
 
-    setFileStatusText("No File Loaded");
+    setFileStatusText("");
     setDAQStatusText("");
     mainDAQ = new SignalDAQNT4(onSignalAnnounce,onSignalUnAnnounce,onNewSampleData,onConnect,onDisconnect, setDAQStatusText);
 
