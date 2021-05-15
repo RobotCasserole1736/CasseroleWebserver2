@@ -39,6 +39,7 @@ export class NT4_SubscriptionOptions {
 export class NT4_Topic{
     name = "";
     type = "";
+    id = 0;
     properties = NT4_TopicProperties();
 
     toPublishObj(){
@@ -91,7 +92,8 @@ export class NT4_Client {
         this.subscriptions = new Map();
         this.subscription_uid_counter = 0;
 
-        this.topics = new Map();
+        this.clientPublishedTopics = new Map();
+        this.serverTopics = new Map();
 
         // WS Connection State (with defaults)
         this.serverBaseAddr = serverAddr; 
@@ -100,6 +102,13 @@ export class NT4_Client {
         this.serverAddr = "";
         this.serverConnectionActive = false;
         this.serverTimeOffset_us = 0;
+
+        // Add default time topic
+        var timeTopic = new NT4_Topic();
+        timeTopic.name = "Time";
+        timeTopic.id = -1;
+        timeTopic.type = 2; //int ?
+        this.serverTopics.set(timeTopic.id, timeTopic);
     }
 
     //////////////////////////////////////////////////////////////
@@ -167,13 +176,6 @@ export class NT4_Client {
             this.unSubscribe(sub);
         }
     }
-
-    // Gets a timestamp in the NT4 time scaling & domain
-    // I have no idea ift his will be useful going forward but..
-    getCurTimestamp_us(){
-        return new Date().getTime()*1000 + this.serverTimeOffset_us;
-    }
-
     
     // Set the properties of a particular topic
     setProperties(topic, isPersistant){
@@ -189,7 +191,7 @@ export class NT4_Client {
         newTopic.name = name;
         newTopic.type = type;
 
-        this.topics.set(newTopic.name, newTopic);
+        this.clientPublishedTopics.set(newTopic.name, newTopic);
         if(this.serverConnectionActive){
             this.ws_publish(newTopic);
         }
@@ -199,7 +201,7 @@ export class NT4_Client {
 
     // UnPublish a previously-published topic from this client.
     unPublishTopic(oldTopic){
-        this.topics.delete(oldTopic.name);
+        this.clientPublishedTopics.delete(oldTopic.name);
         if(this.serverConnectionActive){
             this.ws_unpublish(oldTopic);
         }
@@ -208,13 +210,46 @@ export class NT4_Client {
     // Send some new value to the server
     // Timestamp is whatever the current time is.
     addSample(topic, value){
-        var timestamp = this.getCurTimestamp_us();
+        var timestamp = this.getServerTime_us();
         this.addSample(topic, timestamp, value);
     }
 
     // Send some new timestamped value to the server
     addSample(topic, timestamp, value){
-        //TODO - send msgpack message? or something like that
+        if(this.ws.readyState == WebSocket.OPEN){
+            var id = topic.id;
+            // TODO - generate type idx
+            // TODO - make msgpack 
+            // TODO - send msgpack
+        }
+    }
+
+    //////////////////////////////////////////////////////////////
+    // Server/Clinet Time Sync Handling
+
+    getClientTime_us(){
+        return new Date().getTime()*1000;
+    }
+
+    getServerTime_us(){
+        return this.getClientTime_us() + this.serverTimeOffset_us;
+    }
+
+    ws_sendTimestamp(){
+        var timeTopic = this.serverTopics.get(-1);
+        this.addSample(timeTopic, 0, this.getClientTime_us());
+    }
+
+    ws_handlRecieveTimestamp(serverTimestamp, clientTimestamp){
+        var rxTime = this.getClientTime_us();
+
+        //Recalculate server/client offset based on round trip time
+        var rtt = rxTime - clientTimestamp;
+        var serverTimeAtRx = serverTimestamp - rtt/2.0;
+        this.serverTimeOffset_us = rxTime - serverTimeAtRx;
+
+        //Start the cycle over after five seconds
+        setTimeout(this.ws_sendTimestamp.bind(this), 5000);
     }
 
     //////////////////////////////////////////////////////////////
@@ -257,7 +292,7 @@ export class NT4_Client {
     ws_onOpen() {
 
         //Publish any existing topics
-        for(var topic in this.topics.values()){
+        for(var topic in this.clientPublishedTopics.values()){
             this.ws_publish(topic);
             this.ws_setproperties(topic);
         }
@@ -270,6 +305,9 @@ export class NT4_Client {
         // Set the flag allowing general server communication
         this.serverConnectionActive = true;
 
+        // Start the time-sync process
+        this.ws_sendTimestamp();
+
         // User connection-opened hook
         this.onConnect();
     }
@@ -281,6 +319,9 @@ export class NT4_Client {
 
         // User connection-closed hook
         this.onDisconnect();
+
+        //Clear out any local cache of server state
+        this.serverTopics.clear();
 
         console.log('Socket is closed. Reconnect will be attempted in 0.5 second.', e.reason);
         setTimeout(this.ws_connect.bind(this), 500);
@@ -324,9 +365,16 @@ export class NT4_Client {
             // Message validates reasonably, switch based on supported methods
             if(method == "announce"){
                 var newTopic = NT4_Topic();
+                newTopic.name = params.name;
+                newTopic.id = params.id;
+                newTopic.type = params.type;
+                newTopic.properties.isPersistant = params.properties.persistent;
+                this.serverTopics.set(newTopic.id, newTopic);
                 this.onTopicAnnounce(newTopic);
 
             } else if (method == "unannounce"){
+                var removedTopic = this.serverTopics.get(params.id);
+                this.serverTopics.delete(removedTopic.id);
                 this.onTopicUnAnnounce(removedTopic);
 
             } else {
@@ -337,7 +385,21 @@ export class NT4_Client {
 
         } else {
             //MSGPack
-            var unpackedData = msgpack.deserialize(e.data);
+            var unpackedData = msgpack.deserialize(e.data, {multiple:true}); //TODO - does this actully work like this? not sure....
+            var topicID = unpackedData[0];
+            var timestamp_us = unpackedData[1];
+            var typeIdx = unpackedData[2];
+            var value   = unpackedData[3];
+
+            if(topicID >= 0){
+                var topic = this.serverTopics.get(topicID);
+                this.onNewTopicData(topic, timestamp_us, value);
+            } else if (topicID == -1){
+                this.ws_handlRecieveTimestamp(timestamp_us, value);
+            } else {
+                console.log("Ignoring binary data - invalid topic id " + topicID.toString());
+            }
+
         }
     }
 
