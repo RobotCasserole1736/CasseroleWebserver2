@@ -1,6 +1,4 @@
-import msgpack from "./msgpack/msgpack";
-
-importScripts("msgpack/msgpack.js");
+import "./msgpack/msgpack.js";
 
 export class NT4_Subscription{
     prefixes = new Set();
@@ -40,7 +38,7 @@ export class NT4_Topic{
     name = "";
     type = "";
     id = 0;
-    properties = NT4_TopicProperties();
+    properties = new NT4_TopicProperties();
 
     toPublishObj(){
         return {
@@ -98,7 +96,7 @@ export class NT4_Client {
         // WS Connection State (with defaults)
         this.serverBaseAddr = serverAddr; 
         this.clientIdx = 0;
-        this.useSecure = true;
+        this.useSecure = false;
         this.serverAddr = "";
         this.serverConnectionActive = false;
         this.serverTimeOffset_us = 0;
@@ -325,12 +323,16 @@ export class NT4_Client {
 
         console.log('Socket is closed. Reconnect will be attempted in 0.5 second.', e.reason);
         setTimeout(this.ws_connect.bind(this), 500);
+
+        if(!e.wasClean){
+            console.error('Socket encountered error!');
+            // TODO - based on error, handle the expected ones (secure failure, 409 conflict, etc.) by updating internal state before the next reconnect.
+        }
+
     }
 
-    ws_onError(err){
-        console.error('Socket encountered error: ', err.message, 'Closing socket');
+    ws_onError(e){
         this.ws.close();
-        // TODO - based on error, handle the expected ones (secure failure, 409 conflict, etc.) by updating internal state before the next reconnect.
     }
 
     ws_onMessage(e){
@@ -405,7 +407,6 @@ export class NT4_Client {
 
     ws_connect() {
 
-        this.serverBaseAddr = serverAddr; 
         this.clientIdx = 0;
 
         var port = 5810; //fallback - unsecured
@@ -415,7 +416,7 @@ export class NT4_Client {
             port = 5811;
         }
 
-        this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/ns/" + "CasseroleWS2_" + this.clientIdx.toString();
+        this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + "CasseroleWS2_" + this.clientIdx.toString();
 
         this.ws = new WebSocket(this.serverAddr, "networktables.first.wpi.edu");
         this.ws.binaryType = "arraybuffer";

@@ -72,6 +72,8 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.0-alpha1'
     implementation group: 'org.json', name: 'json', version: '20210307'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'org.msgpack:msgpack-core:0.9.0'
 
 
     // Enable simulation gui support. Must check the box in vscode to enable support

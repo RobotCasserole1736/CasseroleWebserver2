@@ -1,4 +1,4 @@
-# Webserver 2.0 specificiation
+# Webserver 2.0 Specification
 
 🚧 this is a work in process! It relies on technologies not yet released. 
 

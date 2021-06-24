@@ -14,6 +14,7 @@ import frc.lib.Signal.SignalWrangler;
 import frc.lib.Signal.Annotations.Signal;
 import frc.lib.Webserver2.Webserver2;
 import frc.lib.Webserver2.DashboardConfig.SwerveStateTopicSet;
+import frc.lib.miniNT4.NT4Server;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,6 +32,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+
+    NT4Server.getInstance(); // Ensure it starts
 
     testServer = new Webserver2();
 

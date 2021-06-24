@@ -5,7 +5,7 @@
 // Mirroring (I assume) NT4 architecture, it's heavily callback driven
 /////////////////////////////////////////////////////////////////////////
 
-import { NT4_Client } from "./dummy_NT4.js";
+import { NT4_Client } from "./nt4.js";
 
 export class SignalDAQNT4 {
 
