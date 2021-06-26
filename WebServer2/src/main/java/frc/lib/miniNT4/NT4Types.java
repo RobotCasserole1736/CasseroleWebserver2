@@ -1,4 +1,4 @@
-package frc.lib.miniNT4.topics;
+package frc.lib.miniNT4;
 
 public enum NT4Types {
     BOOL(0, "boolean"),   

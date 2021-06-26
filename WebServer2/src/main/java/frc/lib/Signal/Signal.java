@@ -1,9 +1,15 @@
 package frc.lib.Signal;
 
+import frc.lib.miniNT4.samples.TimestampedDouble;
+import frc.lib.miniNT4.topics.DoubleTopic;
+import frc.lib.miniNT4.topics.StringTopic;
+
 public class Signal {
 
     String name;
     String units;
+    DoubleTopic nt4ValTopic;
+    StringTopic nt4UnitsTopic;
 
     /**
      * Class which describes one line on a plot
@@ -15,7 +21,8 @@ public class Signal {
         name = name_in;
         units = units_in;
 
-        // TODO - stuff into NT4 or something
+        nt4ValTopic = new DoubleTopic(this.getNT4ValueTopicName(), 0.0);
+        nt4UnitsTopic = new StringTopic(this.getNT4UnitsTopicName(), units);
 
         SignalWrangler.getInstance().register(this);
     }
@@ -41,9 +48,8 @@ public class Signal {
      * @param value_in
      */
     public void addSample(double time_in_sec, double value_in) {
-        // TODO - stuff the value into NT4
-
         SignalWrangler.getInstance().logger.addSample(new DataSample(time_in_sec, value_in, this));
+        nt4ValTopic.submitNewValue(new TimestampedDouble(value_in, Math.round(time_in_sec*1000000l)));
     }
 
     /**
@@ -59,5 +65,8 @@ public class Signal {
     public String getUnits() {
         return units;
     }
+
+    public String getNT4ValueTopicName(){ return "/Signals/" + name + "/value"; }
+    public String getNT4UnitsTopicName(){ return "/Signals/" + name + "/" + units; }
 
 }

@@ -1,11 +1,12 @@
 package frc.lib.miniNT4.topics;
 
+import frc.lib.miniNT4.NT4Types;
 import frc.lib.miniNT4.samples.TimestampedDouble;
 
 public class DoubleTopic extends Topic{
 
-    public DoubleTopic(TimestampedDouble default_in) {
-        super(default_in);
+    public DoubleTopic(String name, double default_in) {
+        super(name, new TimestampedDouble(default_in, 0));
     }
 
     @Override
