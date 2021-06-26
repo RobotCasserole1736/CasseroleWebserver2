@@ -10,12 +10,12 @@ public class StringTopic extends Topic{
     }
 
     @Override
-    String getTypestring() {
+    public String getTypestring() {
         return NT4Types.STR.dtstr;
     }
 
     @Override
-    int getTypeInt() {
+    public int getTypeInt() {
         return NT4Types.STR.type_idx;
     }
     

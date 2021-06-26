@@ -8,6 +8,8 @@ import frc.lib.miniNT4.topics.Topic;
 
 public abstract class BaseClient {
 
+    public String friendlyName = "";
+
     HashMap<Integer, Subscription> subscriptions = new HashMap<Integer, Subscription>();
     HashMap<String, Topic> publishedTopics = new HashMap<String, Topic>();
 
@@ -18,26 +20,31 @@ public abstract class BaseClient {
     /**
      * Creates a new subscription off of provided patterns and registers it with the server
      * @param patterns
-     * @return the newly created and server-regiestered subscription object
+     * @return the newly created and server-registered subscription object
      */
-    public Subscription subscribe(Set<String> patterns, int subid){
-        Subscription newSub = new Subscription(patterns);
+    public Subscription subscribe(Set<String> patterns, int subuid){
+        Subscription newSub = new Subscription(patterns, subuid);
         newSub.clientRef = this;
-        subscriptions.put(subid, newSub);
+        subscriptions.put(subuid, newSub);
 
         return newSub;
     }
 
     public void unSubscribe(int deadSubId){
-        subscriptions.remove(deadSubId);
+        Subscription oldSub = subscriptions.remove(deadSubId);
+        if(oldSub != null){
+            oldSub.stop();
+        }
     }
 
     public void publish(Topic newTopic){
         publishedTopics.put( newTopic.name, newTopic);
+        NT4Server.getInstance().broadcastAnnounce(newTopic);
     }
 
     public void unpublish(Topic deadTopic){
         publishedTopics.remove(deadTopic.name);
+        NT4Server.getInstance().broadcastUnannounce(deadTopic);
     }
 
     public abstract void onAnnounce(Topic newTopic);

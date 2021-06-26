@@ -63,7 +63,7 @@ public class NT4Server {
             }
         });
 
-        serverThread.setName("miniNT4Server");
+        serverThread.setName("NT4 Main Server");
         serverThread.setPriority(10);
         serverThread.start();
     }
@@ -81,6 +81,18 @@ public class NT4Server {
      */
     void unRegisterClient(BaseClient deadClient){
         clients.remove(deadClient);
+    }
+
+    void broadcastAnnounce(Topic newTopic){
+        for(BaseClient c : clients){
+            c.onAnnounce(newTopic);
+        }
+    }
+
+    void broadcastUnannounce(Topic deadTopic){
+        for(BaseClient c : clients){
+            c.onUnannounce(deadTopic);
+        }
     }
 
     /**

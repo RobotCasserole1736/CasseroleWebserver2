@@ -6,7 +6,7 @@ import frc.lib.miniNT4.Subscription;
 import frc.lib.miniNT4.samples.TimestampedValue;
 
 abstract public class Topic{
-    int id;
+    public int id;
     public String name;    
     public boolean isPersistant = false;
 
@@ -43,8 +43,8 @@ abstract public class Topic{
         subscriptionRefs.remove(sub);
     }
 
-    abstract String getTypestring();
-    abstract int getTypeInt();
+    public abstract String getTypestring();
+    public abstract int getTypeInt();
 
 
 }

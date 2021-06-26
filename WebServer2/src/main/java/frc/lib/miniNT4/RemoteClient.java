@@ -5,31 +5,39 @@ import frc.lib.miniNT4.topics.Topic;
 
 import java.util.Set;
 
-import org.eclipse.jetty.websocket.api.Session;
-
 public class RemoteClient extends BaseClient{
 
-    Session sess;
+    Socket parentSocket;
 
-    public RemoteClient(Session sess_in){
+    public RemoteClient(Socket ps_in, String name){
         super();
-        sess = sess_in;
+        parentSocket = ps_in;
+        friendlyName = name;
     }
 
     void onDisconnect(){
+
+        //Implicit unsubscribe from all topics
+        for(int id : this.subscriptions.keySet()){
+            unSubscribe(id);
+        }
+
+        //Implicit unannounce of all signals
+        for(Topic t : this.publishedTopics.values()){
+            unpublish(t);
+        }
+
         NT4Server.getInstance().unRegisterClient(this);
     }
 
     @Override
     public void onAnnounce(Topic newTopic) {
-        // TODO Auto-generated method stub
-        
+        parentSocket.sendAnnounce(newTopic);
     }
 
     @Override
     public void onUnannounce(Topic deadTopic) {
-        // TODO Auto-generated method stub
-        
+        parentSocket.sendAnnounce(deadTopic);
     }
 
     public void setTopicProperties(String name, boolean isPersistant){
@@ -41,8 +49,7 @@ public class RemoteClient extends BaseClient{
 
     @Override
     public void onValueUpdate(Topic topic, TimestampedValue newVal) {
-        // TODO send info over websockets with new value
-        
+        parentSocket.sendValueUpdate(topic, newVal);
     }
     
 }
