@@ -303,9 +303,6 @@ export class NT4_Client {
         // Set the flag allowing general server communication
         this.serverConnectionActive = true;
 
-        // Start the time-sync process
-        this.ws_sendTimestamp();
-
         // User connection-opened hook
         this.onConnect();
     }
@@ -359,20 +356,25 @@ export class NT4_Client {
                 return;
             }
                         
-            if(typeof params === 'object'){
+            if(typeof params !== 'object'){
                 console.log("Ignoring text message, JSON parsing found \"params\", but it wasn't an object.");
                 return;
             }
 
             // Message validates reasonably, switch based on supported methods
             if(method == "announce"){
-                var newTopic = NT4_Topic();
+                var newTopic = new NT4_Topic();
                 newTopic.name = params.name;
                 newTopic.id = params.id;
                 newTopic.type = params.type;
                 newTopic.properties.isPersistant = params.properties.persistent;
                 this.serverTopics.set(newTopic.id, newTopic);
                 this.onTopicAnnounce(newTopic);
+
+                if(newTopic.id == -1){
+                    // Server Time Topic has been announced - Start the time-sync process
+                    this.ws_sendTimestamp();
+                }
 
             } else if (method == "unannounce"){
                 var removedTopic = this.serverTopics.get(params.id);

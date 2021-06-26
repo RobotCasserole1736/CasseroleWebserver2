@@ -1,6 +1,5 @@
 package frc.lib.miniNT4;
 
-import org.json.JSONString;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,6 +41,11 @@ public class Socket extends WebSocketAdapter {
         String clientName = sess.getUpgradeRequest().getRequestURI().toString();
         clientInf = new RemoteClient(this, clientName);
         System.out.println("WS Connect from " + clientName);
+
+        // Announce all existing topics to the client
+        for(Topic t : NT4Server.getInstance().getAllTopics()){
+            this.sendAnnounce(t);
+        }
     }
 
     @Override
@@ -81,8 +85,19 @@ public class Socket extends WebSocketAdapter {
 
     }
 
+    @SuppressWarnings("unchecked") 
     public void sendUnannounce(Topic topic){
-        //TODO
+
+        JSONObject params = new JSONObject();
+        params.put("name", topic.name);
+        params.put("id", topic.id);
+
+        JSONObject obj = new JSONObject();
+        obj.put("method", "unannounce");
+        obj.put("params", params);
+
+        sendWebSocketString(obj.toJSONString());
+
     }
 
     public void sendValueUpdate(Topic topic, TimestampedValue val){

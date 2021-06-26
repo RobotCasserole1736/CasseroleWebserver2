@@ -29,22 +29,32 @@ console.log("Connection Triggered");
 
 
 
-function topicAnnounceHandler() {
+function topicAnnounceHandler( newTopic ) {
+    console.log("----------------------------");
     console.log("Topic Announced");
+    console.log(newTopic.name);
+    console.log(newTopic.type);
+    console.log(newTopic.id);
 }
 
-function topicUnannounceHandler() {
+function topicUnannounceHandler( removedTopic ) {
+    console.log("----------------------------");
     console.log("Topic UnAnnounced");
+    console.log(removedTopic.name);
 }
 
-function valueUpdateHandler() {
+function valueUpdateHandler( topic, timestamp_us, value ) {
+    console.log("----------------------------");
     console.log("Values Updated");
+    console.log(topic.name);
+    console.log(timestamp_us);
+    console.log(value);
 }
 
 function onConnect() {
-    console.log("On Connect");
+    console.log("Connected to Server");
 }
 
 function onDisconnect() {
-    console.log("On Disconnect");
+    console.log("Disconnected from Server");
 }

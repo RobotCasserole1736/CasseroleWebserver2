@@ -8,7 +8,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import edu.wpi.first.wpilibj.Timer;
 import frc.lib.miniNT4.topics.Topic;
 
 import java.util.regex.Matcher;
@@ -18,9 +17,10 @@ public class NT4Server {
 
     /* Singleton infrastructure */
     private static NT4Server instance;
-    public static NT4Server getInstance() {
+    public static synchronized NT4Server getInstance() {
         if (instance == null) {
             instance = new NT4Server();
+            instance.startServer();
         }
         return instance;
     }
@@ -30,7 +30,7 @@ public class NT4Server {
     private Set<BaseClient> clients = new HashSet<BaseClient>();
 
     private NT4Server() {
-        startServer();
+
     }
 
 
@@ -66,6 +66,9 @@ public class NT4Server {
         serverThread.setName("NT4 Main Server");
         serverThread.setPriority(10);
         serverThread.start();
+
+        //Automatically register the special client to serve the current time
+        registerClient(new TimeserverClient());
     }
 
     /**
@@ -93,14 +96,6 @@ public class NT4Server {
         for(BaseClient c : clients){
             c.onUnannounce(deadTopic);
         }
-    }
-
-    /**
-     * 
-     * @return current server microseconds time
-     */
-    public long getCurServerTime(){
-        return Math.round(Timer.getFPGATimestamp() * 1000000l);
     }
 
     /**
@@ -154,5 +149,10 @@ public class NT4Server {
             }
         }
         return retTopics;
+    }
+
+    int topicUIDCounter = 1;
+    public int getUniqueTopicID(){
+        return topicUIDCounter++;
     }
 }

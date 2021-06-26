@@ -1,5 +1,6 @@
 package frc.lib.miniNT4.topics;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import frc.lib.miniNT4.Subscription;
@@ -12,7 +13,7 @@ abstract public class Topic{
 
     TimestampedValue curValue;
 
-    Set<Subscription> subscriptionRefs;
+    Set<Subscription> subscriptionRefs = new HashSet<Subscription>();
 
     public Topic(String name_in, TimestampedValue default_in){
         default_in.timestamp_us = 0; //ensure we are storing default as the default
