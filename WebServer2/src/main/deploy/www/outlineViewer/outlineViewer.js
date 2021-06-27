@@ -11,7 +11,7 @@
     }
 })();
 
-import { NT4_Client } from "./interfaces/nt4.js";
+import { NT4_Client } from "../interfaces/nt4.js";
 
 
 var nt4Client = new NT4_Client("localhost", 
@@ -26,6 +26,7 @@ console.log("Starting connection...");
 nt4Client.ws_connect();
 console.log("Connection Triggered");
 
+var table = document.getElementById("mainTable");
 
 
 
@@ -35,6 +36,13 @@ function topicAnnounceHandler( newTopic ) {
     console.log(newTopic.name);
     console.log(newTopic.type);
     console.log(newTopic.id);
+
+    newRow = table.insertRow();
+    newRow.insertCell(0).innerHTML = newTopic.name;
+    newRow.insertCell(1).innerHTML = newTopic.type;
+    
+    valCell = newRow.insertCell(2).innerHTML = "";
+    valCell.id = newTopic.name;
 }
 
 function topicUnannounceHandler( removedTopic ) {
@@ -44,6 +52,7 @@ function topicUnannounceHandler( removedTopic ) {
 }
 
 function valueUpdateHandler( topic, timestamp_us, value ) {
+    document.getElementById(topic.name).innerHTML = value;
     console.log("----------------------------");
     console.log("Values Updated");
     console.log(topic.name);
@@ -53,8 +62,13 @@ function valueUpdateHandler( topic, timestamp_us, value ) {
 
 function onConnect() {
     console.log("Connected to Server");
+    titleRow = table.insertRow(0);
+    titleRow.insertCell(0).innerHTML = "Name";
+    titleRow.insertCell(1).innerHTML = "Type";
+    titleRow.insertCell(2).innerHTML = "Value";
 }
 
 function onDisconnect() {
     console.log("Disconnected from Server");
+    table.innerHTML = ""
 }

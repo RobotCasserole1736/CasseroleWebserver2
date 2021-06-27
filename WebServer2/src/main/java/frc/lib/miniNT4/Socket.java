@@ -12,6 +12,7 @@ import frc.lib.miniNT4.topics.TopicFactory;
 import java.io.IOException;
 import java.util.Set;
 
+import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
@@ -59,8 +60,9 @@ public class Socket extends WebSocketAdapter {
 
     void sendWebSocketString(String str){
         try {
-            getRemote().sendString(str);
-        } catch (IOException e) {
+            RemoteEndpoint tmp = getRemote();
+            tmp.sendString(str);
+        } catch (Exception e) {
             DriverStation.reportWarning("Could not send message to " + clientInf.friendlyName, e.getStackTrace());
         }
     }
