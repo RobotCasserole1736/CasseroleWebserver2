@@ -11,7 +11,7 @@
     }
 })();
 
-import { NT4_Client } from "../interfaces/nt4.js";
+import { NT4_Client, NT4_Subscription } from "../interfaces/nt4.js";
 
 
 var nt4Client = new NT4_Client("localhost", 
@@ -22,13 +22,15 @@ var nt4Client = new NT4_Client("localhost",
                                onDisconnect
                                );
 
+var topicNamesList = [];
+
 console.log("Starting connection...");
 nt4Client.ws_connect();
 console.log("Connection Triggered");
 
 var table = document.getElementById("mainTable");
 
-
+var subscription = null;
 
 function topicAnnounceHandler( newTopic ) {
     console.log("----------------------------");
@@ -37,12 +39,14 @@ function topicAnnounceHandler( newTopic ) {
     console.log(newTopic.type);
     console.log(newTopic.id);
 
-    newRow = table.insertRow();
+    var newRow = table.insertRow();
     newRow.insertCell(0).innerHTML = newTopic.name;
     newRow.insertCell(1).innerHTML = newTopic.type;
     
-    valCell = newRow.insertCell(2).innerHTML = "";
+    var valCell = newRow.insertCell(2).innerHTML = "";
     valCell.id = newTopic.name;
+
+    topicNamesList.push(newTopic.na) //todo
 }
 
 function topicUnannounceHandler( removedTopic ) {
@@ -62,7 +66,7 @@ function valueUpdateHandler( topic, timestamp_us, value ) {
 
 function onConnect() {
     console.log("Connected to Server");
-    titleRow = table.insertRow(0);
+    var titleRow = table.insertRow(0);
     titleRow.insertCell(0).innerHTML = "Name";
     titleRow.insertCell(1).innerHTML = "Type";
     titleRow.insertCell(2).innerHTML = "Value";
@@ -71,4 +75,13 @@ function onConnect() {
 function onDisconnect() {
     console.log("Disconnected from Server");
     table.innerHTML = ""
+}
+
+
+function subscribeToAll() {
+    if(subscription != null){
+        nt4Client.unSubscribe(subscription);
+    }
+
+    var newSub = new NT4_Subscription();
 }
