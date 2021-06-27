@@ -58,8 +58,6 @@ public class Socket extends WebSocketAdapter {
         super.onWebSocketClose(statusCode, reason);
         clientInf.onDisconnect();
         System.out.println("WS Disconnect");
-        System.out.println(statusCode);
-        System.out.println(reason);
     }
 
     void sendWebSocketString(String str){
@@ -116,7 +114,7 @@ public class Socket extends WebSocketAdapter {
         MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         try {
             packer.packInt(topic.id);
-            packer.packInt(val.getTimestampAsUnsignedInt());
+            packer.packLong(val.timestamp_us);
             packer.packInt(topic.getTypeInt());
             val.packValue(packer);
             packer.close();

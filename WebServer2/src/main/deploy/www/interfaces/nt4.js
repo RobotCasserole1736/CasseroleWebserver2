@@ -1,5 +1,15 @@
 import "./msgpack/msgpack.js";
 
+export class NT4_ValReq{
+    prefixes = new Set();
+
+    toGetValsObj(){
+        return {
+            "prefixes": Array.from(this.prefixes),
+        };
+    }
+}
+
 export class NT4_Subscription{
     prefixes = new Set();
     options = new NT4_SubscriptionOptions();
@@ -159,6 +169,15 @@ export class NT4_Client {
         return newSub;
     }
 
+    // Requests latest value of a set of topics
+    getValues(topicPatterns){
+        var newValReq = new NT4_ValReq();
+        newValReq.prefixes = new Set(topicPatterns);
+        if(this.serverConnectionActive){
+            this.ws_getvalues(newValReq);
+        }
+    }
+
     // Given an existing subscription, unsubscribe from it.
     unSubscribe(sub){
         this.subscriptions.delete(sub.uid);
@@ -254,6 +273,10 @@ export class NT4_Client {
 
     ws_subscribe(sub){
         this.ws_sendJSON("subscribe", sub.toSubscribeObj());
+    }
+
+    ws_getvalues(gv){
+        this.ws_sendJSON("getvalues", gv.toGetValsObj());
     }
 
     ws_unsubscribe(sub){

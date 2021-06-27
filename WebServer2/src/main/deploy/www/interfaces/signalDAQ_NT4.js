@@ -23,41 +23,51 @@ export class SignalDAQNT4 {
         this.onDisconnect = onDisconnect_in;
         this.statusTextCallback = statusTextCallback_in;
 
-        this.signalList = new Set(); //start assuming no signals.
+        this.daqSignalList = new Set(); //start assuming no signals.
 
         this.daqRunning = false;
 
         this.rxCount = 0;
 
-        this.nt4Client = new NT4_Client("todo server addr", 
+        this.nt4Client = new NT4_Client("localhost", 
                                         this.topicAnnounceHandler.bind(this), 
                                         this.topicUnannounceHandler.bind(this),
                                         this.valueUpdateHandler.bind(this),
                                         this.onConnect.bind(this),
                                         this.onDisconnect.bind(this)
                                         );
+
+        this.statusTextCallback("Starting connection...");
+        this.nt4Client.ws_connect();
         this.statusTextCallback("NT4 Connected.");
     }
 
-    topicAnnounceHandler(name, defaultValue){
-        if(this.isSignalUnitsTopic(name)){
-            var sigName = this.unitsTopicToSigName(name);
-            var sigUnits = this.nt4Client.getMostRecentValue(name);
-            this.onSignalAnnounce(sigName, sigUnits); //announce on units announcement....todo is this ok?
-        } else {
-            // ignore
+    topicAnnounceHandler( newTopic ) {
+        if(this.isSignalUnitsTopic(newTopic)){
+            //If a signal units topic is announced, request what those units value actually is.
+            this.nt4Client.getValues(newTopic.name);
         }
     }
 
-    topicUnannounceHandler(name){
-        //todo
+    topicUnannounceHandler( removedTopic ) {
+        if(this.isSignalUnitsTopic(removedTopic)){
+            this.onSignalUnAnnounce(this.unitsTopicToSigName(removedTopic));
+        } 
     }
 
-    valueUpdateHandler(name, timestamp, value){
-        var sigName = this.valueTopicToSigName(name);
-        this.onNewSampleData(sigName, timestamp, value);
-        this.rxCount++;
-        this.statusTextCallback("DAQ Running. RX Count: " + this.rxCount.toString());
+    valueUpdateHandler(topic, timestamp, value){
+        if(this.isSignalUnitsTopic(topic)){
+            // Got new value for the units of a signal
+            var sigName = this.unitsTopicToSigName(topic);
+            var sigUnits = value;
+            this.onSignalAnnounce(sigName, sigUnits); //Announce signal when we know the value of its units
+        } else {
+            // Got a new sample
+            var sigName = this.valueTopicToSigName(topic);
+            this.onNewSampleData(sigName, timestamp, value);
+            this.rxCount++;
+            this.statusTextCallback("DAQ Running. RX Count: " + this.rxCount.toString());
+        }
     }
 
     //Request a signal get added to the DAQ
@@ -97,14 +107,14 @@ export class SignalDAQNT4 {
     }
 
     valueTopicToSigName(topic){
-        var tmp = topic;
+        var tmp = topic.name;
         tmp = tmp.replace(/^Signals\//, '');
-        tmp = tmp.replace(/\/Value/, '');
+        tmp = tmp.replace(/\/value/, '');
         return tmp;
     }
 
     isSignalValueTopic(topic){
-        return topic.match(/Signals\/[a-zA-Z0-9\._]+\/Value/);
+        return topic.match(/Signals\/[a-zA-Z0-9\._]+\/value/);
     }
 
     sigNameToUnitsTopic(name){
@@ -112,14 +122,18 @@ export class SignalDAQNT4 {
     }
 
     unitsTopicToSigName(topic){
-        var tmp = topic;
+        var tmp = topic.name;
         tmp = tmp.replace(/^Signals\//, '');
-        tmp = tmp.replace(/\/Units/, '');
+        tmp = tmp.replace(/\/units/, '');
         return tmp;
     }
 
     isSignalUnitsTopic(topic){
-        return topic.match(/Signals\/[a-zA-Z0-9\._]+\/Units/);
+        return topic.name.match(/Signals\/[a-zA-Z0-9\._]+\/units/);
+    }
+
+    isSignalValueTopic(topic){
+        return topic.name.match(/Signals\/[a-zA-Z0-9\._]+\/value/);
     }
 
 

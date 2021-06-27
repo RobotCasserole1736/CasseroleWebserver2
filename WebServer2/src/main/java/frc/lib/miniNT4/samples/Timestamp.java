@@ -23,7 +23,7 @@ public class Timestamp extends TimestampedValue {
 
     @Override
     public void packValue(MessageBufferPacker packer) throws IOException {
-        packer.packInt(this.getTimestampAsUnsignedInt());
+        packer.packLong(this.timestamp_us);
     }
 
     

@@ -1,16 +1,3 @@
-
-(function () {
-    var old = console.log;
-    var logger = document.getElementById('log');
-    console.log = function (message) {
-        if (typeof message == 'object') {
-            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
-        } else {
-            logger.innerHTML += message + '<br />';
-        }
-    }
-})();
-
 import { NT4_Client } from "../interfaces/nt4.js";
 
 
@@ -58,6 +45,8 @@ function topicUnannounceHandler( removedTopic ) {
 
 function valueUpdateHandler( topic, timestamp_us, value ) {
     document.getElementById(topic.name).innerHTML = value;
+    document.getElementById("curTime").innerHTML = "Time: "
+    document.getElementById("curTime").innerHTML += (timestamp_us / 1000000.0);
     //console.log("----------------------------");
     //console.log("Values Updated");
     //console.log(topic.name);

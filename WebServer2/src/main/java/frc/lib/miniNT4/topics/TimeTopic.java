@@ -13,12 +13,12 @@ public class TimeTopic extends Topic{
 
     @Override
     public String getTypestring() {
-        return NT4Types.FLOAT_64.dtstr;
+        return NT4Types.INT.dtstr;
     }
 
     @Override
     public int getTypeInt() {
-        return NT4Types.FLOAT_64.type_idx;
+        return NT4Types.INT.type_idx;
     }
 
     @Override
