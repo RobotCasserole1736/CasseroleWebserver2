@@ -53,7 +53,7 @@ class AutoDiscoveredSignal {
      * Sample the value out of the referenced object for the ADS, and add it as a
      * new sample into the signal.
      * 
-     * @param time Time at which the sample was inititated.
+     * @param time Time at which the sample was inititated, in seconds.
      */
     void addSample(double time) {
         // Switch behavior based on the type of field that was annotated

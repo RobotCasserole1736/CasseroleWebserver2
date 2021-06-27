@@ -2,20 +2,20 @@ import "./msgpack/msgpack.js";
 
 export class NT4_Subscription{
     prefixes = new Set();
-    options = NT4_SubscriptionOptions();
+    options = new NT4_SubscriptionOptions();
     uid = -1;
 
     toSubscribeObj(){
         return {
-            "prefixes": this.prefixes,
+            "prefixes": Array.from(this.prefixes),
             "options": this.options.toObj(),
-            "subid": this.uid,
+            "subuid": this.uid,
         };
     }
 
     toUnSubscribeObj(){
         return {
-            "subid": this.uid,
+            "subuid": this.uid,
         };
     }
 }
@@ -114,11 +114,11 @@ export class NT4_Client {
 
     // Add a new subscription. Returns a subscription object
     subscribeImmedeate(topicPatterns){
-        var newSub = NT4_Subscription();
+        var newSub = new NT4_Subscription();
         newSub.uid = this.getNewSubUID();
         newSub.options.immedeate = true;
         newSub.options.periodicRate_s = 0;
-        newSub.prefixes = topicPatterns;
+        newSub.prefixes = new Set(topicPatterns);
         newSub.options.logging = false;
 
         this.subscriptions.set(newSub.uid, newSub);
@@ -130,11 +130,11 @@ export class NT4_Client {
 
     // Add a new subscription. Returns a subscription object
     subscribePeriodic(topicPatterns, period){
-        var newSub = NT4_Subscription();
+        var newSub = new NT4_Subscription();
         newSub.uid = this.getNewSubUID();
         newSub.options.immedeate = false;
         newSub.options.periodicRate_s = period;
-        newSub.prefixes = topicPatterns;
+        newSub.prefixes = new Set(topicPatterns);
         newSub.options.logging = false;
 
         this.subscriptions.set(newSub.uid, newSub);
@@ -146,11 +146,10 @@ export class NT4_Client {
 
     // Add a new subscription. Returns a subscription object
     subscribeLogging(topicPatterns){
-        var newSub = NT4_Subscription();
+        var newSub = new NT4_Subscription();
         newSub.uid = this.getNewSubUID();
         newSub.options.immedeate = false;
-        newSub.options.periodicRate_s = 0;
-        newSub.prefixes = topicPatterns;
+        newSub.prefixes = new Set(topicPatterns);
         newSub.options.logging = true;
 
         this.subscriptions.set(newSub.uid, newSub);

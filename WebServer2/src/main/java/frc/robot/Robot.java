@@ -30,6 +30,8 @@ public class Robot extends TimedRobot {
 
   Webserver2 testServer;
 
+  SignalTestGenerator stg;
+
   @Override
   public void robotInit() {
 
@@ -80,6 +82,7 @@ public class Robot extends TimedRobot {
 
     //testServer.dashboard.addSound("Signals/TestSquare/Value", "Evil Sound", "sfx/alarm1.mp3", false);
 
+    stg = new SignalTestGenerator();
 
     SignalWrangler.getInstance().registerSignals(this);
 
@@ -89,6 +92,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     loopCounter++;
+    stg.update();
     SignalWrangler.getInstance().sampleAllSignals();
   }
 

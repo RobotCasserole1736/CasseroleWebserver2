@@ -21,5 +21,4 @@ public class StringTopic extends Topic{
         return NT4Types.STR.type_idx;
     }
     
-    
 }

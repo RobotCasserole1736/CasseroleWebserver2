@@ -11,7 +11,7 @@
     }
 })();
 
-import { NT4_Client, NT4_Subscription } from "../interfaces/nt4.js";
+import { NT4_Client } from "../interfaces/nt4.js";
 
 
 var nt4Client = new NT4_Client("localhost", 
@@ -22,7 +22,6 @@ var nt4Client = new NT4_Client("localhost",
                                onDisconnect
                                );
 
-var topicNamesList = [];
 
 console.log("Starting connection...");
 nt4Client.ws_connect();
@@ -43,8 +42,11 @@ function topicAnnounceHandler( newTopic ) {
     newRow.insertCell(0).innerHTML = newTopic.name;
     newRow.insertCell(1).innerHTML = newTopic.type;
     
-    var valCell = newRow.insertCell(2).innerHTML = "";
+    var valCell = newRow.insertCell(2);
+    valCell.innerHTML = "";
     valCell.id = newTopic.name;
+
+    subscribeToAll();
 
 }
 
@@ -56,11 +58,11 @@ function topicUnannounceHandler( removedTopic ) {
 
 function valueUpdateHandler( topic, timestamp_us, value ) {
     document.getElementById(topic.name).innerHTML = value;
-    console.log("----------------------------");
-    console.log("Values Updated");
-    console.log(topic.name);
-    console.log(timestamp_us);
-    console.log(value);
+    //console.log("----------------------------");
+    //console.log("Values Updated");
+    //console.log(topic.name);
+    //console.log(timestamp_us);
+    //console.log(value);
 }
 
 function onConnect() {
@@ -80,7 +82,7 @@ function onDisconnect() {
 
 function subscribeToAll() {
     if(subscription == null){
-        subscription = nt4Client.subscribePeriodic("/");
+        subscription = nt4Client.subscribePeriodic("/", 0.02);
     }
 
 }

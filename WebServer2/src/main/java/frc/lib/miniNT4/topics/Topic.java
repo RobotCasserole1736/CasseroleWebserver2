@@ -11,7 +11,7 @@ abstract public class Topic{
     public String name;    
     public boolean isPersistant = false;
 
-    TimestampedValue curValue;
+    public TimestampedValue curValue;
 
     Set<Subscription> subscriptionRefs = new HashSet<Subscription>();
 
@@ -46,6 +46,8 @@ abstract public class Topic{
 
     public abstract String getTypestring();
     public abstract int getTypeInt();
-
+    public TimestampedValue getCurVal() {
+        return this.curValue;
+    }
 
 }

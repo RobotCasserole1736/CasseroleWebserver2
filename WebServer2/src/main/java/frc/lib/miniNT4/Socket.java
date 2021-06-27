@@ -1,8 +1,11 @@
 package frc.lib.miniNT4;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.msgpack.core.MessageBufferPacker;
+import org.msgpack.core.MessagePack;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.miniNT4.samples.TimestampedValue;
@@ -10,7 +13,8 @@ import frc.lib.miniNT4.topics.Topic;
 import frc.lib.miniNT4.topics.TopicFactory;
 
 import java.io.IOException;
-import java.util.Set;
+import java.nio.ByteBuffer;
+import java.util.HashSet;
 
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
@@ -26,7 +30,7 @@ public class Socket extends WebSocketAdapter {
         try {
             handleIncoming((JSONObject) parser.parse(message));
         } catch (Exception e) {
-            DriverStation.reportWarning("Could not parse json message " + message, e.getStackTrace());
+            DriverStation.reportWarning("Could not parse json message " + message + "\n" + e.getMessage(), e.getStackTrace());
         }
     }
 
@@ -61,9 +65,10 @@ public class Socket extends WebSocketAdapter {
     void sendWebSocketString(String str){
         try {
             RemoteEndpoint tmp = getRemote();
+            //System.out.println("MSG: Server to " + clientInf.friendlyName + " : \n" + str);
             tmp.sendString(str);
         } catch (Exception e) {
-            DriverStation.reportWarning("Could not send message to " + clientInf.friendlyName, e.getStackTrace());
+            DriverStation.reportWarning("Could not send message to " + clientInf.friendlyName + "\n" + e.getMessage(), e.getStackTrace());
         }
     }
 
@@ -103,16 +108,50 @@ public class Socket extends WebSocketAdapter {
     }
 
     public void sendValueUpdate(Topic topic, TimestampedValue val){
-        //TODO
+        //System.out.println("MSG: Server to " + clientInf.friendlyName + " :");
+        //System.out.println("Value Update: " + topic.name + " = " + val.toNiceString());
+
+        ByteBuffer buff;
+
+        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
+        try {
+            packer.packInt(topic.id);
+            packer.packInt(val.getTimestampAsUnsignedInt());
+            packer.packInt(topic.getTypeInt());
+            val.packValue(packer);
+            packer.close();
+            buff = ByteBuffer.wrap(packer.toByteArray());
+        } catch (IOException e) {
+            DriverStation.reportWarning("Could not construct MessagePack for value update to " + clientInf.friendlyName + "\n" + e.getMessage(), e.getStackTrace());
+            return;
+        }
+
+        try {
+            getRemote().sendBytes(buff);
+        } catch (IOException e) {
+            DriverStation.reportWarning("Could not transmit value update to " + clientInf.friendlyName + "\n" + e.getMessage(), e.getStackTrace());
+        }
+
+
+    }
+
+    private HashSet<String> parseStringSet(JSONArray arr){
+        HashSet<String> retSet = new HashSet<String>(arr.size());
+        for(int i = 0; i < arr.size(); i++){
+            retSet.add((String)arr.get(i));
+        }
+        return retSet;
     }
 
     void handleIncoming(JSONObject data) throws ParseException{
+        //System.out.println("MSG: " + clientInf.friendlyName + " to Server : \n" + data.toJSONString());
+
         String method = (String) data.get("method");
         JSONObject params = (JSONObject) data.get("params");
 
         String name;
         String type;
-        String[] prefixes;
+        HashSet<String> prefixes = new HashSet<String>();
         int subuid;
         JSONObject options;
 
@@ -131,12 +170,13 @@ public class Socket extends WebSocketAdapter {
                 //TODO
             break;
             case "getvalues":
-                //TODO
+                prefixes = parseStringSet((JSONArray) params.get("prefixes"));
+                clientInf.getValues(prefixes);
             break;
             case "subscribe":
-                prefixes = (String[]) params.get("prefixes");
-                subuid = (int) params.get("subuid");
-                Subscription newSub = clientInf.subscribe(Set.of(prefixes), subuid);
+                prefixes = parseStringSet((JSONArray) params.get("prefixes"));
+                subuid = ((Number)params.get("subuid")).intValue();
+                Subscription newSub = clientInf.subscribe(prefixes, subuid);
                 options = (JSONObject) params.get("options");
                 
                 if(options.containsKey("immediate")){
@@ -146,7 +186,7 @@ public class Socket extends WebSocketAdapter {
                 }
 
                 if(options.containsKey("periodic")){
-                    newSub.periodicTxRate_sec = (double) options.get("periodic");
+                    newSub.periodicTxRate_sec = ((Number)options.get("periodic")).doubleValue();
                 } else {
                     newSub.periodicTxRate_sec = 0.1;
                 }

@@ -187,7 +187,7 @@ public class SignalFileLogger {
     ///////////////////////////////////////////////////////////////////
 
     private void writeLogData(DataSample samp_in) {
-        double timestamp_s = samp_in.getSampleTime_ms() / 1000.0;
+        double timestamp_s = samp_in.getSampleTime_s();
         double val = samp_in.getVal();
         Integer idx = logIdxLookup.get(samp_in.getParentSignal());
 

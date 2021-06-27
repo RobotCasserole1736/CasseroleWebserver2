@@ -32,6 +32,7 @@ public class Subscription{
     public Subscription(Set<String> patterns_in, int subuid_in){
         topicPatterns = patterns_in;
         subuid = subuid_in;
+        updateTopicSet();
     }
 
     public void updateTopicSet(){
@@ -44,6 +45,9 @@ public class Subscription{
             //Ensure the SampleQueue's has any new topics we found
             if(!sampleQueues.containsKey(t)){
                 sampleQueues.put(t, new LinkedList<TimestampedValue>());
+                //Send the new topic's current value
+                // This implements the implicit "getValue" required on subscription
+                this.onNewValue(t, t.getCurVal());
             }
         }
 

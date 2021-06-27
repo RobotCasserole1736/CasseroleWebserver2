@@ -151,7 +151,7 @@ public class SignalWrangler extends LocalClient{
      * Should be called at the end of each periodic function.
      */
     public void sampleAllSignals(){
-        double sampleTime = Timer.getFPGATimestamp() * 1000;
+        double sampleTime = Timer.getFPGATimestamp();
         for(AutoDiscoveredSignal sig : autoSig){
             sig.addSample(sampleTime);
         }

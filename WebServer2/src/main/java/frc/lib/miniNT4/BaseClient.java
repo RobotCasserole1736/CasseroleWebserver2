@@ -26,12 +26,16 @@ public abstract class BaseClient {
         Subscription newSub = new Subscription(patterns, subuid);
         newSub.clientRef = this;
         subscriptions.put(subuid, newSub);
-
         return newSub;
     }
 
     public void unSubscribe(int deadSubId){
         Subscription oldSub = subscriptions.remove(deadSubId);
+
+        for(Topic t: NT4Server.getInstance().getAllTopics()){
+            t.removeSubscriptionRef(oldSub);
+        }
+
         if(oldSub != null){
             oldSub.stop();
         }
@@ -45,6 +49,12 @@ public abstract class BaseClient {
     public void unpublish(Topic deadTopic){
         publishedTopics.remove(deadTopic.name);
         NT4Server.getInstance().broadcastUnannounce(deadTopic);
+    }
+
+    public void getValues(Set<String> patterns){
+        for(Topic t: NT4Server.getInstance().getTopics(patterns)){
+            onValueUpdate(t, t.getCurVal());
+        }
     }
 
     public abstract void onAnnounce(Topic newTopic);
