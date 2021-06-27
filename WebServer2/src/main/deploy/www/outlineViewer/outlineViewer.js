@@ -46,7 +46,6 @@ function topicAnnounceHandler( newTopic ) {
     var valCell = newRow.insertCell(2).innerHTML = "";
     valCell.id = newTopic.name;
 
-    topicNamesList.push(newTopic.na) //todo
 }
 
 function topicUnannounceHandler( removedTopic ) {
@@ -74,14 +73,14 @@ function onConnect() {
 
 function onDisconnect() {
     console.log("Disconnected from Server");
-    table.innerHTML = ""
+    table.innerHTML = "";
+    subscription = null;
 }
 
 
 function subscribeToAll() {
-    if(subscription != null){
-        nt4Client.unSubscribe(subscription);
+    if(subscription == null){
+        subscription = nt4Client.subscribePeriodic("/");
     }
 
-    var newSub = new NT4_Subscription();
 }

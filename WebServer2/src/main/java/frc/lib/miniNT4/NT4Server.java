@@ -123,24 +123,16 @@ public class NT4Server {
 
     /**
      * 
-     * @param patterns Set of Strings of Regex pattern to match topic names
+     * @param prefixes Set of Strings of key prefixes
      * @return list of names matching the given regex pattern.
      */
-    public Set<Topic> getTopics(Set<String> patterns){
-        //Generate regex patterns for each pattern
-        Set<Pattern> regex_patterns = new HashSet<Pattern>(patterns.size());
-        for(String pattern : patterns){
-            regex_patterns.add(Pattern.compile(pattern));
-        }
-
+    public Set<Topic> getTopics(Set<String> prefixes){
         HashSet<Topic> retTopics = new HashSet<Topic>();
         for(BaseClient client : clients){
             for(Topic topic : client.publishedTopics.values()){
                 //For all topics...
-                for(Pattern pattern : regex_patterns){
-                    //Check against all incoming patterns
-                    Matcher m = pattern.matcher(topic.name);
-                    if(m.find()){
+                for(String prefix : prefixes){
+                    if(topic.name.startsWith(prefix)){
                         //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
                         retTopics.addAll(client.publishedTopics.values());
                         break;
@@ -151,7 +143,7 @@ public class NT4Server {
         return retTopics;
     }
 
-    int topicUIDCounter = 1;
+    int topicUIDCounter = 0;
     public int getUniqueTopicID(){
         return topicUIDCounter++;
     }
