@@ -188,7 +188,7 @@ export class NT4_Client {
 
     // Unsubscribe from all current subscriptions
     clearAllSubscriptions(){
-        for(var sub in this.subscriptions.values()){
+        for(const sub of this.subscriptions.values()){
             this.unSubscribe(sub);
         }
     }
@@ -312,13 +312,13 @@ export class NT4_Client {
     ws_onOpen() {
 
         //Publish any existing topics
-        for(var topic in this.clientPublishedTopics.values()){
+        for(const topic of this.clientPublishedTopics.values()){
             this.ws_publish(topic);
             this.ws_setproperties(topic);
         }
 
         //Subscribe to existing subscriptions
-        for(var sub in this.subscriptions.values()){
+        for(const sub of this.subscriptions.values()){
             this.ws_subscribe(sub);
         }
 

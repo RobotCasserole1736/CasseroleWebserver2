@@ -126,7 +126,10 @@ public class Socket extends WebSocketAdapter {
         }
 
         try {
-            getRemote().sendBytes(buff);
+            RemoteEndpoint curRemote = getRemote();
+            if(curRemote != null){
+                curRemote.sendBytes(buff);
+            }
         } catch (IOException e) {
             DriverStation.reportWarning("Could not transmit value update to " + clientInf.friendlyName + "\n" + e.getMessage(), e.getStackTrace());
         }
@@ -199,7 +202,7 @@ public class Socket extends WebSocketAdapter {
                 newSub.start();
             break;
             case "unsubscribe":
-                subuid = (int) params.get("subuid");
+                subuid = ((Number)params.get("subuid")).intValue();
                 clientInf.unSubscribe(subuid);
             break;
             default:

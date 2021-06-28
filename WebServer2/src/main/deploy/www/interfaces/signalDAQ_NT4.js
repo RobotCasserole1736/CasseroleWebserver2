@@ -88,7 +88,7 @@ export class SignalDAQNT4 {
     startDAQ(){
         this.daqRunning = true;
         this.daqSignalList.forEach(sigName => {
-            this.nt4Client.subscribeLogging(this.sigNameToValueTopic(sigName));
+            this.nt4Client.subscribeImmedeate(this.sigNameToValueTopic(sigName));
         });
         this.statusTextCallback("DAQ Running.");
         this.rxCount = 0;

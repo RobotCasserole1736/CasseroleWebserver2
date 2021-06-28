@@ -1,6 +1,6 @@
 package frc.lib.miniNT4;
 
-
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,9 +9,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import frc.lib.miniNT4.topics.Topic;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class NT4Server {
 
@@ -27,7 +24,8 @@ public class NT4Server {
 
     private Server server;
 
-    private Set<BaseClient> clients = new HashSet<BaseClient>();
+    //Synchronization required since we add/remove clients and iterate over the list simulaneously
+    private Set<BaseClient> clients = Collections.synchronizedSet(new HashSet<BaseClient>());
 
     private NT4Server() {
 
@@ -87,14 +85,18 @@ public class NT4Server {
     }
 
     void broadcastAnnounce(Topic newTopic){
-        for(BaseClient c : clients){
-            c.onAnnounce(newTopic);
+        synchronized(clients){
+            for(BaseClient c : clients){
+                c.onAnnounce(newTopic);
+            }
         }
     }
 
     void broadcastUnannounce(Topic deadTopic){
-        for(BaseClient c : clients){
-            c.onUnannounce(deadTopic);
+        synchronized(clients){
+            for(BaseClient c : clients){
+                c.onUnannounce(deadTopic);
+            }
         }
     }
 
@@ -104,8 +106,10 @@ public class NT4Server {
      */
     public Set<Topic> getAllTopics(){
         HashSet<Topic> retTopics = new HashSet<Topic>();
-        for(BaseClient client : clients){
-            retTopics.addAll(client.publishedTopics.values());
+        synchronized(clients){
+            for(BaseClient client : clients){
+                retTopics.addAll(client.publishedTopics.values());
+            }
         }
         return retTopics;
     }
@@ -128,14 +132,16 @@ public class NT4Server {
      */
     public Set<Topic> getTopics(Set<String> prefixes){
         HashSet<Topic> retTopics = new HashSet<Topic>();
-        for(BaseClient client : clients){
-            for(Topic topic : client.publishedTopics.values()){
-                //For all topics...
-                for(String prefix : prefixes){
-                    if(topic.name.startsWith(prefix)){
-                        //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
-                        retTopics.addAll(client.publishedTopics.values());
-                        break;
+        synchronized(clients){
+            for(BaseClient client : clients){
+                for(Topic topic : client.publishedTopics.values()){
+                    //For all topics...
+                    for(String prefix : prefixes){
+                        if(topic.name.startsWith(prefix)){
+                            //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
+                            retTopics.addAll(client.publishedTopics.values());
+                            break;
+                        }
                     }
                 }
             }

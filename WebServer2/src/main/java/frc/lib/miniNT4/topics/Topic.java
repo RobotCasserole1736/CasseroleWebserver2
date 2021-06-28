@@ -1,5 +1,6 @@
 package frc.lib.miniNT4.topics;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +14,8 @@ abstract public class Topic{
 
     public TimestampedValue curValue;
 
-    Set<Subscription> subscriptionRefs = new HashSet<Subscription>();
+    //Synchronization required because we modify the refs and iterate over the set from different threads.
+    Set<Subscription> subscriptionRefs = Collections.synchronizedSet(new HashSet<Subscription>());
 
     public Topic(String name_in, TimestampedValue default_in){
         default_in.timestamp_us = 0; //ensure we are storing default as the default
@@ -27,9 +29,13 @@ abstract public class Topic{
      */
     public void submitNewValue(TimestampedValue newSample){
         curValue = newSample;
-        for(Subscription sub : subscriptionRefs){
-            sub.onNewValue(this, newSample);
+        
+        synchronized(subscriptionRefs){
+            for(Subscription sub : subscriptionRefs){
+                sub.onNewValue(this, newSample);
+            }
         }
+
     }
 
     public long getLastChange(){
