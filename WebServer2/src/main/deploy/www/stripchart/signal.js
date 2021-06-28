@@ -7,18 +7,21 @@ export class Signal {
     constructor(name_in, units_in) { 
         this.name = name_in;
         this.units = units_in;
-        this.sampleList = []; //Assumed to be entered in monotomically-increasing order?
+        this.sampleList = []; //Assumed to be entered in monotomically-increasing order
         this.latestSampleTime = 0;
         this.firstSampleTime = 0;
     }
 
     //Add a new sample to the signal 
+    // Based on NT4 requirements, to not assume samples are added monotomically
     addSample(newSample){
         if(this.sampleList.length == 0){
             this.firstSampleTime = newSample.time;
         }
-        this.latestSampleTime = newSample.time;
-        this.sampleList.push(newSample); //Assume they come in monotomically increasing?
+        this.latestSampleTime =  Math.max(newSample.time, this.latestSampleTime);
+        
+        var insIdx = this.getIndexOfTime(newSample.time);
+        this.sampleList.splice(insIdx, 0, newSample);
     }
 
     //Get all samples in a given time range. Might return empty if no samples present

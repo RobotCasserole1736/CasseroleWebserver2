@@ -1,14 +1,9 @@
 package frc.lib.Logging;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import frc.robot.Robot;
 
@@ -103,10 +98,4 @@ public class LogFileWrangler {
         }
 
     }
-
-    /**
-     * TODO - do we need a fucntion to read and return file contents for a single
-     * log?
-     */
-
 }
