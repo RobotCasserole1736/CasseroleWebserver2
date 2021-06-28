@@ -106,7 +106,7 @@ public class Socket extends WebSocketAdapter {
 
     }
 
-    public void sendValueUpdate(Topic topic, TimestampedValue val){
+    public synchronized void sendValueUpdate(Topic topic, TimestampedValue val){
         //System.out.println("MSG: Server to " + clientInf.friendlyName + " :");
         //System.out.println("Value Update: " + topic.name + " = " + val.toNiceString());
 
