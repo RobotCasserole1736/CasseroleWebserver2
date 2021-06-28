@@ -30,19 +30,20 @@ public class Socket extends WebSocketAdapter {
         try {
             handleIncoming((JSONObject) parser.parse(message));
         } catch (Exception e) {
-            DriverStation.reportWarning("Could not parse json message " + message + "\n" + e.getMessage(), e.getStackTrace());
+            DriverStation.reportWarning("Could not parse json message " + message + "\n" + e.getMessage(),
+                    e.getStackTrace());
         }
     }
 
     @Override
-    public void onWebSocketBinary(byte[] payload, int offset, int len)
-    {
-        //TODO - msgpack unpack
+    public void onWebSocketBinary(byte[] payload, int offset, int len) {
+        // TODO - msgpack unpack
     }
 
     @Override
     public void onWebSocketConnect(Session sess) {
         super.onWebSocketConnect(sess);
+
         String clientName = sess.getUpgradeRequest().getRequestURI().toString();
         clientInf = new RemoteClient(this, clientName);
         System.out.println("WS Connect from " + clientName);

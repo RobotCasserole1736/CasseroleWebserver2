@@ -45,7 +45,7 @@ function topicUnannounceHandler( removedTopic ) {
 
 function valueUpdateHandler( topic, timestamp_us, value ) {
     document.getElementById(topic.name).innerHTML = value;
-    document.getElementById("curTime").innerHTML = "Time: "
+    document.getElementById("curTime").innerHTML = "Time: ";
     document.getElementById("curTime").innerHTML += (timestamp_us / 1000000.0);
     //console.log("----------------------------");
     //console.log("Values Updated");

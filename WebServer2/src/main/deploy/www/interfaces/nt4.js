@@ -442,7 +442,7 @@ export class NT4_Client {
 
         this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + "CasseroleWS2_" + this.clientIdx.toString();
 
-        this.ws = new WebSocket(this.serverAddr, "networktables.first.wpi.edu");
+        this.ws = new WebSocket(this.serverAddr); //TODO - add second argumet to explicitly look for subprotocol support for "networktables.first.wpi.edu"
         this.ws.binaryType = "arraybuffer";
         this.ws.onopen = this.ws_onOpen.bind(this);
         this.ws.onmessage = this.ws_onMessage.bind(this);

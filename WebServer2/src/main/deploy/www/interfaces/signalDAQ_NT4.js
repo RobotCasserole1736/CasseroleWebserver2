@@ -72,23 +72,23 @@ export class SignalDAQNT4 {
 
     //Request a signal get added to the DAQ
     addSignal(signalNameIn){
-        this.signalList.add(signalNameIn);
+        this.daqSignalList.add(signalNameIn);
     }
 
     //Call to remove a signal from the DAQ
     removeSignal(signalNameIn){
-        this.signalList.delete(signalNameIn);
+        this.daqSignalList.delete(signalNameIn);
     }
 
     clearSignalList(){
-        this.signalList.clear();
+        this.daqSignalList.clear();
     }
 
     //Request RIO start sending periodic updates with data values
     startDAQ(){
         this.daqRunning = true;
-        this.signalList.forEach(sigName => {
-            this.nt4Client.subscribe(this.sigNameToValueTopic(sigName));
+        this.daqSignalList.forEach(sigName => {
+            this.nt4Client.subscribeLogging(this.sigNameToValueTopic(sigName));
         });
         this.statusTextCallback("DAQ Running.");
         this.rxCount = 0;
@@ -108,7 +108,7 @@ export class SignalDAQNT4 {
 
     valueTopicToSigName(topic){
         var tmp = topic.name;
-        tmp = tmp.replace(/^Signals\//, '');
+        tmp = tmp.replace(/^\/Signals\//, '');
         tmp = tmp.replace(/\/value/, '');
         return tmp;
     }
@@ -123,17 +123,17 @@ export class SignalDAQNT4 {
 
     unitsTopicToSigName(topic){
         var tmp = topic.name;
-        tmp = tmp.replace(/^Signals\//, '');
+        tmp = tmp.replace(/^\/Signals\//, '');
         tmp = tmp.replace(/\/units/, '');
         return tmp;
     }
 
     isSignalUnitsTopic(topic){
-        return topic.name.match(/Signals\/[a-zA-Z0-9\._]+\/units/);
+        return topic.name.match(/^\/Signals\/[a-zA-Z0-9\._]+\/units/);
     }
 
     isSignalValueTopic(topic){
-        return topic.name.match(/Signals\/[a-zA-Z0-9\._]+\/value/);
+        return topic.name.match(/^\/Signals\/[a-zA-Z0-9\._]+\/value/);
     }
 
 

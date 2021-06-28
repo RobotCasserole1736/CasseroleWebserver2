@@ -229,28 +229,35 @@ function onDisconnect(){
 }
 
 function onSignalAnnounce(name, units){
-    var newSignal = new Signal(name, units);
-    allSignalsMap.set(name, newSignal);
-    signalSelector.addSignal(newSignal);
-    restoreConfig(); 
-    plotList.forEach(plt => plt.rectifySignalReferencesByName());
+    if(!allSignalsMap.has(name)){ //in case the same signal is announced multiple times, only add unique ones.
+        var newSignal = new Signal(name, units);
+        allSignalsMap.set(name, newSignal);
+        signalSelector.addSignal(newSignal);
+        restoreConfig(); 
+        plotList.forEach(plt => plt.rectifySignalReferencesByName());
+    }
 }
 
 function onSignalUnAnnounce(name){
-    var sigToRemove = allSignalsMap.get(name);
-    signalSelector.removeSignal(sigToRemove);
-    allSignalsMap.delete(name);
+    if(allSignalsMap.has(name)){ 
+        var sigToRemove = allSignalsMap.get(name);
+        signalSelector.removeSignal(sigToRemove);
+        allSignalsMap.delete(name);
+    }
 }
 
 function onNewSampleData(name, timestamp, value){
-    allSignalsMap.get(name).addSample(new Sample(timestamp, value));
+    if(allSignalsMap.has(name)){
+        var sampleTimeSec = timestamp/1000000.0;
+        allSignalsMap.get(name).addSample(new Sample(sampleTimeSec, value));
 
-    //Save off incoming sample timing stats
-    //TODO - does NT4 expose a better way to do this?
-    if(recordingStartTime == null){
-        recordingStartTime = timestamp;
+        //Save off incoming sample timing stats
+        //TODO - does NT4 expose a better way to do this?
+        if(recordingStartTime == null){
+            recordingStartTime = sampleTimeSec;
+        }
+        recordingEndTime = sampleTimeSec;
     }
-    recordingEndTime = timestamp;
 }
 
 //Plot callback supporting drag/drop events
