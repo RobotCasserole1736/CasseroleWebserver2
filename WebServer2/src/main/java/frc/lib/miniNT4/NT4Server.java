@@ -139,7 +139,7 @@ public class NT4Server {
                     for(String prefix : prefixes){
                         if(topic.name.startsWith(prefix)){
                             //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
-                            retTopics.addAll(client.publishedTopics.values());
+                            retTopics.add(topic);
                             break;
                         }
                     }

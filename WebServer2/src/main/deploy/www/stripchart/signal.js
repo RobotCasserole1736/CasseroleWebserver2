@@ -20,7 +20,7 @@ export class Signal {
         }
         this.latestSampleTime =  Math.max(newSample.time, this.latestSampleTime);
         
-        var insIdx = this.getIndexOfTime(newSample.time);
+        var insIdx = this.getIndexOfTime(newSample.time)+1;
         this.sampleList.splice(insIdx, 0, newSample);
     }
 

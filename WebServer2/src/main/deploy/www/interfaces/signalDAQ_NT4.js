@@ -88,7 +88,7 @@ export class SignalDAQNT4 {
     startDAQ(){
         this.daqRunning = true;
         this.daqSignalList.forEach(sigName => {
-            this.nt4Client.subscribeLogging(this.sigNameToValueTopic(sigName));
+            this.nt4Client.subscribeLogging([this.sigNameToValueTopic(sigName)]);
         });
         this.statusTextCallback("DAQ Running.");
         this.rxCount = 0;
@@ -103,7 +103,7 @@ export class SignalDAQNT4 {
     }
 
     sigNameToValueTopic(name){
-        return "Signals/" + name + "/Value"
+        return "/Signals/" + name + "/value"
     }
 
     valueTopicToSigName(topic){
@@ -118,7 +118,7 @@ export class SignalDAQNT4 {
     }
 
     sigNameToUnitsTopic(name){
-        return "Signals/" + name + "/Units"
+        return "/Signals/" + name + "/units"
     }
 
     unitsTopicToSigName(topic){
