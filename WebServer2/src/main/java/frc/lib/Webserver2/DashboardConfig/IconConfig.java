@@ -24,7 +24,7 @@ public class IconConfig extends WidgetConfig {
     @Override
     public String getJSDeclaration(){
         String retStr = String.format("var widget%d = new Icon('widget%d', '%s', '%s', '%s');\n", idx, idx, name, colorOn, symbolPath);
-        retStr += String.format("nt4Client.subscribe(\"%s\");", nt4TopicCurVal);
+        retStr += String.format("nt4Client.subscribePeriodic(\"%s\",0.33);", nt4TopicCurVal);
         return retStr;
     }
 

@@ -8,7 +8,7 @@ public class SoundConfig extends WidgetConfig {
     @Override
     public String getJSDeclaration(){
         String retStr = String.format("var widget%d = new Sound('%s', '%s', %s);\n", idx, name, filePath, looping?"true":"false");
-        retStr += String.format("nt4Client.subscribe(\"%s\");", nt4TopicCurVal);
+        retStr += String.format("nt4Client.subscribePeriodic(\"%s\",0.33);", nt4TopicCurVal);
         return retStr;
     }
 

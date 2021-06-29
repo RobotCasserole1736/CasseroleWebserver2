@@ -21,7 +21,7 @@ public class LineGaugeConfig extends WidgetConfig {
     @Override
     public String getJSDeclaration(){
         String retStr = String.format("var widget%d = new LineGauge('widget%d', '%s', %f,%f,%f,%f);\n", idx, idx, name, minRange, maxRange, minAcceptable, maxAcceptable);
-        retStr += String.format("nt4Client.subscribe(\"%s\");", nt4TopicCurVal);
+        retStr += String.format("nt4Client.subscribePeriodic(\"%s\", 0.33);", nt4TopicCurVal);
         return retStr;
     }
 

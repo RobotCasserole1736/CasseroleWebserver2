@@ -6,13 +6,13 @@ import { Text } from './text.js'
 import { AutoChooser } from './autoChooser.js'
 import { SwerveState } from './swerveState.js'
 import { Sound } from './sound.js'
-import { NT4_Client } from "../interfaces/dummy_NT4.js";
+import { NT4_Client } from "../interfaces/nt4.js";
 
 //////////////////////////////////////////////////
 // Logic to run on page load
 //////////////////////////////////////////////////
 
-var nt4Client = new NT4_Client("todo server addr", 
+var nt4Client = new NT4_Client("localhost", 
                     doNothing,
                     doNothing,
                     handleNewData,
