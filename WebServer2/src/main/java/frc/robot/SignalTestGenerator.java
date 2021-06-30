@@ -11,6 +11,9 @@ public class SignalTestGenerator {
     @Signal(units = "V", name = "TestFastSin1")
     double testSin2;
 
+    @Signal(units = "V", name = "TestFastSin2")
+    double testSin3;
+
     @Signal(units = "RPM", name = "TestSquare")
     double testSquare1;
 
@@ -23,9 +26,11 @@ public class SignalTestGenerator {
 
     public void update(){
         double curTimeSec = Timer.getFPGATimestamp();
-        testSin1 = 5.0 * Math.sin(2 * Math.PI * 0.25 * curTimeSec);
-        testSin2 = 3.0 * Math.cos(2 * Math.PI * 0.75 * curTimeSec);
-        testSquare1 = (curTimeSec % 10 > 5) ? 3.0 : 0.25;
+        testSin1 = 50 + 20 * Math.sin(2 * Math.PI * 0.25 * curTimeSec);
+        testSin2 = 30 + 25.0 * Math.cos(2 * Math.PI * 0.75 * curTimeSec);
+        testSin3 = 10 + 50 * Math.cos(2 * Math.PI * 2.1 * curTimeSec);
+        testSquare1 = (curTimeSec % 10 > 5) ? 1.0 : 0;
+        testSquare2 = (curTimeSec % 7 > 3) ? 1.0 : 0;
     }
     
 }

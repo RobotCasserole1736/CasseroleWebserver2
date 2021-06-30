@@ -3,6 +3,7 @@ package frc.lib.miniNT4;
 import frc.lib.miniNT4.samples.TimestampedValue;
 import frc.lib.miniNT4.topics.Topic;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class RemoteClient extends BaseClient{
@@ -17,8 +18,10 @@ public class RemoteClient extends BaseClient{
 
     void onDisconnect(){
 
+        Set<Integer> subIDs = new HashSet<Integer>(this.subscriptions.keySet());
+
         //Implicit unsubscribe from all topics
-        for(int id : this.subscriptions.keySet()){
+        for(int id : subIDs){
             unSubscribe(id);
         }
 

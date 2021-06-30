@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Signal {
 
-    String name() default "NO_NAME";
+    String name() default "";
 
     String units() default "";
 

@@ -104,7 +104,13 @@ public class SignalWrangler extends LocalClient{
                     // Case #1 - we found a @signal annotation - create a new AUtoDiscoveredSignal
                     frc.lib.Signal.Annotations.Signal ann = field
                             .getAnnotation(frc.lib.Signal.Annotations.Signal.class);
-                    autoSig.add(new AutoDiscoveredSignal(field, root, newName, ann.units()));
+
+                    String nameToUse = newName;
+                    if(ann.name().length() > 0){
+                        nameToUse = ann.name();
+                    }
+
+                    autoSig.add(new AutoDiscoveredSignal(field, root, nameToUse, ann.units()));
 
                 } else {
                     // No signal annotation - we should see if we can recurs on the object

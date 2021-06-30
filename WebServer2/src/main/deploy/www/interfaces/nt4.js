@@ -310,6 +310,9 @@ export class NT4_Client {
     // Websocket connection Maintainence
 
     ws_onOpen() {
+        
+        // Set the flag allowing general server communication
+        this.serverConnectionActive = true;
 
         //Publish any existing topics
         for(const topic of this.clientPublishedTopics.values()){
@@ -321,9 +324,6 @@ export class NT4_Client {
         for(const sub of this.subscriptions.values()){
             this.ws_subscribe(sub);
         }
-
-        // Set the flag allowing general server communication
-        this.serverConnectionActive = true;
 
         // User connection-opened hook
         this.onConnect();

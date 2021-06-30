@@ -60,13 +60,15 @@ public class Subscription{
 
             LinkedList<TimestampedValue> l = sampleQueues.get(topic);
 
-            if(!isLogging){
-                //When not logging, just remember the most recent value.
-                l.clear();
+            if(l != null){
+                if(!isLogging){
+                    //When not logging, just remember the most recent value.
+                    l.clear();
+                }
+    
+                //Put the new value into the queue for transmission
+                l.addLast(newVal);
             }
-
-            //Put the new value into the queue for transmission
-            l.addLast(newVal);
         }
     }
 

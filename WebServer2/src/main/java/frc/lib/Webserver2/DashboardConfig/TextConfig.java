@@ -15,7 +15,7 @@ public class TextConfig extends WidgetConfig {
     @Override
     public String getJSDeclaration(){
         String retStr = String.format("var widget%d = new Text('widget%d', '%s');\n", idx, idx, name);
-        retStr += String.format("nt4Client.subscribePeriodic(\"%s\", 0.33);", nt4TopicCurVal);
+        retStr += String.format("nt4Client.subscribePeriodic([\"%s\"], 0.05);", nt4TopicCurVal);
         return retStr;
     }
 

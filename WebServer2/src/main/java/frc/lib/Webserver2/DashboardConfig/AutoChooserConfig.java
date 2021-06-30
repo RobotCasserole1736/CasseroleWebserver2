@@ -35,7 +35,7 @@ public class AutoChooserConfig extends WidgetConfig {
     public String getJSDeclaration() {
         String retStr = String.format("var widget%d = new AutoChooser('widget%d', '%s', %s, onWidget%dValUpdated);\n", idx, idx,
                 name, getJsModeNameListString(), idx);
-        retStr += String.format("nt4Client.subscribePeriodic(\"%s\", 0.5);", nt4TopicCurVal);
+        retStr += String.format("nt4Client.subscribePeriodic([\"%s\"], 0.5);", nt4TopicCurVal);
         return retStr;
     }
 
