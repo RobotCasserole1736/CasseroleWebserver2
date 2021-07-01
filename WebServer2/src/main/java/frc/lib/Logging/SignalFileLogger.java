@@ -183,7 +183,7 @@ public class SignalFileLogger {
     }
 
     ///////////////////////////////////////////////////////////////////
-    // Private logging impelmentation
+    // Private logging implementation
     ///////////////////////////////////////////////////////////////////
 
     private void writeLogData(DataSample samp_in) {

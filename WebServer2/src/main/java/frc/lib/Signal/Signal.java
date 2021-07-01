@@ -66,7 +66,8 @@ public class Signal {
         return units;
     }
 
-    public String getNT4ValueTopicName(){ return "/Signals/" + name + "/value"; }
-    public String getNT4UnitsTopicName(){ return "/Signals/" + name + "/units"; }
+    public String getNT4ValueTopicName(){ return SignalUtils.nameToNT4ValueTopic(this.name); }
+    public String getNT4UnitsTopicName(){ return SignalUtils.nameToNT4UnitsTopic(this.name); }
+
 
 }
