@@ -53,9 +53,16 @@ public class AutoChooserConfig extends WidgetConfig {
         return String.format("    widget%d.render();", idx);
     }
 
+    @Override
+    public String getJSSetNoData(){
+        String retStr = "";
+        retStr += String.format("    widget%d.reportNoData();", idx);
+        return retStr;
+    }
+
     public String getJSCallback() {
         String retStr = String.format("function onWidget%dValUpdated(value) {\n", idx);
-        retStr +=  String.format("    nt4Client.sendDataValue(\"%s\", nt4Client.getCurTimestamp(), value);\n", nt4TopicDesVal);
+        retStr +=  String.format("    nt4Client.addSample(\"%s\", nt4Client.getServerTime_us(), value);\n", nt4TopicDesVal);
         retStr += "}";
         return retStr;
 

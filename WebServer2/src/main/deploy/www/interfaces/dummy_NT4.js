@@ -34,7 +34,7 @@ export class NT4_Client {
         this.onTopicUnAnnounce(name);
     }
 
-    sendDataValue(name, timestamp, value){
+    addSample(name, timestamp, value){
         this.testTopicsMap.set(name, value);
         this.onNewTopicData(name, timestamp, value);
     }
@@ -61,8 +61,8 @@ export class NT4_Client {
 
     //Gets a timestamp in the NT4 time scaling & domain
     // I have no idea ift his will be useful going forward but..
-    getCurTimestamp(){
-        return new Date().getTime();
+    getServerTime_us(){
+        return new Date().getTime()*1000000;
     }
 
 

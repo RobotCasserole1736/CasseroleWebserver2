@@ -32,5 +32,13 @@ public class TextConfig extends WidgetConfig {
     public String getJSUpdate() {
         return String.format("    widget%d.render();", idx);
     }
+
+    
+    @Override
+    public String getJSSetNoData(){
+        String retStr = "";
+        retStr += String.format("    widget%d.reportNoData();", idx);
+        return retStr;
+    }
     
 }

@@ -60,7 +60,7 @@ export class Calibration_NT4 {
     //Submit a new calibration value
     setCalibrationValue(name, value){
         var valTopic = this.calNameToValueTopic(name);
-        this.nt4Client.sendDataValue(valTopic, this.nt4Client.getCurTimestamp(), value);
+        this.nt4Client.addSample(valTopic, this.nt4Client.getServerTime_us(), value);
     }
 
 

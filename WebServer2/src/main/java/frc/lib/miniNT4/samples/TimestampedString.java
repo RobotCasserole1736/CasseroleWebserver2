@@ -21,5 +21,10 @@ public class TimestampedString extends TimestampedValue {
     public void packValue(MessageBufferPacker packer) throws IOException {
         packer.packString(value);
     }
+
+    @Override
+    public String getVal() {
+        return value;
+    }
     
 }

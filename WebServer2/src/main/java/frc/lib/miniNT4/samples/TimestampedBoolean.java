@@ -4,27 +4,26 @@ import java.io.IOException;
 
 import org.msgpack.core.MessageBufferPacker;
 
-public class TimestampedDouble extends TimestampedValue {
-    double value;
+public class TimestampedBoolean extends TimestampedValue {
+    boolean value;
 
-    public TimestampedDouble(double value, long time){
+    public TimestampedBoolean(boolean value, long time){
         this.value = value;
         this.timestamp_us = time;
     }
 
     @Override
     public String toNiceString() {
-        return "{ Time=" + Long.toString(this.timestamp_us) + "us Value=" + Double.toString(this.value) +"}";
+        return "{ Time=" + Long.toString(this.timestamp_us) + "us Value=" + Boolean.toString(this.value) +"}";
     }
 
     @Override
     public void packValue(MessageBufferPacker packer) throws IOException {
-        packer.packDouble(value);
-    }
-
-    @Override
-    public Double getVal() {
-        return value;
+        packer.packBoolean(value);
     }
     
+    @Override
+    public Boolean getVal() {
+        return value;
+    }
 }

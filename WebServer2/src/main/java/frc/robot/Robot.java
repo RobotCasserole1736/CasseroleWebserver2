@@ -63,12 +63,12 @@ public class Robot extends TimedRobot {
     testServer.dashboard.addIcon(SignalUtils.nameToNT4ValueTopic("AnotherTestSquare"), "Test Icon", "#BBBB00", "icons/cameraFault.svg", 48.5, 5, 1.0);
     testServer.dashboard.addIcon(SignalUtils.nameToNT4ValueTopic("TestSquare"), "Test Icon", "#4444FF", "icons/fast.svg", 57, 5, 1.0);
     testServer.dashboard.addIcon(SignalUtils.nameToNT4ValueTopic("TestSquare"), "Test Icon", "#FF00FF", "icons/slow.svg", 65, 5, 1.0);
-    testServer.dashboard.addAutoChooser("/Autonomous/curVal", "Autonomous/desVal", "Auto Mode", autoModes, 30, 75, 1.0);
-    testServer.dashboard.addAutoChooser("/Autonomous/curValDelay", "Autonomous/desValDelay", "Auto Delay", delayModes, 30, 87, 1.0);
+    testServer.dashboard.addAutoChooser("/Autonomous/curVal", "/Autonomous/desVal", "Auto Mode", autoModes, 30, 75, 1.0);
+    testServer.dashboard.addAutoChooser("/Autonomous/curValDelay", "/Autonomous/desValDelay", "Auto Delay", delayModes, 30, 87, 1.0);
 
     testServer.dashboard.addLineGauge(SignalUtils.nameToNT4ValueTopic("TestFastSin2"), "Speed", "RPM", -30, 30, -20, 5, 75, 5, 1.0);
-    testServer.dashboard.addLineGauge("Autonomous/curVal", "Auto Idx", "RPM", -1, 5, -100, 100, 75, 20, 1.0);
-    testServer.dashboard.addLineGauge("Autonomous/curValDelay", "Delay Idx", "RPM", -1, 5, -100, 100, 75, 35, 1.0);
+    testServer.dashboard.addLineGauge("/Autonomous/curVal", "Auto Idx", "RPM", -1, 5, -100, 100, 75, 20, 1.0);
+    testServer.dashboard.addLineGauge("/Autonomous/curValDelay", "Delay Idx", "RPM", -1, 5, -100, 100, 75, 35, 1.0);
     testServer.dashboard.addText("/testText", "Blah", 75, 50, 1.0);
     testServer.dashboard.addLineGauge(SignalUtils.nameToNT4ValueTopic("AnotherTestSquare"), "Turret Mode", "RPM", -30, 30, -20, 5, 75, 65, 1.0);
 

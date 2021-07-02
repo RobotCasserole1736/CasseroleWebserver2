@@ -1,8 +1,12 @@
 package frc.robot.Autonomous;
 
+import java.util.Set;
+
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import frc.lib.AutoSequencer.AutoSequencer;
 import frc.lib.miniNT4.LocalClient;
 import frc.lib.miniNT4.samples.TimestampedValue;
+import frc.lib.miniNT4.topics.IntegerTopic;
 import frc.lib.miniNT4.topics.Topic;
 import frc.robot.Autonomous.Modes.AutoDelayMode;
 import frc.robot.Autonomous.Modes.AutoMode;
@@ -10,7 +14,7 @@ import frc.robot.Autonomous.Modes.AutoModeDoNothing;
 import frc.robot.Autonomous.Modes.AutoModeDriveFig8;
 import frc.robot.Autonomous.Modes.AutoModeDriveForward3Sec;
 
-public class Autonomous extends LocalClient{
+public class Autonomous extends LocalClient {
     
     // Driver-selectable autonomous mode lists
     AutoModeList delayModes;
@@ -21,9 +25,16 @@ public class Autonomous extends LocalClient{
     AutoMode curMainMode = null;
     AutoMode prevMainMode = null;
 
+    IntegerTopic curDelayModeTopic = null;
+    IntegerTopic curMainModeTopic = null;
+    IntegerTopic desDelayModeTopic = null;
+    IntegerTopic desMainModeTopic = null;
+
+    AutoSequencer seq;
+
     public Autonomous(){
 
-        //seq = new AutoSequencer("Auto Event Sequencer");
+        seq = new AutoSequencer("Auto Event Sequencer");
 
         delayModes = new AutoModeList();
         mainModes = new AutoModeList();
@@ -40,6 +51,15 @@ public class Autonomous extends LocalClient{
         mainModes.add(new AutoModeDriveForward3Sec()); 
         mainModes.add(new AutoModeDoNothing());
 
+        // Create and subscribe to NT4 topics
+        curDelayModeTopic = new IntegerTopic("/Autonomous/curValDelay", 0);
+        curMainModeTopic = new IntegerTopic("/Autonomous/curVal", 0);
+        desDelayModeTopic = new IntegerTopic("/Autonomous/desValDelay", 0);
+        desMainModeTopic = new IntegerTopic("/Autonomous/desVal", 0);
+        this.publish(curDelayModeTopic);
+        this.publish(curMainModeTopic);
+        this.subscribe(Set.of(desDelayModeTopic.name, desMainModeTopic.name), 0);
+
         reset();
     }
 
@@ -48,10 +68,10 @@ public class Autonomous extends LocalClient{
         System.out.println("DELAY: " + curDelayMode.humanReadableName);
         System.out.println("MAIN: " + curMainMode.humanReadableName);
 
-        //seq.clearAllEvents();
+        seq.clearAllEvents();
 
-        //curDelayMode.addStepsToSequencer(seq);
-        //curMainMode.addStepsToSequencer(seq);
+        curDelayMode.addStepsToSequencer(seq);
+        curMainMode.addStepsToSequencer(seq);
 
         System.out.println("Finished loading new auto routines!");
     }
@@ -96,21 +116,17 @@ public class Autonomous extends LocalClient{
 	}
 
     @Override
-    public void onAnnounce(Topic newTopic) {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onAnnounce(Topic newTopic) {} //do nothing
 
     @Override
-    public void onUnannounce(Topic deadTopic) {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onUnannounce(Topic deadTopic) {} //do nothing
 
     @Override
     public void onValueUpdate(Topic topic, TimestampedValue newVal) {
-        //TODO
-        //curDelayMode =
-        //curMainMode =    
+        if(topic.name == desDelayModeTopic.name){
+            curDelayMode = delayModes.get(delayModes.getNameList()[(Integer) newVal.getVal()]);
+        } else if(topic.name == desDelayModeTopic.name){
+            curMainMode = mainModes.get(mainModes.getNameList()[(Integer) newVal.getVal()]); 
+        } 
     }
 }

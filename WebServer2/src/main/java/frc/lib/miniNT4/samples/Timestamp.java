@@ -26,5 +26,10 @@ public class Timestamp extends TimestampedValue {
         packer.packLong(this.timestamp_us);
     }
 
+    @Override
+    public Long getVal() {
+        return this.timestamp_us;
+    }
+
     
 }

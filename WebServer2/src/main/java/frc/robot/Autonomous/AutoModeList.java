@@ -3,7 +3,6 @@ package frc.robot.Autonomous;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import frc.lib.miniNT4.topics.Topic;
 import frc.robot.Autonomous.Modes.AutoMode;
 
 public class AutoModeList {

@@ -36,7 +36,7 @@ export class Icon {
     // Call this when NT is disconnected, or data is otherwise not available
     reportNoData(){
         this.hasData = false;
-        this.curState = kOFF;
+        this.curState = Icon.kOFF;
     }
 
     // Call this whenever a new state for the widget is available.

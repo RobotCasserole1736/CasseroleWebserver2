@@ -11,4 +11,6 @@ abstract public class TimestampedValue{
 
     abstract public String toNiceString();
 
+    abstract public Object getVal();
+
 }
