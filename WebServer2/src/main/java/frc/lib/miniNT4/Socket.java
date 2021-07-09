@@ -37,7 +37,9 @@ public class Socket extends WebSocketAdapter {
 
     @Override
     public void onWebSocketBinary(byte[] payload, int offset, int len) {
-        // TODO - msgpack unpack
+        System.out.println(payload);
+        System.out.println(offset);
+        System.out.println(len);
     }
 
     @Override

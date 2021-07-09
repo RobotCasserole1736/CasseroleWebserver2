@@ -203,7 +203,7 @@ export class NT4_Client {
 
     // Publish a new topic from this client with the provided name and type
     publishNewTopic(name, type){
-        var newTopic = NT4_Topic()
+        var newTopic = new NT4_Topic()
         newTopic.name = name;
         newTopic.type = type;
 

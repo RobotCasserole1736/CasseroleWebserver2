@@ -35,15 +35,16 @@ public class AutoChooserConfig extends WidgetConfig {
     public String getJSDeclaration() {
         String retStr = String.format("var widget%d = new AutoChooser('widget%d', '%s', %s, onWidget%dValUpdated);\n", idx, idx,
                 name, getJsModeNameListString(), idx);
-        retStr += String.format("nt4Client.subscribePeriodic([\"%s\"], 0.5);", nt4TopicCurVal);
+        retStr += String.format("nt4Client.subscribePeriodic([\"%s\"], 0.5);\n", nt4TopicCurVal);
+        retStr += String.format("nt4Client.publishNewTopic(\"%s\", \"double\");", nt4TopicDesVal);
         return retStr;
     }
 
     @Override
     public String getJSSetData(){
         String retStr = "";
-        retStr += "if(name == \"" + nt4TopicCurVal + "\"){ ";
-        retStr += String.format("    widget%d.setActualState(value);", idx);
+        retStr += "if(name == \"" + nt4TopicCurVal + "\"){ \n";
+        retStr += String.format("    widget%d.setActualState(value);\n", idx);
         retStr += "}";
         return retStr;
     }
@@ -61,8 +62,9 @@ public class AutoChooserConfig extends WidgetConfig {
     }
 
     public String getJSCallback() {
-        String retStr = String.format("function onWidget%dValUpdated(value) {\n", idx);
-        retStr +=  String.format("    nt4Client.addSample(\"%s\", nt4Client.getServerTime_us(), value);\n", nt4TopicDesVal);
+        String retStr = "";
+        retStr += String.format("function onWidget%dValUpdated(value) {\n", idx);
+        retStr += String.format("    nt4Client.addSample(\"%s\", nt4Client.getServerTime_us(), value);\n", nt4TopicDesVal);
         retStr += "}";
         return retStr;
 
