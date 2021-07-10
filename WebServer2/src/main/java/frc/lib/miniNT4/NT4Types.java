@@ -19,7 +19,8 @@ public enum NT4Types {
 
     public final int type_idx;
     public final String dtstr;
-    private NT4Types(int type_idx, String dtstr) {
+    
+    private NT4Types(final int type_idx, final String dtstr) {
         this.type_idx = type_idx;
         this.dtstr = dtstr;
     }

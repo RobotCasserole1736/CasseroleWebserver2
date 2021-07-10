@@ -10,7 +10,7 @@ import frc.lib.miniNT4.samples.TimestampedValue;
 abstract public class Topic{
     public int id;
     public String name;    
-    public boolean isPersistant = false;
+    public boolean isPersistent = false;
 
     public TimestampedValue curValue;
 
@@ -35,7 +35,6 @@ abstract public class Topic{
                 sub.onNewValue(this, newSample);
             }
         }
-
     }
 
     public long getLastChange(){

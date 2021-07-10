@@ -46,7 +46,7 @@ public class RemoteClient extends BaseClient{
     public void setTopicProperties(String name, boolean isPersistant){
         Set<Topic> matchedTopics = NT4Server.getInstance().getTopics(name);
         for(Topic t : matchedTopics){
-            t.isPersistant = isPersistant;
+            t.isPersistent = isPersistant;
         }
     }
 

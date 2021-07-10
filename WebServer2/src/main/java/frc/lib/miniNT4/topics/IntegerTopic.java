@@ -1,5 +1,6 @@
 package frc.lib.miniNT4.topics;
 
+
 import frc.lib.miniNT4.NT4Server;
 import frc.lib.miniNT4.NT4Types;
 import frc.lib.miniNT4.samples.TimestampedInteger;
@@ -20,5 +21,6 @@ public class IntegerTopic extends Topic{
     public int getTypeInt() {
         return NT4Types.INT.type_idx;
     }
+
     
 }

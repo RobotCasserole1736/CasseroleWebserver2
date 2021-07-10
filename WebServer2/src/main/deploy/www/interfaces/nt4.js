@@ -1,5 +1,22 @@
 import "./msgpack/msgpack.js";
-import msgpack from "./msgpack/msgpack.js";
+
+var typestrIdxLookup = {
+    NT4_TYPESTR: 0,
+    "double": 1,
+    "int": 2,
+    "float": 3,
+    "string": 4,
+    "json": 4,
+    "raw": 5,
+    "rpc": 5,
+    "msgpack": 5,
+    "protobuf": 5,
+    "boolean[]": 16,
+    "double[]": 17,
+    "int[]": 18,
+    "float[]": 19,
+    "string[]": 20
+}
 
 class NT4_TYPESTR{
     static BOOL = "boolean";
@@ -17,47 +34,6 @@ class NT4_TYPESTR{
     static INT_ARR = "int[]";
     static FLOAT_32_ARR = "float[]";
     static STR_ARR = "string[]";
-}
-
-class NT4_IDX{
-    static BOOL = 0;
-    static FLOAT_64 = 1;
-    static INT = 2;
-    static FLOAT_32 = 3;
-    static STR = 4;
-    static JSON = 4;
-    static JSON = 4;
-    static BIN_RAW = 5
-    static BIN_RPC = 5;
-    static BIN_MSGPACK =5;
-    static BIN_PROTOBUF = 5;
-    static BOOL_ARR = 16;
-    static FLOAT_64_ARR = 17;
-    static INT_ARR = 18;
-    static FLOAT_32_ARR = 19;
-    static STR_ARR = 20;
-}
-
-class NT4_TYPEIDX{
-    static typeStrToIdx = {
-    NT4_TYPESTR.BOOL         : NT4_TYPESTR.BOOL         ,
-    NT4_TYPESTR.FLOAT_64     : NT4_TYPESTR.FLOAT_64     ,       
-    NT4_TYPESTR.INT          : NT4_TYPESTR.INT          ,       
-    NT4_TYPESTR.FLOAT_32     : NT4_TYPESTR.FLOAT_32     ,    
-    NT4_TYPESTR.STR          : NT4_TYPESTR.STR          ,
-    NT4_TYPESTR.JSON         : NT4_TYPESTR.JSON         , 
-    NT4_TYPESTR.JSON         : NT4_TYPESTR.JSON         ,     
-    NT4_TYPESTR.BIN_RAW      : NT4_TYPESTR.BIN_RAW      ,  
-    NT4_TYPESTR.BIN_RPC      : NT4_TYPESTR.BIN_RPC      ,           
-    NT4_TYPESTR.BIN_MSGPACK  : NT4_TYPESTR.BIN_MSGPACK  ,      
-    NT4_TYPESTR.BIN_PROTOBUF : NT4_TYPESTR.BIN_PROTOBUF ,           
-    NT4_TYPESTR.BOOL_ARR     : NT4_TYPESTR.BOOL_ARR     ,     
-    NT4_TYPESTR.FLOAT_64_ARR : NT4_TYPESTR.FLOAT_64_ARR ,     
-    NT4_TYPESTR.INT_ARR      : NT4_TYPESTR.INT_ARR      , 
-    NT4_TYPESTR.FLOAT_32_ARR : NT4_TYPESTR.FLOAT_32_ARR ,      
-    NT4_TYPESTR.STR_ARR      : NT4_TYPESTR.STR_ARR      ,   
-
-    }
 }
 
 export class NT4_ValReq{
@@ -91,13 +67,13 @@ export class NT4_Subscription{
 }
 
 export class NT4_SubscriptionOptions {
-    immedeate = false;
+    immediate = false;
     logging = false;
     periodicRate_s = 0.1;
 
     toObj(){
         return {
-            "immediate": this.immedeate,
+            "immediate": this.immediate,
             "periodic": this.periodicRate_s,
             "logging": this.logging,
         };
@@ -129,14 +105,18 @@ export class NT4_Topic{
             "update": this.properties.toUpdateObj(),
         }
     }
+
+    getTypeIdx(){
+        return typestrIdxLookup[this.type];
+    }
 }
 
 export class NT4_TopicProperties{
-    isPersistant = false;
+    isPersistent = false;
 
     toUpdateObj(){
         return {
-            "persistent": this.isPersistant,
+            "persistent": this.isPersistent,
         }
     }
 }
@@ -175,7 +155,7 @@ export class NT4_Client {
         var timeTopic = new NT4_Topic();
         timeTopic.name = "Time";
         timeTopic.id = -1;
-        timeTopic.type = NT4_IDX.INT; //int ?
+        timeTopic.type = NT4_TYPESTR.INT; 
         this.serverTopics.set(timeTopic.id, timeTopic);
     }
 
@@ -183,10 +163,10 @@ export class NT4_Client {
     // PUBLIC API
 
     // Add a new subscription. Returns a subscription object
-    subscribeImmedeate(topicPatterns){
+    subscribeImmediate(topicPatterns){
         var newSub = new NT4_Subscription();
         newSub.uid = this.getNewSubUID();
-        newSub.options.immedeate = true;
+        newSub.options.immediate = true;
         newSub.options.periodicRate_s = 0;
         newSub.prefixes = new Set(topicPatterns);
         newSub.options.logging = false;
@@ -202,7 +182,7 @@ export class NT4_Client {
     subscribePeriodic(topicPatterns, period){
         var newSub = new NT4_Subscription();
         newSub.uid = this.getNewSubUID();
-        newSub.options.immedeate = false;
+        newSub.options.immediate = false;
         newSub.options.periodicRate_s = period;
         newSub.prefixes = new Set(topicPatterns);
         newSub.options.logging = false;
@@ -218,7 +198,7 @@ export class NT4_Client {
     subscribeLogging(topicPatterns){
         var newSub = new NT4_Subscription();
         newSub.uid = this.getNewSubUID();
-        newSub.options.immedeate = false;
+        newSub.options.immediate = false;
         newSub.prefixes = new Set(topicPatterns);
         newSub.options.logging = true;
 
@@ -254,8 +234,8 @@ export class NT4_Client {
     }
     
     // Set the properties of a particular topic
-    setProperties(topic, isPersistant){
-        topic.properties.isPersistant = isPersistant;
+    setProperties(topic, isPersistent){
+        topic.properties.isPersistent = isPersistent;
         if(this.serverConnectionActive){
             this.ws_setproperties(topic);
         }
@@ -292,18 +272,38 @@ export class NT4_Client {
 
     // Send some new timestamped value to the server
     addSample(topic, timestamp, value){
-        if(this.ws.readyState == WebSocket.OPEN){
-            var id = topic.id;
-            var typeIdx = topic.type;
-            var 
-            // TODO - make msgpack 
-            // TODO - send msgpack
-            msgpack.serialize()
+
+        if(typeof topic === 'string' ){
+            var topicFound = false;
+            //Slow-lookup - strings are assumed to be topic names for things the server has already announced.
+            for(const topicIter of this.serverTopics.values()){
+                if(topicIter.name === topic){
+                    topic = topicIter;
+                    topicFound = true;
+                    break;
+                }
+            }
+            if(!topicFound){
+                throw "Topic " + topic + " not found in announced server topics!";
+            }
         }
+
+        var msg_part_0 = msgpack.serialize(topic.id, {typeHint:"int"});
+        var msg_part_1 = msgpack.serialize(timestamp, {typeHint:"int"});
+        var msg_part_2 = msgpack.serialize(topic.getTypeIdx(), {typeHint:"int"});
+        var msg_part_3 = msgpack.serialize(value, {typeHint:topic.type});
+        
+        var txData = Uint8Array.from([...msg_part_0, 
+                                      ...msg_part_1,
+                                      ...msg_part_2,
+                                      ...msg_part_3,
+                                    ]);
+
+        this.ws_sendBinary(txData);
     }
 
     //////////////////////////////////////////////////////////////
-    // Server/Clinet Time Sync Handling
+    // Server/Client Time Sync Handling
 
     getClientTime_us(){
         return new Date().getTime()*1000;
@@ -318,7 +318,7 @@ export class NT4_Client {
         this.addSample(timeTopic, 0, this.getClientTime_us());
     }
 
-    ws_handlRecieveTimestamp(serverTimestamp, clientTimestamp){
+    ws_handleReceiveTimestamp(serverTimestamp, clientTimestamp){
         var rxTime = this.getClientTime_us();
 
         //Recalculate server/client offset based on round trip time
@@ -358,7 +358,7 @@ export class NT4_Client {
     }
 
     ws_sendJSON(method, params){
-        if(this.ws.readyState == WebSocket.OPEN){
+        if(this.ws.readyState === WebSocket.OPEN){
             var txObj = {
                 "method": method,
                 "params": params
@@ -368,8 +368,14 @@ export class NT4_Client {
         }
     }
 
+    ws_sendBinary(data){
+        if(this.ws.readyState === WebSocket.OPEN){
+            this.ws.send(data);
+        }
+    }
+
     //////////////////////////////////////////////////////////////
-    // Websocket connection Maintainence
+    // Websocket connection Maintenance
 
     ws_onOpen() {
         
@@ -446,21 +452,21 @@ export class NT4_Client {
             }
 
             // Message validates reasonably, switch based on supported methods
-            if(method == "announce"){
+            if(method === "announce"){
                 var newTopic = new NT4_Topic();
                 newTopic.name = params.name;
                 newTopic.id = params.id;
                 newTopic.type = params.type;
-                newTopic.properties.isPersistant = params.properties.persistent;
+                newTopic.properties.isPersistent = params.properties.persistent;
                 this.serverTopics.set(newTopic.id, newTopic);
                 this.onTopicAnnounce(newTopic);
 
-                if(newTopic.id == -1){
+                if(newTopic.id === -1){
                     // Server Time Topic has been announced - Start the time-sync process
                     this.ws_sendTimestamp();
                 }
 
-            } else if (method == "unannounce"){
+            } else if (method === "unannounce"){
                 var removedTopic = this.serverTopics.get(params.id);
                 this.serverTopics.delete(removedTopic.id);
                 this.onTopicUnAnnounce(removedTopic);
@@ -473,7 +479,7 @@ export class NT4_Client {
 
         } else {
             //MSGPack
-            var unpackedData = msgpack.deserialize(e.data, {multiple:true}); //TODO - does this actully work like this? not sure....
+            var unpackedData = msgpack.deserialize(e.data, {multiple:true});
             var topicID = unpackedData[0];
             var timestamp_us = unpackedData[1];
             var typeIdx = unpackedData[2];
@@ -482,8 +488,8 @@ export class NT4_Client {
             if(topicID >= 0){
                 var topic = this.serverTopics.get(topicID);
                 this.onNewTopicData(topic, timestamp_us, value);
-            } else if (topicID == -1){
-                this.ws_handlRecieveTimestamp(timestamp_us, value);
+            } else if (topicID === -1){
+                this.ws_handlReceiveTimestamp(timestamp_us, value);
             } else {
                 console.log("Ignoring binary data - invalid topic id " + topicID.toString());
             }

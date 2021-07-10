@@ -9,6 +9,7 @@ import org.msgpack.core.MessagePack;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.miniNT4.samples.TimestampedValue;
+import frc.lib.miniNT4.samples.TimestampedValueFactory;
 import frc.lib.miniNT4.topics.Topic;
 import frc.lib.miniNT4.topics.TopicFactory;
 
@@ -30,16 +31,47 @@ public class Socket extends WebSocketAdapter {
         try {
             handleIncoming((JSONObject) parser.parse(message));
         } catch (Exception e) {
-            DriverStation.reportWarning("Could not parse json message " + message + "\n" + e.getMessage(),
+            DriverStation.reportWarning("Could not parse WS json message " + message + "\n" + e.getMessage(),
                     e.getStackTrace());
         }
     }
 
     @Override
     public void onWebSocketBinary(byte[] payload, int offset, int len) {
-        System.out.println(payload);
-        System.out.println(offset);
-        System.out.println(len);
+        var unpacker = MessagePack.newDefaultUnpacker(payload, offset, len);
+        int topicID = -9999;
+        try {
+            topicID = unpacker.unpackInt();
+        } catch (IOException e) {
+            DriverStation.reportWarning("Could not parse topic from WS binary message:\n" + e.getMessage(),
+                    e.getStackTrace());
+            return;
+        }
+
+        if(topicID >= 0){
+            //Normal data topic update
+            Topic topicToUpdate = NT4Server.getInstance().getTopic(topicID);
+
+            TimestampedValue newVal;
+            try {
+                newVal = TimestampedValueFactory.fromMsgPack(unpacker);
+            } catch (IOException e) {
+                DriverStation.reportWarning("Could not unpack timestamps and values from WS binary message:\n" + e.getMessage(),
+                        e.getStackTrace());
+                return;
+            }
+    
+            topicToUpdate.submitNewValue(newVal);
+        } else if (topicID == -1){
+            //Timestamp sync
+            
+
+        } else {
+            DriverStation.reportWarning("Invalid Topic ID " + topicID, true);
+            return;
+        }
+
+
     }
 
     @Override
@@ -81,7 +113,7 @@ public class Socket extends WebSocketAdapter {
     public void sendAnnounce(Topic topic){
 
         JSONObject properties = new JSONObject();
-        properties.put("persistent", topic.isPersistant);
+        properties.put("persistent", topic.isPersistent);
 
         JSONObject params = new JSONObject();
         params.put("name", topic.name);

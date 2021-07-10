@@ -2,6 +2,7 @@ package frc.lib.miniNT4;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Set;
 
 import org.eclipse.jetty.server.Server;
@@ -30,6 +31,10 @@ public class NT4Server {
     private NT4Server() {
 
     }
+
+    //Lists of all available topics for rapid access
+    Hashtable<String, Topic> topicsByName = new Hashtable<String, Topic>();
+    Hashtable<Integer, Topic> topicsByID = new Hashtable<Integer, Topic>();
 
 
     /**
@@ -85,6 +90,10 @@ public class NT4Server {
     }
 
     void broadcastAnnounce(Topic newTopic){
+
+        topicsByName.put(newTopic.name, newTopic);
+        topicsByID.put(newTopic.id, newTopic);
+
         synchronized(clients){
             for(BaseClient c : clients){
                 c.onAnnounce(newTopic);
@@ -98,6 +107,9 @@ public class NT4Server {
                 c.onUnannounce(deadTopic);
             }
         }
+
+        topicsByName.remove(deadTopic.name);
+        topicsByID.remove(deadTopic.id);
     }
 
     /**
@@ -105,16 +117,18 @@ public class NT4Server {
      * @return list of all available topics on the server
      */
     public Set<Topic> getAllTopics(){
-        HashSet<Topic> retTopics = new HashSet<Topic>();
-        synchronized(clients){
-            for(BaseClient client : clients){
-                retTopics.addAll(client.publishedTopics.values());
-            }
-        }
-        return retTopics;
+        return new HashSet<Topic>(topicsByName.values());
     }
 
-        /**
+    /**
+     * 
+     * @return topic with the given ID, or none if nothing found.
+     */
+    public Topic getTopic(int id){
+        return topicsByID.get(id);
+    }
+
+    /**
      * 
      * @param pattern String Regex pattern to match topic names
      * @return list of names matching the given regex pattern.
@@ -132,20 +146,18 @@ public class NT4Server {
      */
     public Set<Topic> getTopics(Set<String> prefixes){
         HashSet<Topic> retTopics = new HashSet<Topic>();
-        synchronized(clients){
-            for(BaseClient client : clients){
-                for(Topic topic : client.publishedTopics.values()){
-                    //For all topics...
-                    for(String prefix : prefixes){
-                        if(topic.name.startsWith(prefix)){
-                            //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
-                            retTopics.add(topic);
-                            break;
-                        }
-                    }
+
+        for(Topic topic : topicsByName.values()){
+            //For all topics...
+            for(String prefix : prefixes){
+                if(topic.name.startsWith(prefix)){
+                    //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
+                    retTopics.add(topic);
+                    break;
                 }
             }
         }
+
         return retTopics;
     }
 

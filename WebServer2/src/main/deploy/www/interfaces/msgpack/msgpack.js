@@ -15,17 +15,23 @@
 		let floatBuffer, floatView;
 		let array = new Uint8Array(128);
 		let length = 0;
+
+		var th = "";
+		if(options && options.typeHint){
+			th = options.typeHint;
+		}
+
 		if (options && options.multiple) {
 			for (let i = 0; i < data.length; i++) {
-				append(data[i]);
+				append(data[i], false, th);
 			}
 		}
 		else {
-			append(data);
+			append(data, false, th);
 		}
 		return array.subarray(0, length);
 
-		function append(data, isReplacement) {
+		function append(data, isReplacement, th) {
 			switch (typeof data) {
 				case "undefined":
 					appendNull(data);
@@ -34,7 +40,7 @@
 					appendBoolean(data);
 					break;
 				case "number":
-					appendNumber(data);
+					appendNumber(data, th);
 					break;
 				case "string":
 					appendString(data);
@@ -58,9 +64,9 @@
 				default:
 					if (!isReplacement && options && options.invalidTypeReplacement) {
 						if (typeof options.invalidTypeReplacement === "function")
-							append(options.invalidTypeReplacement(data), true);
+							append(options.invalidTypeReplacement(data), true, th);
 						else
-							append(options.invalidTypeReplacement, true);
+							append(options.invalidTypeReplacement, true, th);
 					}
 					else {
 						throw new Error("Invalid argument type: The type '" + (typeof data) + "' cannot be serialized.");
@@ -76,8 +82,10 @@
 			appendByte(data ? 0xc3 : 0xc2);
 		}
 
-		function appendNumber(data) {
-			if (isFinite(data) && Math.floor(data) === data) {
+		function appendNumber(data, th) {
+			var isInteger = (th === "int") ||
+							(isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
+			if (isInteger) {
 				// Integer
 				if (data >= 0 && data <= 0x7f) {
 					appendByte(data);

@@ -20,5 +20,6 @@ public class StringTopic extends Topic{
     public int getTypeInt() {
         return NT4Types.STR.type_idx;
     }
+
     
 }
