@@ -67,7 +67,11 @@ public class Socket extends WebSocketAdapter {
         try {
             RemoteEndpoint tmp = getRemote();
             //System.out.println("MSG: Server to " + clientInf.friendlyName + " : \n" + str);
-            tmp.sendString(str);
+            if(tmp != null){
+                tmp.sendString(str);
+            } else {
+                DriverStation.reportWarning("Could not send message to " + clientInf.friendlyName + " - client was null.", false);
+            }
         } catch (Exception e) {
             DriverStation.reportWarning("Could not send message to " + clientInf.friendlyName + "\n" + e.getMessage(), e.getStackTrace());
         }

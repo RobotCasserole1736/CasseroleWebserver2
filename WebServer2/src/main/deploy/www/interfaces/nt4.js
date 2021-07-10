@@ -1,4 +1,64 @@
 import "./msgpack/msgpack.js";
+import msgpack from "./msgpack/msgpack.js";
+
+class NT4_TYPESTR{
+    static BOOL = "boolean";
+    static FLOAT_64 = "double";
+    static INT = "int";
+    static FLOAT_32 = "float";
+    static STR = "string";
+    static JSON = "json";
+    static BIN_RAW = "raw";
+    static BIN_RPC = "rpc";
+    static BIN_MSGPACK = "msgpack";
+    static BIN_PROTOBUF = "protobuf";
+    static BOOL_ARR = "boolean[]";
+    static FLOAT_64_ARR = "double[]";
+    static INT_ARR = "int[]";
+    static FLOAT_32_ARR = "float[]";
+    static STR_ARR = "string[]";
+}
+
+class NT4_IDX{
+    static BOOL = 0;
+    static FLOAT_64 = 1;
+    static INT = 2;
+    static FLOAT_32 = 3;
+    static STR = 4;
+    static JSON = 4;
+    static JSON = 4;
+    static BIN_RAW = 5
+    static BIN_RPC = 5;
+    static BIN_MSGPACK =5;
+    static BIN_PROTOBUF = 5;
+    static BOOL_ARR = 16;
+    static FLOAT_64_ARR = 17;
+    static INT_ARR = 18;
+    static FLOAT_32_ARR = 19;
+    static STR_ARR = 20;
+}
+
+class NT4_TYPEIDX{
+    static typeStrToIdx = {
+    NT4_TYPESTR.BOOL         : NT4_TYPESTR.BOOL         ,
+    NT4_TYPESTR.FLOAT_64     : NT4_TYPESTR.FLOAT_64     ,       
+    NT4_TYPESTR.INT          : NT4_TYPESTR.INT          ,       
+    NT4_TYPESTR.FLOAT_32     : NT4_TYPESTR.FLOAT_32     ,    
+    NT4_TYPESTR.STR          : NT4_TYPESTR.STR          ,
+    NT4_TYPESTR.JSON         : NT4_TYPESTR.JSON         , 
+    NT4_TYPESTR.JSON         : NT4_TYPESTR.JSON         ,     
+    NT4_TYPESTR.BIN_RAW      : NT4_TYPESTR.BIN_RAW      ,  
+    NT4_TYPESTR.BIN_RPC      : NT4_TYPESTR.BIN_RPC      ,           
+    NT4_TYPESTR.BIN_MSGPACK  : NT4_TYPESTR.BIN_MSGPACK  ,      
+    NT4_TYPESTR.BIN_PROTOBUF : NT4_TYPESTR.BIN_PROTOBUF ,           
+    NT4_TYPESTR.BOOL_ARR     : NT4_TYPESTR.BOOL_ARR     ,     
+    NT4_TYPESTR.FLOAT_64_ARR : NT4_TYPESTR.FLOAT_64_ARR ,     
+    NT4_TYPESTR.INT_ARR      : NT4_TYPESTR.INT_ARR      , 
+    NT4_TYPESTR.FLOAT_32_ARR : NT4_TYPESTR.FLOAT_32_ARR ,      
+    NT4_TYPESTR.STR_ARR      : NT4_TYPESTR.STR_ARR      ,   
+
+    }
+}
 
 export class NT4_ValReq{
     prefixes = new Set();
@@ -115,7 +175,7 @@ export class NT4_Client {
         var timeTopic = new NT4_Topic();
         timeTopic.name = "Time";
         timeTopic.id = -1;
-        timeTopic.type = 2; //int ?
+        timeTopic.type = NT4_IDX.INT; //int ?
         this.serverTopics.set(timeTopic.id, timeTopic);
     }
 
@@ -234,9 +294,11 @@ export class NT4_Client {
     addSample(topic, timestamp, value){
         if(this.ws.readyState == WebSocket.OPEN){
             var id = topic.id;
-            // TODO - generate type idx
+            var typeIdx = topic.type;
+            var 
             // TODO - make msgpack 
             // TODO - send msgpack
+            msgpack.serialize()
         }
     }
 
