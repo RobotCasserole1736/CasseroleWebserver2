@@ -12,5 +12,6 @@ class Servlet extends WebSocketServlet {
     public void configure(WebSocketServletFactory factory) {
         factory.getPolicy().setIdleTimeout(1000000); //1000-second keep-alive
         factory.register(Socket.class);
+        factory.setCreator(new NT4ProtocolWebSocketCreator());
     }
 }
