@@ -499,7 +499,7 @@ export class NT4_Client {
 
     ws_connect() {
 
-        this.clientIdx = 0;
+        this.clientIdx = Math.floor(Math.random() * 99999999); //Not great, but using it for now
 
         var port = 5810; //fallback - unsecured
         var prefix = "ws://";

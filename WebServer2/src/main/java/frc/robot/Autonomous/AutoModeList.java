@@ -13,6 +13,7 @@ public class AutoModeList {
     //private Topic modeTopic = new Topic();
 
     public void add(AutoMode in){
+        in.idx = modeList.size();
         modeList.put(in.humanReadableName, in);
         orderedModeNameList.add(in.humanReadableName);
     }
@@ -21,8 +22,12 @@ public class AutoModeList {
         return modeList.get(name);
     }
 
-    public String[] getNameList(){
-        return orderedModeNameList.toArray(new String[orderedModeNameList.size()]);
+    public AutoMode get(int idx){
+        return this.get(orderedModeNameList.get(idx));
+    }
+
+    public ArrayList<String> getNameList(){
+        return orderedModeNameList;
     }
 
     public AutoMode getDefault(){

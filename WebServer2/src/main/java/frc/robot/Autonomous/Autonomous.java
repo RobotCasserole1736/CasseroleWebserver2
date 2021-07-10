@@ -1,10 +1,15 @@
 package frc.robot.Autonomous;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.lib.AutoSequencer.AutoSequencer;
 import frc.lib.miniNT4.LocalClient;
+import frc.lib.miniNT4.NT4Server;
+import frc.lib.miniNT4.TimeserverClient;
+import frc.lib.miniNT4.samples.TimestampedInteger;
 import frc.lib.miniNT4.samples.TimestampedValue;
 import frc.lib.miniNT4.topics.IntegerTopic;
 import frc.lib.miniNT4.topics.Topic;
@@ -25,10 +30,10 @@ public class Autonomous extends LocalClient {
     AutoMode curMainMode = null;
     AutoMode prevMainMode = null;
 
-    IntegerTopic curDelayModeTopic = null;
-    IntegerTopic curMainModeTopic = null;
-    IntegerTopic desDelayModeTopic = null;
-    IntegerTopic desMainModeTopic = null;
+    public IntegerTopic curDelayModeTopic = null;
+    public IntegerTopic curMainModeTopic = null;
+    public IntegerTopic desDelayModeTopic = null;
+    public IntegerTopic desMainModeTopic = null;
 
     AutoSequencer seq;
 
@@ -58,7 +63,7 @@ public class Autonomous extends LocalClient {
         desMainModeTopic = new IntegerTopic("/Autonomous/desVal", 0);
         this.publish(curDelayModeTopic);
         this.publish(curMainModeTopic);
-        this.subscribe(Set.of(desDelayModeTopic.name, desMainModeTopic.name), 0);
+        this.subscribe(Set.of(desDelayModeTopic.name, desMainModeTopic.name), 0).start();
 
         reset();
     }
@@ -82,12 +87,15 @@ public class Autonomous extends LocalClient {
             loadSequencer();
         }
 
+        curMainModeTopic.submitNewValue(new TimestampedInteger(curMainMode.idx, TimeserverClient.getCurServerTime()));
+        curDelayModeTopic.submitNewValue(new TimestampedInteger(curDelayMode.idx, TimeserverClient.getCurServerTime()));
+
         prevDelayMode = curDelayMode;
         prevMainMode = curMainMode;
     }
 
     public void sequencerUpdate(){
-        //seq.update();
+        seq.update();
     }
 
     public void reset(){
@@ -97,23 +105,30 @@ public class Autonomous extends LocalClient {
     }
 
     public void stop(){
-        //seq.stop();
+        seq.stop();
         sequencerUpdate();
     }
 
     public void start(){
-        //seq.start();
+        seq.start();
         sequencerUpdate();
     }
 
     public boolean isActive(){
-        //return seq.isRunning();
-        return false;
+        return seq.isRunning();
     }
 
 	public Pose2d getStartPose() {
 		return curMainMode.getInitialPose();
-	}
+    }
+    
+    public ArrayList<String> getMainModeNames(){
+        return mainModes.getNameList();
+    }
+
+    public ArrayList<String> getDelayModeNames(){
+        return delayModes.getNameList();
+    }
 
     @Override
     public void onAnnounce(Topic newTopic) {} //do nothing
@@ -123,10 +138,10 @@ public class Autonomous extends LocalClient {
 
     @Override
     public void onValueUpdate(Topic topic, TimestampedValue newVal) {
-        if(topic.name == desDelayModeTopic.name){
-            curDelayMode = delayModes.get(delayModes.getNameList()[(Integer) newVal.getVal()]);
-        } else if(topic.name == desDelayModeTopic.name){
-            curMainMode = mainModes.get(mainModes.getNameList()[(Integer) newVal.getVal()]); 
+        if(topic.name.equals(desDelayModeTopic.name)){
+            curDelayMode = delayModes.get((Integer) newVal.getVal());
+        } else if(topic.name.equals(desMainModeTopic.name)){
+            curMainMode = mainModes.get((Integer) newVal.getVal());;
         } 
     }
 }

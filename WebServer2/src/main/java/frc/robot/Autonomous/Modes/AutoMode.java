@@ -7,6 +7,8 @@ public abstract class AutoMode {
 
     public String humanReadableName = "";
 
+    public int idx = -1;
+
     public abstract void addStepsToSequencer(AutoSequencer seq);
     
     public Pose2d getInitialPose(){

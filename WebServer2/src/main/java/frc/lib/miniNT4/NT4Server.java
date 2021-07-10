@@ -97,6 +97,9 @@ public class NT4Server {
         synchronized(clients){
             for(BaseClient c : clients){
                 c.onAnnounce(newTopic);
+                for(Subscription s : c.subscriptions.values()){
+                    s.updateTopicSet();
+                }
             }
         }
     }
@@ -105,6 +108,9 @@ public class NT4Server {
         synchronized(clients){
             for(BaseClient c : clients){
                 c.onUnannounce(deadTopic);
+                for(Subscription s : c.subscriptions.values()){
+                    s.updateTopicSet();
+                }
             }
         }
 

@@ -52,6 +52,11 @@ public class Socket extends WebSocketAdapter {
             //Normal data topic update
             Topic topicToUpdate = NT4Server.getInstance().getTopic(topicID);
 
+            if(topicToUpdate == null){
+                DriverStation.reportWarning("Invalid Topic ID " + topicID, true);
+                return;
+            }
+
             TimestampedValue newVal;
             try {
                 newVal = TimestampedValueFactory.fromMsgPack(unpacker);
@@ -60,8 +65,9 @@ public class Socket extends WebSocketAdapter {
                         e.getStackTrace());
                 return;
             }
-    
+
             topicToUpdate.submitNewValue(newVal);
+
         } else if (topicID == -1){
             //Timestamp sync
             
