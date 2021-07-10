@@ -116,7 +116,7 @@ public class Socket extends WebSocketAdapter {
     }
 
     @SuppressWarnings("unchecked") 
-    public void sendAnnounce(Topic topic){
+    public synchronized void sendAnnounce(Topic topic){
 
         JSONObject properties = new JSONObject();
         properties.put("persistent", topic.isPersistent);
@@ -136,7 +136,7 @@ public class Socket extends WebSocketAdapter {
     }
 
     @SuppressWarnings("unchecked") 
-    public void sendUnannounce(Topic topic){
+    public synchronized void sendUnannounce(Topic topic){
 
         JSONObject params = new JSONObject();
         params.put("name", topic.name);
@@ -174,7 +174,7 @@ public class Socket extends WebSocketAdapter {
             if(curRemote != null){
                 curRemote.sendBytes(buff);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             DriverStation.reportWarning("Could not transmit value update to " + clientInf.friendlyName + "\n" + e.getMessage(), e.getStackTrace());
         }
 

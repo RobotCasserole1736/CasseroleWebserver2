@@ -468,6 +468,10 @@ export class NT4_Client {
 
             } else if (method === "unannounce"){
                 var removedTopic = this.serverTopics.get(params.id);
+                if(!removedTopic){
+                    console.log("Ignorining unannounce, topic was not previously announced.");
+                    return;
+                }
                 this.serverTopics.delete(removedTopic.id);
                 this.onTopicUnAnnounce(removedTopic);
 
@@ -489,7 +493,7 @@ export class NT4_Client {
                 var topic = this.serverTopics.get(topicID);
                 this.onNewTopicData(topic, timestamp_us, value);
             } else if (topicID === -1){
-                this.ws_handlReceiveTimestamp(timestamp_us, value);
+                this.ws_handleReceiveTimestamp(timestamp_us, value);
             } else {
                 console.log("Ignoring binary data - invalid topic id " + topicID.toString());
             }

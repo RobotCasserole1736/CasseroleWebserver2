@@ -18,19 +18,20 @@ public class RemoteClient extends BaseClient{
 
     void onDisconnect(){
 
-        Set<Integer> subIDs = new HashSet<Integer>(this.subscriptions.keySet());
+        NT4Server.getInstance().unRegisterClient(this);
 
         //Implicit unsubscribe from all topics
+        Set<Integer> subIDs = new HashSet<Integer>(this.subscriptions.keySet());
         for(int id : subIDs){
             unSubscribe(id);
         }
 
         //Implicit unannounce of all signals
-        for(Topic t : this.publishedTopics.values()){
+        Set<Topic> topics = new HashSet<Topic>(this.publishedTopics.values());
+        for(Topic t : topics){
             unpublish(t);
         }
 
-        NT4Server.getInstance().unRegisterClient(this);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class RemoteClient extends BaseClient{
 
     @Override
     public void onUnannounce(Topic deadTopic) {
-        parentSocket.sendAnnounce(deadTopic);
+        parentSocket.sendUnannounce(deadTopic);
     }
 
     public void setTopicProperties(String name, boolean isPersistant){

@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.lib.Signal.SignalUtils;
 import frc.lib.Signal.SignalWrangler;

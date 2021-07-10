@@ -26,12 +26,14 @@ function topicAnnounceHandler( newTopic ) {
     console.log(newTopic.id);
 
     var newRow = table.insertRow();
-    newRow.insertCell(0).innerHTML = newTopic.name;
-    newRow.insertCell(1).innerHTML = newTopic.type;
+    newRow.id = newTopic.id + "_row";
+    newRow.insertCell(0).innerHTML = newTopic.id;
+    newRow.insertCell(1).innerHTML = newTopic.name;
+    newRow.insertCell(2).innerHTML = newTopic.type;
     
-    var valCell = newRow.insertCell(2);
+    var valCell = newRow.insertCell(3);
     valCell.innerHTML = "";
-    valCell.id = newTopic.name;
+    valCell.id = newTopic.id;
 
     subscribeToAll();
 
@@ -41,10 +43,11 @@ function topicUnannounceHandler( removedTopic ) {
     console.log("----------------------------");
     console.log("Topic UnAnnounced");
     console.log(removedTopic.name);
+    document.getElementById(removedTopic.id + "_row").remove();
 }
 
 function valueUpdateHandler( topic, timestamp_us, value ) {
-    document.getElementById(topic.name).innerHTML = value;
+    document.getElementById(topic.id).innerHTML = value;
     document.getElementById("curTime").innerHTML = "Time: ";
     document.getElementById("curTime").innerHTML += (timestamp_us / 1000000.0);
     //console.log("----------------------------");
@@ -57,9 +60,10 @@ function valueUpdateHandler( topic, timestamp_us, value ) {
 function onConnect() {
     console.log("Connected to Server");
     var titleRow = table.insertRow(0);
-    titleRow.insertCell(0).innerHTML = "Name";
-    titleRow.insertCell(1).innerHTML = "Type";
-    titleRow.insertCell(2).innerHTML = "Value";
+    titleRow.insertCell(0).innerHTML = "ID";
+    titleRow.insertCell(1).innerHTML = "Name";
+    titleRow.insertCell(2).innerHTML = "Type";
+    titleRow.insertCell(3).innerHTML = "Value";
 }
 
 function onDisconnect() {

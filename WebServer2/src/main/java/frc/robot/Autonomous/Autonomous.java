@@ -1,13 +1,11 @@
 package frc.robot.Autonomous;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.lib.AutoSequencer.AutoSequencer;
 import frc.lib.miniNT4.LocalClient;
-import frc.lib.miniNT4.NT4Server;
 import frc.lib.miniNT4.TimeserverClient;
 import frc.lib.miniNT4.samples.TimestampedInteger;
 import frc.lib.miniNT4.samples.TimestampedValue;
