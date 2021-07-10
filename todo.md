@@ -17,6 +17,7 @@
   * signal should have an "is-announced" state which gets set to false on unannounce, but the object isn't removed (and all things that display the signal go to error state?)
 * continue line drawing off end of chart (support very-high zoom levels).
 * middle click does scroll and remove, should ignore default
+* Better font size choice/location for axis labels.
 
 # Data Logs
 
@@ -32,6 +33,13 @@
 * Config autonomous mode names by string array topic
 * Configurable aspect ratio
 * Visual appearance done via NT4? blech...
+
+# Outline Viewer
+
+* Sort by column headings - https://www.w3schools.com/howto/howto_js_sort_table.asp
+* more spacing, better row highlight
+* color-highlight changing values
+
 
 # Backend
 
