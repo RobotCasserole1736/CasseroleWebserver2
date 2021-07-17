@@ -23,13 +23,16 @@ package frc.lib.Calibration;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.lib.miniNT4.LocalClient;
+import frc.lib.miniNT4.samples.TimestampedValue;
+import frc.lib.miniNT4.topics.Topic;
 
 /**
  * DESCRIPTION: <br>
  * Calibration Wrangler. Manages the full set of calibrations in the software.
  */
 
-public class CalWrangler {
+public class CalWrangler extends LocalClient {
 
     /* Singleton infrastructure */
     private static CalWrangler instance;
@@ -76,6 +79,13 @@ public class CalWrangler {
             ret_val = -1;
         } else {
             registeredCals.add(cal_in);
+
+            this.publish(cal_in.calDefaultTopic);
+            this.publish(cal_in.calMaxTopic);
+            this.publish(cal_in.calMinTopic);
+            this.publish(cal_in.calValueTopic);
+            this.publish(cal_in.calUnitsTopic);
+
             ret_val = 0;
         }
         return ret_val;
@@ -96,6 +106,25 @@ public class CalWrangler {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onAnnounce(Topic newTopic) {
+        //nothing to do
+    }
+
+    @Override
+    public void onUnannounce(Topic deadTopic) {
+        //nothing to do
+    }
+
+    @Override
+    public void onValueUpdate(Topic topic, TimestampedValue newVal) {
+        for(Calibration cal : registeredCals){
+            if(cal.getValueTopic().equals(topic.name)){
+                cal.setOverride((Double) newVal.getVal());
+            }
+        }
     }
 
 }

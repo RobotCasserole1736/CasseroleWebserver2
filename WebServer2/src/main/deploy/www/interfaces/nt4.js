@@ -414,6 +414,7 @@ export class NT4_Client {
         if(!e.wasClean){
             console.error('Socket encountered error!');
             // TODO - based on error, handle the expected ones (secure failure, 409 conflict, etc.) by updating internal state before the next reconnect.
+            this.useSecure = !this.useSecure;
         }
 
     }

@@ -1,6 +1,9 @@
 package frc.lib.Calibration;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.lib.miniNT4.topics.DoubleTopic;
+import frc.lib.miniNT4.topics.StringTopic;
+import frc.lib.miniNT4.topics.Topic;
 
 /*
  *******************************************************************************************
@@ -49,6 +52,7 @@ public class Calibration {
     public final double default_val;
     /** Human-readable name for the calibration. */
     public final String name;
+    public final String units;
     /**
      * Present value for the calibration. Starts at default_val, but might get
      * changed
@@ -68,6 +72,12 @@ public class Calibration {
     /** Lower limit on the allowed calibration range */
     public double min_cal;
 
+    Topic calUnitsTopic;
+    Topic calMinTopic;
+    Topic calMaxTopic;
+    Topic calDefaultTopic;
+    Topic calValueTopic;
+
     /**
      * Constructor for a new calibratable value.
      * 
@@ -76,17 +86,17 @@ public class Calibration {
      * @param default_val_in Default value for the calibration. Will keep this value
      *                       unless the wrangler overwrites it.
      */
-    public Calibration(String name_in, double default_val_in) {
+    public Calibration(String name_in, String units, double default_val_in) {
 
         /* default stuff and stuff */
         default_val = default_val_in;
         cur_val = default_val;
-        name = name_in;
+        this.name = name_in;
         overridden = false;
         is_updated = false;
+        this.units = units;
         min_cal = Double.NEGATIVE_INFINITY;
         max_cal = Double.POSITIVE_INFINITY;
-
         commonConstructor();
     }
 
@@ -108,12 +118,13 @@ public class Calibration {
      *                       will be thrown and the calibrated value will be capped
      *                       at the maximum.
      */
-    public Calibration(String name_in, double default_val_in, double min_in, double max_in) {
+    public Calibration(String name_in, String units, double default_val_in, double min_in, double max_in) {
 
         /* default stuff and stuff */
-        name = name_in;
+        this.name = name_in;
         min_cal = min_in;
         max_cal = max_in;
+        this.units=units;
 
         default_val = limitRange(default_val_in);
         cur_val = default_val;
@@ -124,6 +135,13 @@ public class Calibration {
     private void commonConstructor() {
         overridden = false;
         is_updated = false;
+
+        calUnitsTopic = new StringTopic(this.getUnitsTopic(), this.units);
+        calMinTopic = new DoubleTopic(this.getMinTopic(), min_cal);
+        calMaxTopic = new DoubleTopic(this.getMaxTopic(), max_cal);
+        calDefaultTopic = new DoubleTopic(this.getDefaultTopic(), this.default_val);
+        calValueTopic = new DoubleTopic(this.getValueTopic(), this.cur_val);
+
         CalWrangler.getInstance().register(this);
     }
 
@@ -233,5 +251,13 @@ public class Calibration {
         overridden = false;
         cur_val = default_val;
     }
+
+    
+    String getValueTopic(){   return "/Calibrations/"+this.name+"/Value"; }
+    String getDefaultTopic(){ return "/Calibrations/"+this.name+"/Default"; }
+    String getUnitsTopic(){   return "/Calibrations/"+this.name+"/Units"; }
+    String getMinTopic(){     return "/Calibrations/"+this.name+"/Min"; }
+    String getMaxTopic(){     return "/Calibrations/"+this.name+"/Max"; }
+
 
 }

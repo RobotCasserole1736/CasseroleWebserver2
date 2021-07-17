@@ -1,5 +1,6 @@
 # General
 
+* NT4 signals/cals - move to having the interface .js file maintain the master list of cals/signals and manipulate them as things are announced. Separately, update calibration/plotter pages to interact directly with the list in the interface.
 * Confirm unannounce/reconnect behavior of clients matches spec (it doesn't now)
   * Default signal values for soft/hard defautls need to be confirmed working.
   * Need to rearchitect to have topics existing in a single master list for server, with links to which clients are publishing them. Allows for persistant topics too.
@@ -26,7 +27,6 @@
 # Calibration
 
 * Add cal save/load to file
-* Real NT4 support for calibration values & config
 
 # Driver Dashboard
 
