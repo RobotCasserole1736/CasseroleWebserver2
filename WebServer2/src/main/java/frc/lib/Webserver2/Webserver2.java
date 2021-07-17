@@ -1,5 +1,10 @@
 package frc.lib.Webserver2;
 
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
+
 /*
  *******************************************************************************************
  * Copyright (C) FRC Team 1736 Robot Casserole - www.robotcasserole.org
@@ -21,9 +26,12 @@ package frc.lib.Webserver2;
  */
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import frc.lib.Logging.LogFileWrangler;
 import frc.lib.Webserver2.DashboardConfig.DashboardConfig;
@@ -59,12 +67,31 @@ public class Webserver2 {
         }
 
         // New server will be on the robot's address plus port 5805
-        server = new Server(5805);
+        server = new Server();
 
         // By default - serve all files under the calculated resourceBase folder
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
+
+        final HttpConfiguration httpConfiguration = new HttpConfiguration();
+        httpConfiguration.setSecureScheme("https");
+        httpConfiguration.setSecurePort(5804);
+
+        final ServerConnector http = new ServerConnector(server,
+            new HttpConnectionFactory(httpConfiguration));
+        http.setPort(5805);
+        server.addConnector(http);
+        final SslContextFactory sslContextFactory = new SslContextFactory("./src/main/deploy/keystore/localkey.jks");
+        sslContextFactory.setKeyStorePassword("aaaaaa");
+        final HttpConfiguration httpsConfiguration = new HttpConfiguration(httpConfiguration);
+        httpsConfiguration.addCustomizer(new SecureRequestCustomizer());
+        final ServerConnector httpsConnector = new ServerConnector(server,
+            new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+            new HttpConnectionFactory(httpsConfiguration));
+        httpsConnector.setPort(5804);
+        server.addConnector(httpsConnector);
+
 
         ResourceHandler log_files_rh = new ResourceHandler();
         log_files_rh.setDirectoriesListed(true);
@@ -76,6 +103,7 @@ public class Webserver2 {
         main_web_files_rh.setWelcomeFiles(new String[] { "index.html" });
         main_web_files_rh.setResourceBase(resourceBase);
         server.insertHandler(main_web_files_rh);
+
 
 
         // Separately - Dashboard html/js is auto-generated from templates
