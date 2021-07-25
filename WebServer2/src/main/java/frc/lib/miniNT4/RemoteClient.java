@@ -26,10 +26,11 @@ public class RemoteClient extends BaseClient{
             unSubscribe(id);
         }
 
-        //Implicit unannounce of all signals
-        Set<Topic> topics = new HashSet<Topic>(this.publishedTopics.values());
-        for(Topic t : topics){
-            unpublish(t);
+        //Implicit unpublish of all published signals
+        for(Topic t : NT4Server.getInstance().getAllTopics()){
+            if(t.isPublishedBy(this)){
+                NT4Server.getInstance().unPublishTopic(t, this);
+            }
         }
 
     }

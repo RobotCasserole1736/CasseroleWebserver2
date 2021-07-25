@@ -10,7 +10,12 @@ public class AutoModeList {
     private TreeMap<String, AutoMode> modeList = new TreeMap<String, AutoMode>();
     private ArrayList<String> orderedModeNameList = new ArrayList<String>(); //Helps keep track of the order the modes were added in, to ensure they end up ordered that same way in the web UI.
 
+    public String name;
     //private Topic modeTopic = new Topic();
+
+    public AutoModeList(String name){
+        this.name = name;
+    }
 
     public void add(AutoMode in){
         in.idx = modeList.size();
@@ -32,6 +37,14 @@ public class AutoModeList {
 
     public AutoMode getDefault(){
         return modeList.get(orderedModeNameList.get(0)); //TBD - just the first thing added?
+    }
+
+    public String getDesModeTopicName(){
+        return "/Autonomous/desMode" + this.name;
+    }
+
+    public String getCurModeTopicName(){
+        return "/Autonomous/curMode" + this.name;
     }
     
 }

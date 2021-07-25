@@ -10,6 +10,7 @@ public class TimeTopic extends Topic{
     public TimeTopic() {
         super("/serverTime_us", new Timestamp());
         id = -1; // Hardcode ID for time
+        isPersistent = true;
     }
 
     @Override

@@ -6,10 +6,10 @@ import java.util.Set;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.lib.AutoSequencer.AutoSequencer;
 import frc.lib.miniNT4.LocalClient;
-import frc.lib.miniNT4.TimeserverClient;
+import frc.lib.miniNT4.NT4Server;
+import frc.lib.miniNT4.NT4TypeStr;
 import frc.lib.miniNT4.samples.TimestampedInteger;
 import frc.lib.miniNT4.samples.TimestampedValue;
-import frc.lib.miniNT4.topics.IntegerTopic;
 import frc.lib.miniNT4.topics.Topic;
 import frc.robot.Autonomous.Modes.AutoDelayMode;
 import frc.robot.Autonomous.Modes.AutoMode;
@@ -20,27 +20,24 @@ import frc.robot.Autonomous.Modes.AutoModeDriveForward3Sec;
 public class Autonomous extends LocalClient {
     
     // Driver-selectable autonomous mode lists
-    AutoModeList delayModes;
-    AutoModeList mainModes;
+    public AutoModeList delayModes;
+    public AutoModeList mainModes;
 
     AutoMode curDelayMode = null;
     AutoMode prevDelayMode = null;
     AutoMode curMainMode = null;
     AutoMode prevMainMode = null;
 
-    public IntegerTopic curDelayModeTopic = null;
-    public IntegerTopic curMainModeTopic = null;
-    public IntegerTopic desDelayModeTopic = null;
-    public IntegerTopic desMainModeTopic = null;
-
+    Topic curDelayModeTopic = null;
+    Topic curMainModeTopic = null;
     AutoSequencer seq;
 
     public Autonomous(){
 
         seq = new AutoSequencer("Auto Event Sequencer");
 
-        delayModes = new AutoModeList();
-        mainModes = new AutoModeList();
+        delayModes = new AutoModeList("Delay");
+        mainModes = new AutoModeList("Main");
 
         //Available Delay Modes
         delayModes.add(new AutoDelayMode(0.0)); //First is default
@@ -55,13 +52,12 @@ public class Autonomous extends LocalClient {
         mainModes.add(new AutoModeDoNothing());
 
         // Create and subscribe to NT4 topics
-        curDelayModeTopic = new IntegerTopic("/Autonomous/curValDelay", 0);
-        curMainModeTopic = new IntegerTopic("/Autonomous/curVal", 0);
-        desDelayModeTopic = new IntegerTopic("/Autonomous/desValDelay", 0);
-        desMainModeTopic = new IntegerTopic("/Autonomous/desVal", 0);
-        this.publish(curDelayModeTopic);
-        this.publish(curMainModeTopic);
-        this.subscribe(Set.of(desDelayModeTopic.name, desMainModeTopic.name), 0).start();
+        curDelayModeTopic = NT4Server.getInstance().publishTopic(delayModes.getCurModeTopicName(), NT4TypeStr.INT, this);
+        curMainModeTopic = NT4Server.getInstance().publishTopic(mainModes.getCurModeTopicName(), NT4TypeStr.INT, this);
+        curDelayModeTopic.submitNewValue(new TimestampedInteger(0, 0));
+        curMainModeTopic.submitNewValue(new TimestampedInteger(0, 0));
+
+        this.subscribe(Set.of(delayModes.getDesModeTopicName(), mainModes.getDesModeTopicName()), 0).start();
 
         reset();
     }
@@ -85,8 +81,8 @@ public class Autonomous extends LocalClient {
             loadSequencer();
         }
 
-        curMainModeTopic.submitNewValue(new TimestampedInteger(curMainMode.idx, TimeserverClient.getCurServerTime()));
-        curDelayModeTopic.submitNewValue(new TimestampedInteger(curDelayMode.idx, TimeserverClient.getCurServerTime()));
+        curMainModeTopic.submitNewValue(new TimestampedInteger(curMainMode.idx, NT4Server.getInstance().getCurServerTime()));
+        curDelayModeTopic.submitNewValue(new TimestampedInteger(curDelayMode.idx, NT4Server.getInstance().getCurServerTime()));
 
         prevDelayMode = curDelayMode;
         prevMainMode = curMainMode;
@@ -136,10 +132,10 @@ public class Autonomous extends LocalClient {
 
     @Override
     public void onValueUpdate(Topic topic, TimestampedValue newVal) {
-        if(topic.name.equals(desDelayModeTopic.name)){
+        if(topic.name.equals(delayModes.getDesModeTopicName())){
             curDelayMode = delayModes.get((Integer) newVal.getVal());
-        } else if(topic.name.equals(desMainModeTopic.name)){
-            curMainMode = mainModes.get((Integer) newVal.getVal());;
+        } else if(topic.name.equals(mainModes.getDesModeTopicName())){
+            curMainMode = mainModes.get((Integer) newVal.getVal());
         } 
     }
 }

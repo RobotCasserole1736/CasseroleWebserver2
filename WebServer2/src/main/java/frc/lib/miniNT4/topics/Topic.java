@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import frc.lib.miniNT4.BaseClient;
 import frc.lib.miniNT4.Subscription;
 import frc.lib.miniNT4.samples.TimestampedValue;
 
@@ -16,6 +17,8 @@ abstract public class Topic{
 
     //Synchronization required because we modify the refs and iterate over the set from different threads.
     Set<Subscription> subscriptionRefs = Collections.synchronizedSet(new HashSet<Subscription>());
+    Set<BaseClient> publisherRefs = Collections.synchronizedSet(new HashSet<BaseClient>());
+
 
     public Topic(String name_in, TimestampedValue default_in){
         default_in.timestamp_us = 0; //ensure we are storing default as the default
@@ -47,6 +50,22 @@ abstract public class Topic{
 
     public void removeSubscriptionRef(Subscription sub){
         subscriptionRefs.remove(sub);
+    }
+
+    public void addPublisherRef(BaseClient pub){
+        publisherRefs.add(pub);
+    }
+
+    public void removePublisherRef(BaseClient pub){
+        publisherRefs.remove(pub);
+    }
+
+    public boolean hasPublishers(){
+        return (publisherRefs.size() > 0) && this.isPersistent == false;
+    }
+
+    public boolean isPublishedBy(BaseClient client){
+        return (publisherRefs.contains(client));
     }
 
     public abstract String getTypestring();

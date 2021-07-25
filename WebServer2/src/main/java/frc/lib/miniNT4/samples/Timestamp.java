@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import org.msgpack.core.MessageBufferPacker;
 
-import frc.lib.miniNT4.TimeserverClient;
+import frc.lib.miniNT4.NT4Server;
 
 public class Timestamp extends TimestampedValue {
 
     public Timestamp(){
-        this.timestamp_us = TimeserverClient.getCurServerTime();
+        this.timestamp_us = NT4Server.getInstance().getCurServerTime();
     }
 
     public Timestamp(long time){

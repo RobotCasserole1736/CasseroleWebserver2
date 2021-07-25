@@ -9,6 +9,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import edu.wpi.first.wpilibj.Timer;
+import frc.lib.miniNT4.topics.BooleanTopic;
+import frc.lib.miniNT4.topics.DoubleTopic;
+import frc.lib.miniNT4.topics.IntegerTopic;
+import frc.lib.miniNT4.topics.StringTopic;
+import frc.lib.miniNT4.topics.TimeTopic;
 import frc.lib.miniNT4.topics.Topic;
 
 public class NT4Server {
@@ -52,6 +58,11 @@ public class NT4Server {
         ServletHolder dataServerHolder = new ServletHolder("nt", new Servlet());
         context.addServlet(dataServerHolder, "/nt/*");
 
+        //Automatically create and include the time topic
+        TimeTopic tt = new TimeTopic();
+        topicsByName.put(tt.name, tt);
+        topicsByID.put(tt.id, tt);
+
         // Kick off server in brand new thread.
         Thread serverThread = new Thread(new Runnable() {
             @Override
@@ -69,9 +80,6 @@ public class NT4Server {
         serverThread.setName("NT4 Main Server");
         serverThread.setPriority(10);
         serverThread.start();
-
-        //Automatically register the special client to serve the current time
-        registerClient(new TimeserverClient());
     }
 
     /**
@@ -89,33 +97,75 @@ public class NT4Server {
         clients.remove(deadClient);
     }
 
-    void broadcastAnnounce(Topic newTopic){
-
-        topicsByName.put(newTopic.name, newTopic);
-        topicsByID.put(newTopic.id, newTopic);
-
-        synchronized(clients){
-            for(BaseClient c : clients){
-                c.onAnnounce(newTopic);
-                for(Subscription s : c.subscriptions.values()){
-                    s.updateTopicSet();
-                }
-            }
-        }
+    public synchronized void unPublishTopic(String deadTopicName, BaseClient client){
+        this.unPublishTopic(this.topicsByName.get(deadTopicName), client);
     }
 
-    void broadcastUnannounce(Topic deadTopic){
-        synchronized(clients){
-            for(BaseClient c : clients){
-                c.onUnannounce(deadTopic);
-                for(Subscription s : c.subscriptions.values()){
-                    s.updateTopicSet();
+    public synchronized void unPublishTopic(Topic deadTopic, BaseClient client){
+
+        deadTopic.removePublisherRef(client);
+
+        if(!deadTopic.hasPublishers()){
+            //No more publishers - topic should be unannounced
+            synchronized(clients){
+                for(BaseClient c : clients){
+                    c.onUnannounce(deadTopic);
+                    for(Subscription s : c.subscriptions.values()){
+                        s.updateTopicSet();
+                    }
+                }
+            }
+    
+            topicsByName.remove(deadTopic.name);
+            topicsByID.remove(deadTopic.id);
+        }
+
+    }
+
+    public synchronized Topic publishTopic(String name, String type, BaseClient client){
+
+        Topic retTopic;
+
+        if(topicsByName.containsKey(name)){
+            //Topic already published by someone else - just add this client to the list of publishers
+            retTopic = topicsByName.get(name);
+        } else {
+            //New Topic. Do the factory thing.
+
+            switch(type){
+                case NT4TypeStr.FLOAT_64:
+                case NT4TypeStr.FLOAT_32:
+                    retTopic = new DoubleTopic(name, 0);
+                    break;
+                case NT4TypeStr.INT:
+                    retTopic =  new IntegerTopic(name, 0);
+                    break;
+                case NT4TypeStr.BOOL:
+                    retTopic =  new BooleanTopic(name, false);
+                    break;
+                case  NT4TypeStr.STR:
+                case  NT4TypeStr.JSON:
+                    retTopic =  new StringTopic(name, "");
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported topic type " + type);
+            }
+    
+            topicsByName.put(retTopic.name, retTopic);
+            topicsByID.put(retTopic.id, retTopic);
+    
+            synchronized(clients){
+                for(BaseClient c : clients){
+                    c.onAnnounce(retTopic);
+                    for(Subscription s : c.subscriptions.values()){
+                        s.updateTopicSet();
+                    }
                 }
             }
         }
 
-        topicsByName.remove(deadTopic.name);
-        topicsByID.remove(deadTopic.id);
+        retTopic.addPublisherRef(client);
+        return retTopic;
     }
 
     /**
@@ -192,4 +242,13 @@ public class NT4Server {
         }
         System.out.println("========================\n\n");
     }
+
+    /**
+     * 
+     * @return current server microseconds time
+     */
+    public long getCurServerTime(){
+        return Math.round(Timer.getFPGATimestamp() * 1000000l);
+    }
+
 }

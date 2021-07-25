@@ -1,23 +1,24 @@
 package frc.lib.Webserver2.DashboardConfig;
 
 import java.util.LinkedList;
-import java.util.List;
+
+import frc.robot.Autonomous.AutoModeList;
 
 public class DashboardConfig {
 
     public LinkedList<WidgetConfig> widgetList = new LinkedList<WidgetConfig>();
 
     // Factory Functions for user to make new widgets
-    public void addAutoChooser(String nt4TopicCur_in, String nt4TopicDes_in, String name, List<String> modeNames, double xPos, double yPos, double sizeScaleFactor) {
+    public void addAutoChooser(AutoModeList autoList, double xPos, double yPos, double sizeScaleFactor) {
         var w = new AutoChooserConfig();
-        w.nt4TopicCurVal = nt4TopicCur_in;
-        w.nt4TopicDesVal = nt4TopicDes_in;
+        w.nt4TopicCurVal = autoList.getCurModeTopicName();
+        w.nt4TopicDesVal = autoList.getDesModeTopicName();
         w.idx = widgetList.size();
         w.xPos = xPos;
         w.yPos = yPos;
-        w.name = name;
+        w.name = autoList.name;
         w.sizeScaleFactor = sizeScaleFactor;
-        w.modeNameList = modeNames;
+        w.modeNameList = autoList.getNameList();
         widgetList.add(w);
 
     }

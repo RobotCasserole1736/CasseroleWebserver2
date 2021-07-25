@@ -80,12 +80,6 @@ public class CalWrangler extends LocalClient {
         } else {
             registeredCals.add(cal_in);
 
-            this.publish(cal_in.calDefaultTopic);
-            this.publish(cal_in.calMaxTopic);
-            this.publish(cal_in.calMinTopic);
-            this.publish(cal_in.calValueTopic);
-            this.publish(cal_in.calUnitsTopic);
-
             ret_val = 0;
         }
         return ret_val;

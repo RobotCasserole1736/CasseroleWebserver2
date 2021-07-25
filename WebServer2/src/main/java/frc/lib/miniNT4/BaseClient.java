@@ -11,7 +11,6 @@ public abstract class BaseClient {
     public String friendlyName = "";
 
     HashMap<Integer, Subscription> subscriptions = new HashMap<Integer, Subscription>();
-    HashMap<String, Topic> publishedTopics = new HashMap<String, Topic>();
 
     public BaseClient(){
         NT4Server.getInstance().registerClient(this);
@@ -39,16 +38,6 @@ public abstract class BaseClient {
         if(oldSub != null){
             oldSub.stop();
         }
-    }
-
-    public void publish(Topic newTopic){
-        publishedTopics.put( newTopic.name, newTopic);
-        NT4Server.getInstance().broadcastAnnounce(newTopic);
-    }
-
-    public void unpublish(Topic deadTopic){
-        publishedTopics.remove(deadTopic.name);
-        NT4Server.getInstance().broadcastUnannounce(deadTopic);
     }
 
     public void getValues(Set<String> patterns){

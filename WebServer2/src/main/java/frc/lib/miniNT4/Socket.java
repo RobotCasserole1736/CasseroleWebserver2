@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.miniNT4.samples.TimestampedValue;
 import frc.lib.miniNT4.samples.TimestampedValueFactory;
 import frc.lib.miniNT4.topics.Topic;
-import frc.lib.miniNT4.topics.TopicFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -215,11 +214,11 @@ public class Socket extends WebSocketAdapter {
             case "publish":
                 name = (String) params.get("name");
                 type = (String) params.get("type");
-                clientInf.publish(TopicFactory.make(name,type));
+                NT4Server.getInstance().publishTopic(name, type, clientInf);
             break;
             case "unpublish":
                 name = (String) params.get("name");
-                clientInf.unpublish(clientInf.publishedTopics.get(name));
+                NT4Server.getInstance().unPublishTopic(name, clientInf);
             break;
             case "setproperties":
                 //TODO

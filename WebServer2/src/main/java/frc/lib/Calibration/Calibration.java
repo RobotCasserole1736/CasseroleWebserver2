@@ -1,6 +1,11 @@
 package frc.lib.Calibration;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.lib.miniNT4.NT4Server;
+import frc.lib.miniNT4.NT4TypeStr;
+import frc.lib.miniNT4.samples.TimestampedDouble;
+import frc.lib.miniNT4.samples.TimestampedString;
+import frc.lib.miniNT4.samples.TimestampedValueFactory;
 import frc.lib.miniNT4.topics.DoubleTopic;
 import frc.lib.miniNT4.topics.StringTopic;
 import frc.lib.miniNT4.topics.Topic;
@@ -44,8 +49,6 @@ import frc.lib.miniNT4.topics.Topic;
  * 
  * 
  */
-
-// TODO - Integrate all this into NT4
 
 public class Calibration {
     /** Default value the calibration will take on. */
@@ -136,11 +139,17 @@ public class Calibration {
         overridden = false;
         is_updated = false;
 
-        calUnitsTopic = new StringTopic(this.getUnitsTopic(), this.units);
-        calMinTopic = new DoubleTopic(this.getMinTopic(), min_cal);
-        calMaxTopic = new DoubleTopic(this.getMaxTopic(), max_cal);
-        calDefaultTopic = new DoubleTopic(this.getDefaultTopic(), this.default_val);
-        calValueTopic = new DoubleTopic(this.getValueTopic(), this.cur_val);
+        calUnitsTopic   = NT4Server.getInstance().publishTopic(this.getUnitsTopic(),   NT4TypeStr.STR, CalWrangler.getInstance());
+        calMinTopic     = NT4Server.getInstance().publishTopic(this.getMinTopic(),     NT4TypeStr.FLOAT_64, CalWrangler.getInstance());
+        calMaxTopic     = NT4Server.getInstance().publishTopic(this.getMaxTopic(),     NT4TypeStr.FLOAT_64, CalWrangler.getInstance());
+        calDefaultTopic = NT4Server.getInstance().publishTopic(this.getDefaultTopic(), NT4TypeStr.FLOAT_64, CalWrangler.getInstance());
+        calValueTopic   = NT4Server.getInstance().publishTopic(this.getValueTopic(),   NT4TypeStr.FLOAT_64, CalWrangler.getInstance());
+
+        calUnitsTopic.submitNewValue(new TimestampedString(this.units, 0));
+        calMinTopic.submitNewValue(new TimestampedDouble(this.min_cal, 0));
+        calMaxTopic.submitNewValue(new TimestampedDouble(this.max_cal, 0));
+        calDefaultTopic.submitNewValue(new TimestampedDouble(this.default_val, 0));
+        calValueTopic.submitNewValue(new TimestampedDouble(this.cur_val, 0));
 
         CalWrangler.getInstance().register(this);
     }

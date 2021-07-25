@@ -43,8 +43,6 @@ public class SignalWrangler extends LocalClient{
             ret_val = -1;
         } else {
             registeredSignals.add(sig_in);
-            this.publish(sig_in.nt4UnitsTopic);
-            this.publish(sig_in.nt4ValTopic);
             ret_val = 0;
         }
         return ret_val;
