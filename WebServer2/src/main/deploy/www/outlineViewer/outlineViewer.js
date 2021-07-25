@@ -75,7 +75,7 @@ function onDisconnect() {
 
 function subscribeToAll() {
     if(subscription == null){
-        subscription = nt4Client.subscribePeriodic("/", 0.02);
+        subscription = nt4Client.subscribePeriodic(["/"], 0.02);
     }
 
 }

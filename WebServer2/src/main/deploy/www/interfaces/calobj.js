@@ -12,6 +12,6 @@ export class CalObj {
                this.min != null &&
                this.max != null &&
                this.default != null &&
-               this.val != null;
+               this.value != null;
     }
 }

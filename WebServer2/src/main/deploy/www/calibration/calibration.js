@@ -26,13 +26,13 @@ function filterChangeHandler(filterSpec_in){
     var filterSpec = filterSpec_in.toLowerCase();
 
     if(filterSpec.length == 0 ){ //no filter, show all
-        calTilesMap.forEach(cal => cal.show());
+        calTilesMap.forEach(calTile => calTile.show());
     } else { //Filtering, do the inclusion check
-        calTilesMap.forEach(cal => {
-            if(cal.name.toLowerCase().includes(filterSpec)){
-                cal.show();
+        calTilesMap.forEach(calTile => {
+            if(calTile.cal.name.toLowerCase().includes(filterSpec)){
+                calTile.show();
             } else {
-                cal.hide();
+                calTile.hide();
             }
         });
     }
@@ -41,19 +41,19 @@ function filterChangeHandler(filterSpec_in){
 function onNewCalAdded(newCal){
     var new_tr = document.createElement("tr");
     new_tr.classList.add("calRow");
-    calTilesMap.set(name_in, new CalTile(new_tr, newCal, calInf.setCalibrationValue.bind(calInf)));
+    calTilesMap.set(newCal.name, new CalTile(new_tr, newCal, calInf.setCalibrationValue.bind(calInf)));
     mainTable.appendChild(new_tr);
 }
 
-function onCalUnAnnounce(name_in){
-    var trToRemove = calTilesMap[name_in].drawDiv;
+function onCalUnAnnounce(oldCal){
+    var trToRemove = calTilesMap[oldCal.name].drawDiv;
     mainTable.removeChild(trToRemove);
-    calTilesMap.delete(name_in);
+    calTilesMap.delete(oldCal.name);
 
 }
 
 function onCalValueChange(cal){
-    calTilesMap.get(name_in).updateCurValue(value_in);
+    calTilesMap.get(cal.name).updateDisplayedValues();
 }
 
 function onConnect(){

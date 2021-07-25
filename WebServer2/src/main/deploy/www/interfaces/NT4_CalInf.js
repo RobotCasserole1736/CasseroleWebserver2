@@ -33,7 +33,7 @@ export class NT4_CalInf {
                                         this.onDisconnect.bind(this)
                                         );
 
-        this.nt4Client.subscribePeriodic("/Calibration", 0.5);
+        this.nt4Client.subscribePeriodic(["/Calibrations"], 0.5);
 
         //this.statusTextCallback("Starting connection...");
         this.nt4Client.ws_connect();
@@ -43,17 +43,17 @@ export class NT4_CalInf {
     
     //Submit a new calibration value
     setCalibrationValue(name, value){
-        var valTopic = this.calNameToValueTopic(name);
+        var valTopic = this.calNameToTopic(name, "Value");
         this.nt4Client.addSample(valTopic, this.nt4Client.getServerTime_us(), value);
     }
 
     ///////////////////////////////////////////
     // Internal implementations
 
-    topicAnnounceHandler(topicName){
+    topicAnnounceHandler(topic){
 
-        if(this.isCalTopic(topicName)){
-            var calName = topicToCalName();
+        if(this.isCalTopic(topic)){
+            var calName = this.topicToCalName(topic);
 
             //we got something new related to calibrations...
 
@@ -77,23 +77,26 @@ export class NT4_CalInf {
     }
 
     
-    valueUpdateHandler(name, timestamp, value){
-        if(this.isCalTopic(topicName)){
-            var calName = this.valueTopicToCalName(name);
-            if(this.isCalTopic(topicName, "Value")){
-                var updatedCal = this.allCals.get(calName);
-                this.onCalValueUpdated(updatedCal); 
-            } else if(this.isCalTopic(name, "Name")){
-                this.allCals.get(calName).name = value;
-            } else if(this.isCalTopic(name, "Units")){
-                this.allCals.get(calName).units = value;
-            } else if(this.isCalTopic(name, "Min")){
-                this.allCals.get(calName).min = value;
-            } else if(this.isCalTopic(name, "Max")){
-                this.allCals.get(calName).max = value;
-            } else if(this.isCalTopic(name, "Default")){
-                this.allCals.get(calName).default = value;
+    valueUpdateHandler(topic, timestamp, value){
+        if(this.isCalTopic(topic)){
+            var calName = this.topicToCalName(topic);
+            var updatedCal = this.allCals.get(calName);
+
+            if(this.isCalTopic(topic, "Value")){
+                updatedCal.value = value;
+            } else if(this.isCalTopic(topic, "Name")){
+                updatedCal.name = value;
+            } else if(this.isCalTopic(topic, "Units")){
+                updatedCal.units = value;
+            } else if(this.isCalTopic(topic, "Min")){
+                updatedCal.min = value;
+            } else if(this.isCalTopic(topic, "Max")){
+                updatedCal.max = value;
+            } else if(this.isCalTopic(topic, "Default")){
+                updatedCal.default = value;
             } 
+
+            this.onCalValueUpdated(updatedCal); 
         } 
     }
 
@@ -102,20 +105,20 @@ export class NT4_CalInf {
     // Helper Utiltiies
 
     calNameToTopic(name, suffix){
-        return "Calibrations/" + name + "/" + suffix;
+        return "/Calibrations/" + name + "/" + suffix;
     }
 
     isCalTopic(topic, suffix){
-        if(suffix === null){
+        if(!suffix){
             suffix = "";
         }
-        var replace = "Calibrations\/[a-zA-Z0-9\._]+\/"+suffix;
+        var replace = "/Calibrations\/[a-zA-Z0-9\._]+\/"+suffix;
         var re = new RegExp(replace,"g");
         return re.test(topic.name);
     }
 
     topicToCalName(topic){
-        var replace = "Calibrations\/([a-zA-Z0-9\._]+)\/"+suffix;
+        var replace = "/Calibrations\/([a-zA-Z0-9\._]+)\/";
         var re = new RegExp(replace,"g");
         var arr = re.exec(topic.name);
         return arr[1];

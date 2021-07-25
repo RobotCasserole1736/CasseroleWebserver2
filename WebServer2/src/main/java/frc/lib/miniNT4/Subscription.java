@@ -123,4 +123,8 @@ public class Subscription{
         }
     }
 
+    public String toString(){
+        return Integer.toString(this.subuid) + " : " + this.topicPatterns.toString();
+    }
+
 }

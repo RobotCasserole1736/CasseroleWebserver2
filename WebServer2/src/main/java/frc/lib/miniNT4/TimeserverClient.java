@@ -15,6 +15,8 @@ public class TimeserverClient extends BaseClient{
 
     public TimeserverClient(){
         super();
+        this.friendlyName = "Timeserver Client";
+
         timeTopic = new TimeTopic();
         this.publish(timeTopic);
     }

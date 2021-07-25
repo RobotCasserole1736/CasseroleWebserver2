@@ -171,4 +171,25 @@ public class NT4Server {
     public int getUniqueTopicID(){
         return topicUIDCounter++;
     }
+
+    public void printCurrentClients(){
+        System.out.println("========================");
+        System.out.println("== Current Clients:");
+        for(BaseClient client : clients){
+            System.out.println(client.friendlyName);
+        }
+        System.out.println("========================\n\n");
+    }
+
+    public void printCurrentSubscriptions(){
+        System.out.println("========================");
+        System.out.println("== Current Subscriptions:");
+        for(BaseClient client : clients){
+            System.out.println("> " + client.friendlyName);
+            for(Subscription sub : client.subscriptions.values()){
+                System.out.println(">>  " + sub.toString());
+            }
+        }
+        System.out.println("========================\n\n");
+    }
 }

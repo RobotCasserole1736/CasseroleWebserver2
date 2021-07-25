@@ -530,7 +530,7 @@ export class NT4_Client {
     
     getNewSubUID(){
         this.subscription_uid_counter++;
-        return this.subscription_uid_counter;
+        return this.subscription_uid_counter + this.clientIdx;
     }
 
 

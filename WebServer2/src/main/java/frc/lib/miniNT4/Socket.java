@@ -6,6 +6,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.msgpack.core.MessageBufferPacker;
 import org.msgpack.core.MessagePack;
+import org.msgpack.core.MessageTypeException;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.miniNT4.samples.TimestampedValue;
@@ -64,6 +65,10 @@ public class Socket extends WebSocketAdapter {
                 DriverStation.reportWarning("Could not unpack timestamps and values from WS binary message:\n" + e.getMessage(),
                         e.getStackTrace());
                 return;
+            } catch (MessageTypeException e){
+                DriverStation.reportWarning("Unexpected message datatypes in WS binary message:\n" + e.getMessage(),
+                        e.getStackTrace());
+                return;
             }
 
             topicToUpdate.submitNewValue(newVal);
@@ -92,13 +97,17 @@ public class Socket extends WebSocketAdapter {
         for(Topic t : NT4Server.getInstance().getAllTopics()){
             this.sendAnnounce(t);
         }
+
+        NT4Server.getInstance().printCurrentClients();
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
         super.onWebSocketClose(statusCode, reason);
         clientInf.onDisconnect();
-        System.out.println("WS Disconnect");
+        System.out.println("WS Disconnect from " + clientInf.friendlyName);
+
+        NT4Server.getInstance().printCurrentClients();
     }
 
     void sendWebSocketString(String str){
@@ -244,10 +253,14 @@ public class Socket extends WebSocketAdapter {
                 }
 
                 newSub.start();
+
+                NT4Server.getInstance().printCurrentSubscriptions();
+
             break;
             case "unsubscribe":
                 subuid = ((Number)params.get("subuid")).intValue();
                 clientInf.unSubscribe(subuid);
+                NT4Server.getInstance().printCurrentSubscriptions();
             break;
             default:
                 throw new IllegalArgumentException("Unrecognized method " + method);
