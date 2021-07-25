@@ -4,14 +4,12 @@
 //////////////////////////////////////////////////
 
 import { CalTile } from "./calTile.js";
-import { Calibration_NT4 } from "../interfaces/calibration_NT4.js";
+import { NT4_CalInf } from "../interfaces/NT4_CalInf.js";
 
 var calTilesMap = new Map();
 var mainTable = document.getElementById("calValueTable");
 
-var calInf = new Calibration_NT4(onCalAnnounce, onCalUnAnnounce,onCalValueChange,onConnect,onDisconnect);
-
-// Start up rendering (never returns)
+var calInf = new NT4_CalInf(onCalAnnounce, onCalUnAnnounce,onCalValueChange,onConnect,onDisconnect);
 
 //////////////////////////////////////////////////
 // Render & Animation Loop Functions
