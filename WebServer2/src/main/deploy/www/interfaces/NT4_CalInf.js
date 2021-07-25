@@ -8,17 +8,17 @@
 import { NT4_Client } from "./nt4.js";
 import { CalObj } from "./calobj.js";
 
-
 export class NT4_CalInf {
 
-    constructor(onCalibrationAnnounce_in,   //Gets called when server announces enough topics to form a new calilbration
-                onCalibrationUnAnnounce_in, //Gets called when server unannounces any part of a calibration
-                onCalCurValueChanged_in,    //Gets called when any calibration has its value updated
+    ///////////////////////////////////////
+    // Public API
+
+    constructor(onNewCalAdded_in,           //Gets called when a new calibration is available
+                onCalValueUpdated_in,       //Gets called when one calibration's value has changed.
                 onConnect_in,               //Gets called once client completes initial handshake with server
                 onDisconnect_in) {          //Gets called once client detects server has disconnected
-        this.onCalAnnounce = onCalibrationAnnounce_in;
-        this.onCalUnAnnounce = onCalibrationUnAnnounce_in;
-        this.onCalCurValueChanged = onCalCurValueChanged_in;
+        this.onNewCalAdded = onNewCalAdded_in;
+        this.onCalValueUpdated = onCalValueUpdated_in;
         this.onConnect = onConnect_in;
         this.onDisconnect = onDisconnect_in;
 
@@ -33,35 +33,38 @@ export class NT4_CalInf {
                                         this.onDisconnect.bind(this)
                                         );
 
+        this.nt4Client.subscribePeriodic("/Calibration", 0.5);
+
         //this.statusTextCallback("Starting connection...");
         this.nt4Client.ws_connect();
         //this.statusTextCallback("NT4 Connected.");
 
-
     }
+    
+    //Submit a new calibration value
+    setCalibrationValue(name, value){
+        var valTopic = this.calNameToValueTopic(name);
+        this.nt4Client.addSample(valTopic, this.nt4Client.getServerTime_us(), value);
+    }
+
+    ///////////////////////////////////////////
+    // Internal implementations
 
     topicAnnounceHandler(topicName){
 
         if(this.isCalTopic(topicName)){
             var calName = topicToCalName();
 
-            //we got something announced with a new calibration...
+            //we got something new related to calibrations...
 
             //ensure we've got an object for this cal
             if(!this.allCals.has(calName)){
                 var newCal = new CalObj();
                 newCal.name = calName;
                 this.allCals.set(calName, newCal);
-            }
+                this.onNewCalAdded(newCal);
 
-            if(this.isCalTopic(topicName, "Value")){
-                //We should subscribe to the value
-                this.nt4Client.subscribe(topicName);
-            } else {
-                //get the value of this particular calibration sub-topic, just once.
-                this.nt4Client.getValues(topicName);
             }
-
         }
     }
 
@@ -69,25 +72,34 @@ export class NT4_CalInf {
         if(this.isCalTopic(topicName, "Value")){
             var oldTopic = this.allCals.get(this.topicToCalName(topic));
             this.allCals.delete(this.topicToCalName(topic));
-            this.onCalUnAnnounce(oldTopic);
+            //TODO call user hook
         }
     }
 
     
     valueUpdateHandler(name, timestamp, value){
-        if(this.isCalTopic(topicName, "Value")){
+        if(this.isCalTopic(topicName)){
             var calName = this.valueTopicToCalName(name);
-            this.onCalCurValueChanged(calName, value); 
-        } else {
-            if() //TODO - handle cal init values
-        }
+            if(this.isCalTopic(topicName, "Value")){
+                var updatedCal = this.allCals.get(calName);
+                this.onCalValueUpdated(updatedCal); 
+            } else if(this.isCalTopic(name, "Name")){
+                this.allCals.get(calName).name = value;
+            } else if(this.isCalTopic(name, "Units")){
+                this.allCals.get(calName).units = value;
+            } else if(this.isCalTopic(name, "Min")){
+                this.allCals.get(calName).min = value;
+            } else if(this.isCalTopic(name, "Max")){
+                this.allCals.get(calName).max = value;
+            } else if(this.isCalTopic(name, "Default")){
+                this.allCals.get(calName).default = value;
+            } 
+        } 
     }
 
-    //Submit a new calibration value
-    setCalibrationValue(name, value){
-        var valTopic = this.calNameToValueTopic(name);
-        this.nt4Client.addSample(valTopic, this.nt4Client.getServerTime_us(), value);
-    }
+
+    /////////////////////////////////////////////////
+    // Helper Utiltiies
 
     calNameToTopic(name, suffix){
         return "Calibrations/" + name + "/" + suffix;

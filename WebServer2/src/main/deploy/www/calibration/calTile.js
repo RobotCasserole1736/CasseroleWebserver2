@@ -2,26 +2,20 @@ import { SpinBox } from "./spinbox/SpinBox.js";
 
 export class CalTile {
 
-    constructor(drawDiv_in, name_in, units_in, min_in, max_in, default_in, valueSetCallback_in) { 
+    constructor(drawDiv_in, cal_in, valueSetCallback_in) { 
 
-        this.name = name_in;
-        this.units = units_in;
-        this.min = min_in;
-        this.max = max_in;
-        this.default = default_in;
+        this.cal = cal_in;
         this.drawDiv = drawDiv_in;
         this.valueSetCallback = valueSetCallback_in;
 
-        this.curValue = default_in;
-
         this.spinbox = null;
 
-        this._addColumn(this.name);
-        this._addColumn(this.units);
-        this._addColumn(this.min);
-        this._addColumn(this.max);
-        this._addColumn(this.default);
-        this.curValDiv = this._addColumn(this.curValue);
+        this._addColumn(this.cal.name);
+        this._addColumn(this.cal.units);
+        this._addColumn(this.cal.min);
+        this._addColumn(this.cal.max);
+        this._addColumn(this.cal.default);
+        this.curValDiv = this._addColumn(this.cal.val);
         this._addControls(this.apply.bind(this), this.reset.bind(this));
     }
 
@@ -49,14 +43,13 @@ export class CalTile {
     // Should be called whenever the server reports a new 
     // calibration value is available.
     updateCurValue(newVal){
-        this.curValue = newVal;
         this._updateDisplayedValue();
     }
 
     _updateDisplayedValue(){
-        this.curValDiv.innerHTML = this.curValue.toString();
+        this.curValDiv.innerHTML = this.cal.val.toString();
 
-        if(this.curValue != this.default){
+        if(this.cal.val != this.cal.default){
             this.curValDiv.classList.add("changed");
         } else {
             this.curValDiv.classList.remove("changed");  

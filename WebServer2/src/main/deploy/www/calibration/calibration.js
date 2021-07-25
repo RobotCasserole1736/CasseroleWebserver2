@@ -9,7 +9,7 @@ import { NT4_CalInf } from "../interfaces/NT4_CalInf.js";
 var calTilesMap = new Map();
 var mainTable = document.getElementById("calValueTable");
 
-var calInf = new NT4_CalInf(onCalAnnounce, onCalUnAnnounce,onCalValueChange,onConnect,onDisconnect);
+var calInf = new NT4_CalInf(onNewCalAdded, onCalValueChange, onConnect, onDisconnect);
 
 //////////////////////////////////////////////////
 // Render & Animation Loop Functions
@@ -38,12 +38,11 @@ function filterChangeHandler(filterSpec_in){
     }
 }
 
-function onCalAnnounce(name_in, units_in, min_in, max_in, default_in){
+function onNewCalAdded(newCal){
     var new_tr = document.createElement("tr");
     new_tr.classList.add("calRow");
-    calTilesMap.set(name_in, new CalTile(new_tr, name_in, units_in, min_in, max_in, default_in, calInf.setCalibrationValue.bind(calInf)));
+    calTilesMap.set(name_in, new CalTile(new_tr, newCal, calInf.setCalibrationValue.bind(calInf)));
     mainTable.appendChild(new_tr);
-
 }
 
 function onCalUnAnnounce(name_in){
@@ -53,7 +52,7 @@ function onCalUnAnnounce(name_in){
 
 }
 
-function onCalValueChange(name_in, value_in){
+function onCalValueChange(cal){
     calTilesMap.get(name_in).updateCurValue(value_in);
 }
 
