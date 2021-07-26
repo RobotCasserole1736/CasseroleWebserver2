@@ -87,14 +87,18 @@ public class NT4Server {
      * @param newClient
      */
     void registerClient(BaseClient newClient){
-        clients.add(newClient);
+        synchronized(clients){
+            clients.add(newClient);
+        }
     }
     /**
      * Called internally when a client is no longer connected
      * @param newClient
      */
     void unRegisterClient(BaseClient deadClient){
-        clients.remove(deadClient);
+        synchronized(clients){
+            clients.remove(deadClient);
+        }
     }
 
     public synchronized void unPublishTopic(String deadTopicName, BaseClient client){

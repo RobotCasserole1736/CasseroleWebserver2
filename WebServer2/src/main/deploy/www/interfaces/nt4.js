@@ -521,6 +521,8 @@ export class NT4_Client {
         this.ws.onmessage = this.ws_onMessage.bind(this);
         this.ws.onclose = this.ws_onClose.bind(this);
         this.ws.onerror = this.ws_onError.bind(this);
+
+        console.log("Connected with idx " + this.clientIdx.toString());
     }
     
 
