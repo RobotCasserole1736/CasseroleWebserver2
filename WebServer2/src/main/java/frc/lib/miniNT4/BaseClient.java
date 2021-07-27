@@ -16,6 +16,10 @@ public abstract class BaseClient {
         NT4Server.getInstance().registerClient(this);
     }
 
+    public Subscription subscribe(Set<String> patterns){
+        return this.subscribe(patterns, this.subscriptions.size());
+    }
+
     /**
      * Creates a new subscription off of provided patterns and registers it with the server
      * @param patterns

@@ -1,5 +1,7 @@
 package frc.lib.Calibration;
 
+import java.util.HashSet;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.miniNT4.NT4Server;
 import frc.lib.miniNT4.NT4TypeStr;
@@ -152,6 +154,11 @@ public class Calibration {
         calValueTopic.submitNewValue(new TimestampedDouble(this.cur_val, 0));
 
         CalWrangler.getInstance().register(this);
+
+        var subs = new HashSet<String>(1);
+        subs.add(calValueTopic.name);
+        CalWrangler.getInstance().subscribe(subs).start();
+
     }
 
     private double limitRange(double in) {

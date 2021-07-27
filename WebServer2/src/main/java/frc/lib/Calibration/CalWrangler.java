@@ -21,6 +21,7 @@ package frc.lib.Calibration;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.miniNT4.LocalClient;
@@ -42,6 +43,10 @@ public class CalWrangler extends LocalClient {
             instance = new CalWrangler();
         }
         return instance;
+    }
+
+    private CalWrangler(){
+        super();
     }
 
     /** Full set of all registered calibrations on this robot */
