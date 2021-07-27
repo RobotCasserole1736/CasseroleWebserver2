@@ -212,7 +212,7 @@ public class NT4Server {
         for(Topic topic : topicsByName.values()){
             //For all topics...
             for(String prefix : prefixes){
-                if(topic.name.startsWith(prefix)){
+                if(topic.name.startsWith(prefix)){ //TODo - make prefixes into globs?
                     //On the first match, add it to the ret list, and move on to the next topic (skipping remaining topics).
                     retTopics.add(topic);
                     break;
