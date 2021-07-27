@@ -90,23 +90,18 @@ public class Socket extends WebSocketAdapter {
 
         String clientName = sess.getUpgradeRequest().getRequestURI().toString();
         clientInf = new RemoteClient(this, clientName);
-        System.out.println("WS Connect from " + clientName);
-
         // Announce all existing topics to the client
         for(Topic t : NT4Server.getInstance().getAllTopics()){
             this.sendAnnounce(t);
         }
-
-        NT4Server.getInstance().printCurrentClients();
+        //NT4Server.getInstance().printCurrentClients();
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
         super.onWebSocketClose(statusCode, reason);
         clientInf.onDisconnect();
-        System.out.println("WS Disconnect from " + clientInf.friendlyName);
-
-        NT4Server.getInstance().printCurrentClients();
+        //NT4Server.getInstance().printCurrentClients();
     }
 
     void sendWebSocketString(String str){
@@ -253,13 +248,13 @@ public class Socket extends WebSocketAdapter {
 
                 newSub.start();
 
-                NT4Server.getInstance().printCurrentSubscriptions();
+                //NT4Server.getInstance().printCurrentSubscriptions();
 
             break;
             case "unsubscribe":
                 subuid = ((Number)params.get("subuid")).intValue();
                 clientInf.unSubscribe(subuid);
-                NT4Server.getInstance().printCurrentSubscriptions();
+                //NT4Server.getInstance().printCurrentSubscriptions();
             break;
             default:
                 throw new IllegalArgumentException("Unrecognized method " + method);

@@ -8,7 +8,6 @@ import frc.lib.miniNT4.NT4Server;
 import frc.lib.miniNT4.NT4TypeStr;
 import frc.lib.miniNT4.samples.TimestampedString;
 import frc.lib.miniNT4.samples.TimestampedValue;
-import frc.lib.miniNT4.topics.StringTopic;
 import frc.lib.miniNT4.topics.Topic;
 
 public class SignalTestGenerator extends LocalClient {

@@ -6,12 +6,9 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
 public class NT4ProtocolWebSocketCreator implements WebSocketCreator {
     
-    private Socket mainSocket;
-
     public NT4ProtocolWebSocketCreator()
     {
-        // Create the reusable sockets
-        this.mainSocket = new Socket();
+
     }
 
     @Override
@@ -22,7 +19,7 @@ public class NT4ProtocolWebSocketCreator implements WebSocketCreator {
             if ("networktables.first.wpi.edu".equals(subprotocol))
             {
                 resp.setAcceptedSubProtocol(subprotocol);
-                return this.mainSocket;
+                return new Socket();
             }
         }
 
