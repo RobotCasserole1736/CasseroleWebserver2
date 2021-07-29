@@ -94,14 +94,14 @@ public class Socket extends WebSocketAdapter {
         for(Topic t : NT4Server.getInstance().getAllTopics()){
             this.sendAnnounce(t);
         }
-        //NT4Server.getInstance().printCurrentClients();
+        System.out.println("Connected: " + clientInf.friendlyName);
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
         super.onWebSocketClose(statusCode, reason);
         clientInf.onDisconnect();
-        //NT4Server.getInstance().printCurrentClients();
+        System.out.println("Disconnected: " + clientInf.friendlyName);
     }
 
     void sendWebSocketString(String str){

@@ -185,13 +185,20 @@ export class FastChart {
             var yMax = va.maxVal;
 
 
-            this.ctx.font = "bold 16px monospace";
+            this.ctx.font = "12px monospace";
             this.ctx.textBaseline = 'middle';
             this.ctx.textAlign = 'center';
             this.ctx.fillStyle = "#FFFFFF";
             var labelXPos = xPos - this.VALUE_AXIS_WIDTH/2;
             var labelYPos = (this.plotOriginY_px + this.canvas.height)/2;
-            this.ctx.fillText(va.units,labelXPos,labelYPos);
+
+            // underlined, rotated text for units label
+            this.ctx.save()
+            this.ctx.translate(labelXPos,labelYPos)
+            this.ctx.rotate(-Math.PI/4);
+            this.ctx.fillText(va.units,0,0);
+            this.ctx.fillText("_____",0,0);
+            this.ctx.restore();
 
 
             this.getTickMarkList(yMin, yMax, 2.0).forEach(markerVal => {

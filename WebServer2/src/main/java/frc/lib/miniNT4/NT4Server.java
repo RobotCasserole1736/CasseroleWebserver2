@@ -89,7 +89,6 @@ public class NT4Server {
     void registerClient(BaseClient newClient){
         synchronized(clients){
             clients.add(newClient);
-            System.out.println("~> Added new client" + Integer.toString(newClient.hashCode()));
         }
     }
     /**
@@ -99,7 +98,6 @@ public class NT4Server {
     void unRegisterClient(BaseClient deadClient){
         synchronized(clients){
             clients.remove(deadClient);
-            System.out.println("~> Removed old client" + Integer.toString(deadClient.hashCode()));
         }
     }
 

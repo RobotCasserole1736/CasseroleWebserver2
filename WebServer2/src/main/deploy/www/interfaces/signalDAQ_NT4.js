@@ -65,8 +65,10 @@ export class SignalDAQNT4 {
             // Got a new sample
             var sigName = this.valueTopicToSigName(topic);
             this.onNewSampleData(sigName, timestamp, value);
-            this.rxCount++;
-            this.statusTextCallback("DAQ Running. RX Count: " + this.rxCount.toString());
+            if(this.daqRunning){
+                this.rxCount++;
+            }
+            this.updateStatusText();
         }
     }
 
@@ -90,16 +92,26 @@ export class SignalDAQNT4 {
         this.daqSignalList.forEach(sigName => {
             this.nt4Client.subscribeLogging([this.sigNameToValueTopic(sigName)]);
         });
-        this.statusTextCallback("DAQ Running.");
         this.rxCount = 0;
+        this.updateStatusText();
     }
 
     //Request RIO stop sending periodic updates
     stopDAQ(){
         this.nt4Client.clearAllSubscriptions();
         this.daqRunning = false;
-        this.statusTextCallback("DAQ Stopped.");
+        this.updateStatusText();
+    }
 
+    updateStatusText(){
+        var text = "";
+        if(this.daqRunning){
+            text += "DAQ Running";
+        } else {
+            text += "DAQ Stopped";
+        }
+        text += " RX Count: " + this.rxCount.toString();
+        this.statusTextCallback(text);
     }
 
     sigNameToValueTopic(name){

@@ -1,10 +1,5 @@
 /////////////////////////////////////////////////////////////////////////
 // Stripchart - top-level entrypoint for the stripcharts view
-// Does... ummm... all the things?
-// 1) Handlers for GUI interactions
-// 2) Initializing first plot for the user (Presumably they want at least one.)
-// 3) Synchronizes X axes between all plots
-// 4) Synchronizes cursor positions between all plots
 /////////////////////////////////////////////////////////////////////////
 
 import { Plot } from './plot.js'

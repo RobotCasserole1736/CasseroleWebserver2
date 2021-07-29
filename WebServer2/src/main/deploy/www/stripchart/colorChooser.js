@@ -11,11 +11,14 @@ export class ColorChooser {
         this.canvas.id     = this.drawDiv.id + "_canvas";
         this.drawDiv.appendChild(this.canvas);
         this.ctx = this.canvas.getContext("2d");
+     
+        this.hidetimeout = null;
         
         this.canvas.addEventListener("mousemove", this.onmousemove.bind(this));
         this.canvas.addEventListener("mousedown", this.onmousedown.bind(this));
         this.canvas.addEventListener("mouseup", this.onmouseup.bind(this));
-
+        this.canvas.addEventListener("mouseover", this.onmouseover.bind(this));
+        this.canvas.addEventListener("mouseout", this.onmouseout.bind(this));
 
         this.desHue = initialHue;
         this.updateCurColorString();
@@ -94,6 +97,16 @@ export class ColorChooser {
         this.setColorAtMousePos(e.offsetX);
         e.preventDefault();
         e.stopPropagation();
+    }
+
+    onmouseover(e){
+        if(this.hidetimeout){
+            clearTimeout(this.hidetimeout);
+        }
+    }
+
+    onmouseout(e){
+        this.timeout = setTimeout(this.hide.bind(this), 500);
     }
 
     setColorAtMousePos(mouseX){
