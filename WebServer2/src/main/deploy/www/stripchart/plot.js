@@ -129,6 +129,7 @@ export class Plot {
             var newPS = new PlottedSignal(signal_in, initialHue, newValueAxis, newPltSigDiv);
             newPltSigDiv.addEventListener("mouseup", this.mouseup.bind(this));
             newPltSigDiv.addEventListener("contextmenu", this.contextmenu.bind(this));
+            newPltSigDiv.addEventListener("click", this.click.bind(this));
             newPltSigDiv.setAttribute("data:sigName", signal_in.name);
             this.plottedSignalsMap.set(signal_in.name, newPS);
             this.psContainer.appendChild(newPltSigDiv);
@@ -243,6 +244,13 @@ export class Plot {
         }
 
         e.preventDefault();
+    }
+
+    click = e => {
+        if(e.which == 2){
+            //prevent signal remove from doing that scroll-with-mouse-move
+            e.preventDefault();
+        }
     }
 
     contextmenu = e => {

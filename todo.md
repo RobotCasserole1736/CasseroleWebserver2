@@ -1,12 +1,7 @@
 # General
 
-* NT4 signals/cals - move to having the interface .js file maintain the master list of cals/signals and manipulate them as things are announced. Separately, update calibration/plotter pages to interact directly with the list in the interface.
-* Confirm unannounce/reconnect behavior of clients matches spec (it doesn't now)
-  * Default signal values for soft/hard defautls need to be confirmed working.
-  * Need to rearchitect to have topics existing in a single master list for server, with links to which clients are publishing them. Allows for persistant topics too.
+* NT4 signals - move to having the interface .js file maintain the master list of cals/signals and manipulate them as things are announced. Separately, update plotter pages to interact directly with the list in the interface.
 * Add timestamp sync implementation
-* Ensure websocket heartbeats working fine and correctly
-* Purposefully shut down websocket prior to page exit? OnBeforeUnload?
 * Increase topic flexibility to parse out any number into the correct type
 
 # Stripcharts
@@ -18,7 +13,6 @@
   * signal should have an "is-announced" state which gets set to false on unannounce, but the object isn't removed (and all things that display the signal go to error state?)
 * continue line drawing off end of chart (support very-high zoom levels).
 * middle click does scroll and remove, should ignore default
-* Better font size choice/location for axis labels.
 
 # Data Logs
 
@@ -32,7 +26,6 @@
 
 * Config autonomous mode names by string array topic
 * Configurable aspect ratio
-* Visual appearance done via NT4? blech...
 
 # Outline Viewer
 
