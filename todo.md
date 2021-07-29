@@ -1,7 +1,6 @@
 # General
 
 * NT4 signals - move to having the interface .js file maintain the master list of cals/signals and manipulate them as things are announced. Separately, update plotter pages to interact directly with the list in the interface.
-* Add timestamp sync implementation
 * Increase topic flexibility to parse out any number into the correct type
 
 # Stripcharts

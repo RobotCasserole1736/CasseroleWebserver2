@@ -9,6 +9,7 @@ import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageTypeException;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.lib.miniNT4.samples.TimestampedInteger;
 import frc.lib.miniNT4.samples.TimestampedValue;
 import frc.lib.miniNT4.samples.TimestampedValueFactory;
 import frc.lib.miniNT4.topics.Topic;
@@ -73,7 +74,17 @@ public class Socket extends WebSocketAdapter {
             topicToUpdate.submitNewValue(newVal);
 
         } else if (topicID == -1){
-            //Timestamp sync
+            try {
+                long timestamp_us = unpacker.unpackLong(); //ignored, should be zero
+                int typeIdx = unpacker.unpackInt();
+                long userTimestamp = unpacker.unpackLong();
+
+                // Immedeately reply with the current timestamp
+                this.sendValueUpdate(NT4Server.getInstance().getTopic(-1), new TimestampedInteger(userTimestamp, NT4Server.getInstance().getCurServerTime()));
+            } catch (IOException e) {
+                DriverStation.reportWarning("Could not handle time synchronization message: \n" + e.getMessage(),
+                        e.getStackTrace());
+            }
             
 
         } else {
